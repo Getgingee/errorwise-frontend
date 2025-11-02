@@ -80,10 +80,10 @@ const FeaturesModal: React.FC<FeaturesModalProps> = ({ isOpen, onClose }) => {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-shadow"
+                className="p-6 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/20 transform hover:scale-105 transition-all duration-300"
               >
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-blue-600 text-white rounded-lg">
+                  <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded-lg shadow-lg">
                     <feature.icon size={24} />
                   </div>
                   <div className="flex-1">
@@ -108,16 +108,16 @@ const FeaturesModal: React.FC<FeaturesModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* CTA */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl text-center border border-blue-200 dark:border-blue-800">
+          <div className="mt-8 p-6 bg-white/10 backdrop-blur-md rounded-xl text-center border border-white/20">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Ready to get started?
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-gray-200 mb-4">
               Join thousands of developers using ErrorWise to debug faster
             </p>
             <button
               onClick={handleGetStarted}
-              className="px-6 py-3 bg-white/10 backdrop-blur-md border-b border-white/10 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow"
+              className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white rounded-full font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border-none"
             >
               Try Free Demo
             </button>
