@@ -237,7 +237,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
           {/* Loading State */}
           {loading && (
             <div className="flex justify-center items-center py-12">
-              <Loader className="animate-spin text-blue-600" size={48} />
+              <Loader className="animate-spin text-blue-300" size={48} />
               <span className="ml-3 text-gray-600 dark:text-gray-300">Loading pricing...</span>
             </div>
           )}
@@ -271,7 +271,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
 
                   <div className="text-center mb-6">
                     <div className="inline-flex p-3 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
-                      <plan.icon className="text-blue-600 dark:text-blue-400" size={32} />
+                      <plan.icon className="text-blue-300 dark:text-blue-400" size={32} />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                       {plan.name}
@@ -280,11 +280,11 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                       <span className="text-4xl font-bold text-gray-900 dark:text-white">
                         {plan.price}
                       </span>
-                      <span className="text-gray-600 dark:text-gray-300 ml-2">
+                      <span className="text-gray-200 dark:text-gray-300 ml-2">
                         {plan.period}
                       </span>
                     </div>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    <p className="text-gray-200 dark:text-gray-300 text-sm">
                       {plan.description}
                     </p>
                   </div>
@@ -322,16 +322,16 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
             </h3>
             <div className="space-y-3 text-sm">
               <div>
-                <p className="font-semibold text-gray-900 dark:text-white">Can I change plans later?</p>
-                <p className="text-gray-600 dark:text-gray-300">Yes, you can upgrade or downgrade anytime.</p>
+                <p className="font-semibold text-white dark:text-white">Can I change plans later?</p>
+                <p className="text-gray-200 dark:text-gray-300">Yes, you can upgrade or downgrade anytime.</p>
               </div>
               <div>
-                <p className="font-semibold text-gray-900 dark:text-white">Is there a free trial?</p>
-                <p className="text-gray-600 dark:text-gray-300">Pro plan includes a 7-day free trial, no credit card required.</p>
+                <p className="font-semibold text-white dark:text-white">Is there a free trial?</p>
+                <p className="text-gray-200 dark:text-gray-300">Pro plan includes a 7-day free trial, no credit card required.</p>
               </div>
               <div>
-                <p className="font-semibold text-gray-900 dark:text-white">What payment methods do you accept?</p>
-                <p className="text-gray-600 dark:text-gray-300">We accept all major credit cards via Dodo Payments.</p>
+                <p className="font-semibold text-white dark:text-white">What payment methods do you accept?</p>
+                <p className="text-gray-200 dark:text-gray-300">We accept all major credit cards via Dodo Payments.</p>
               </div>
             </div>
           </div>

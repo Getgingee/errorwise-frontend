@@ -87,16 +87,16 @@ const FeaturesModal: React.FC<FeaturesModalProps> = ({ isOpen, onClose }) => {
                     <feature.icon size={24} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-xl font-bold text-white mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300 mb-3">
+                    <p className="text-gray-200 dark:text-gray-300 mb-3">
                       {feature.description}
                     </p>
                     <ul className="space-y-1">
                       {feature.details.map((detail, idx) => (
                         <li key={idx} className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                          <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                          <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-2"></span>
                           {detail}
                         </li>
                       ))}
@@ -109,7 +109,7 @@ const FeaturesModal: React.FC<FeaturesModalProps> = ({ isOpen, onClose }) => {
 
           {/* CTA */}
           <div className="mt-8 p-6 bg-white/10 backdrop-blur-md rounded-xl text-center border border-white/20">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-2xl font-bold text-white mb-2">
               Ready to get started?
             </h3>
             <p className="text-gray-200 mb-4">

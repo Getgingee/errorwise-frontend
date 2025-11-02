@@ -72,7 +72,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 
           <div className="grid md:grid-cols-3 gap-4 text-center">
             <div className="p-6 bg-gradient-to-br from-blue-500/20 to-cyan-400/20 backdrop-blur-md border border-blue-500/30 rounded-xl">
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">50K+</div>
+              <div className="text-3xl font-bold text-blue-300 dark:text-blue-400 mb-2">50K+</div>
               <div className="text-sm text-gray-200">Active Developers</div>
             </div>
             <div className="p-6 bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-md border border-purple-500/30 rounded-xl">
@@ -89,15 +89,15 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <h4 className="font-bold text-white mb-3">Our Values</h4>
             <ul className="space-y-2">
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3 mt-2"></span>
+                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
                 <span className="text-gray-200"><strong>Developer First:</strong> Built by developers, for developers</span>
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3 mt-2"></span>
+                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
                 <span className="text-gray-200"><strong>Privacy Focused:</strong> Your code is yours, we never store it permanently</span>
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3 mt-2"></span>
+                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
                 <span className="text-gray-200"><strong>Continuous Innovation:</strong> Always improving our AI models</span>
               </li>
             </ul>
@@ -187,7 +187,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                         <span className="text-sm text-gray-200">• {job.type}</span>
                       </div>
                     </div>
-                    <span className="text-blue-600 dark:text-blue-400 text-sm font-medium">Apply →</span>
+                    <span className="text-blue-300 dark:text-blue-400 text-sm font-medium">Apply →</span>
                   </div>
                 </div>
               ))}
@@ -206,7 +206,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                 'Learning & development budget',
               ].map((benefit, idx) => (
                 <li key={idx} className="flex items-center text-gray-200">
-                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3"></span>
+                  <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3"></span>
                   {benefit}
                 </li>
               ))}
@@ -223,9 +223,9 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="p-6 bg-gradient-to-br from-blue-500/20 to-cyan-400/20 backdrop-blur-md border border-blue-500/30 rounded-xl">
-              <Mail className="text-blue-600 mb-3" size={32} />
+              <Mail className="text-blue-300 mb-3" size={32} />
               <h4 className="font-bold text-white mb-2">Email Support</h4>
-              <a href="mailto:support@errorwise.com" className="text-blue-600 dark:text-blue-400 hover:underline">
+              <a href="mailto:support@errorwise.com" className="text-blue-300 dark:text-blue-400 hover:underline">
                 support@errorwise.com
               </a>
               <p className="text-sm text-gray-200 mt-2">Response within 24 hours</p>
@@ -317,7 +317,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <p className="text-gray-200 mb-3">
               Our support team is here to help. Contact us at support@errorwise.com
             </p>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button className="px-4 py-2 bg-cyan-400 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Contact Support
             </button>
           </div>
@@ -344,7 +344,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
               <div key={idx} className={`p-6 bg-gradient-to-br ${platform.color} rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-shadow cursor-pointer`}>
                 <h4 className="font-bold text-white mb-1">{platform.name}</h4>
                 <p className="text-sm font-medium text-gray-200 mb-2">{platform.members}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{platform.desc}</p>
+                <p className="text-sm text-gray-300 dark:text-gray-400">{platform.desc}</p>
               </div>
             ))}
           </div>
@@ -353,15 +353,15 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <h4 className="font-bold text-white mb-2">Community Guidelines</h4>
             <ul className="space-y-2 text-sm text-gray-200">
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3 mt-2"></span>
+                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
                 Be respectful and professional
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3 mt-2"></span>
+                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
                 Help others and share knowledge
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3 mt-2"></span>
+                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
                 No spam or self-promotion
               </li>
             </ul>
@@ -417,7 +417,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 
           <div className="grid md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">500+</div>
+              <div className="text-2xl font-bold text-blue-300 dark:text-blue-400 mb-1">500+</div>
               <div className="text-sm text-gray-200">Features Requested</div>
             </div>
             <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-center">
@@ -485,7 +485,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                 placeholder="your@email.com"
                 className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-white"
               />
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <button className="px-4 py-2 bg-cyan-400 text-white rounded-lg hover:bg-blue-700 transition-colors">
                 Subscribe
               </button>
             </div>
