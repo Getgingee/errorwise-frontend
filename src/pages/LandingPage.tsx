@@ -534,41 +534,41 @@ const LandingPage: React.FC = () => {
                 AI-powered debugging assistant for modern developers.
               </p>
               
-              {/* Social Icons - Glassmorphism Style */}
-              <div className="flex items-center gap-3 pt-2">
+              {/* Social Icons - Simple with Glow */}
+              <div className="flex items-center gap-4 pt-2">
                 <a 
                   href="https://github.com/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent hover:shadow-lg hover:shadow-cyan-500/50 transform hover:scale-110 hover:-translate-y-1 transition-all duration-300"
+                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
                   aria-label="GitHub"
                 >
-                  <Github size={20} />
+                  <Github size={22} />
                 </a>
                 <a 
                   href="https://twitter.com/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent hover:shadow-lg hover:shadow-cyan-500/50 transform hover:scale-110 hover:-translate-y-1 transition-all duration-300"
+                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
                   aria-label="Twitter"
                 >
-                  <Twitter size={20} />
+                  <Twitter size={22} />
                 </a>
                 <a 
                   href="https://linkedin.com/company/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent hover:shadow-lg hover:shadow-cyan-500/50 transform hover:scale-110 hover:-translate-y-1 transition-all duration-300"
+                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
                   aria-label="LinkedIn"
                 >
-                  <Linkedin size={20} />
+                  <Linkedin size={22} />
                 </a>
                 <a 
                   href="mailto:support@errorwise.com" 
-                  className="p-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent hover:shadow-lg hover:shadow-cyan-500/50 transform hover:scale-110 hover:-translate-y-1 transition-all duration-300"
+                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
                   aria-label="Email"
                 >
-                  <Mail size={20} />
+                  <Mail size={22} />
                 </a>
               </div>
             </div>
