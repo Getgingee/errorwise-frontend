@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
 import { ThemeToggle } from '../components/ThemeToggle';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Github, Twitter, Linkedin, Mail, MessageCircle, HelpCircle, Users } from 'lucide-react';
 import LiveDemoModal from '../components/LiveDemoModal';
 import { FeaturesModal, PricingInfoModal, APIDocsModal, InfoPagesModal } from '../components/info';
 
@@ -542,16 +542,18 @@ const LandingPage: React.FC = () => {
                 <li>
                   <button 
                     onClick={() => openInfoModal('about')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
                   >
+                    <Users size={16} />
                     About
                   </button>
                 </li>
                 <li>
                   <button 
                     onClick={() => openInfoModal('blog')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
                   >
+                    <MessageCircle size={16} />
                     Blog
                   </button>
                 </li>
@@ -565,24 +567,27 @@ const LandingPage: React.FC = () => {
                 <li>
                   <button 
                     onClick={() => openInfoModal('help')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
                   >
+                    <HelpCircle size={16} />
                     Help Center
                   </button>
                 </li>
                 <li>
                   <button 
                     onClick={() => openInfoModal('community')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
                   >
+                    <Users size={16} />
                     Community
                   </button>
                 </li>
                 <li>
                   <button 
                     onClick={() => openInfoModal('feedback')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
                   >
+                    <Mail size={16} />
                     Feedback
                   </button>
                 </li>
@@ -590,8 +595,50 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="border-t border-white/10 mt-8 bg-white/5 backdrop-blur-sm sm:mt-12 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-400 dark:text-gray-400">
-            <p>&copy; 2025 ErrorWise. All rights reserved.</p>
+          {/* Social Links */}
+          <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-gray-400 text-sm">Follow us:</span>
+                <div className="flex items-center gap-3">
+                  <a 
+                    href="https://github.com/errorwise" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
+                    aria-label="GitHub"
+                  >
+                    <Github size={18} />
+                  </a>
+                  <a 
+                    href="https://twitter.com/errorwise" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
+                    aria-label="Twitter"
+                  >
+                    <Twitter size={18} />
+                  </a>
+                  <a 
+                    href="https://linkedin.com/company/errorwise" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin size={18} />
+                  </a>
+                  <a 
+                    href="mailto:support@errorwise.com" 
+                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
+                    aria-label="Email"
+                  >
+                    <Mail size={18} />
+                  </a>
+                </div>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-400">&copy; 2025 ErrorWise. All rights reserved.</p>
+            </div>
           </div>
         </div>
       </footer>
