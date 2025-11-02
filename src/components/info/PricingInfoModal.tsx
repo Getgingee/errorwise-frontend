@@ -280,7 +280,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                       <span className="text-4xl font-bold text-gray-900 dark:text-white">
                         {plan.price}
                       </span>
-                      <span className="text-gray-400 ml-2">
+                      <span className="text-gray-500 ml-2">
                         {plan.period}
                       </span>
                     </div>
@@ -293,7 +293,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start">
                         <Check className="text-green-600 dark:text-green-400 mr-2 flex-shrink-0" size={20} />
-                        <span className="text-gray-400 text-sm">
+                        <span className="text-gray-300 text-sm">
                           {feature}
                         </span>
                       </li>
@@ -323,15 +323,15 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
             <div className="space-y-3 text-sm">
               <div>
                 <p className="font-semibold text-white dark:text-white">Can I change plans later?</p>
-                <p className="text-gray-400">Yes, you can upgrade or downgrade anytime.</p>
+                <p className="text-gray-500">Yes, you can upgrade or downgrade anytime.</p>
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">Is there a free trial?</p>
-                <p className="text-gray-400">Pro plan includes a 7-day free trial, no credit card required.</p>
+                <p className="text-gray-500">Pro plan includes a 7-day free trial, no credit card required.</p>
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">What payment methods do you accept?</p>
-                <p className="text-gray-400">We accept all major credit cards via Dodo Payments.</p>
+                <p className="text-gray-500">We accept all major credit cards via Dodo Payments.</p>
               </div>
             </div>
           </div>
