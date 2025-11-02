@@ -19,14 +19,25 @@ export const VerifyEmailPage: React.FC = () => {
 
     const verify = async () => {
       try {
-        const result = await verifyEmail(token);
+        const result: any = await verifyEmail(token);
         setStatus('success');
         setMessage(result.message || 'Email verified successfully!');
         
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+        // If backend returned a token, auto-login the user
+        if (result.token) {
+          localStorage.setItem('token', result.token);
+          localStorage.setItem('user', JSON.stringify(result.user));
+          
+          // Redirect to dashboard after 2 seconds
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 2000);
+        } else {
+          // No token, just redirect to login
+          setTimeout(() => {
+            navigate('/login');
+          }, 3000);
+        }
       } catch (error: any) {
         setStatus('error');
         setMessage(error.message || 'Email verification failed. The link may have expired.');

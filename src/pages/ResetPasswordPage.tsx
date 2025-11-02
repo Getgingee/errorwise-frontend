@@ -7,7 +7,7 @@ const ResetPasswordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get('token');
-  
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +15,7 @@ const ResetPasswordPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -25,8 +25,9 @@ const ResetPasswordPage: React.FC = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    // FIXED: Changed from 6 to 8 to match backend validation
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
       return;
     }
 
@@ -39,15 +40,21 @@ const ResetPasswordPage: React.FC = () => {
 
     try {
       const response = await resetPassword({ token: token, newPassword: password });
-      
+
       if (response.success) {
         setSuccess(true);
         setTimeout(() => navigate('/login'), 3000);
       } else {
         setError(response.message || 'Failed to reset password');
       }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+    } catch (err: any) {
+      // FIXED: Better error handling to show backend error messages
+      const errorMessage = err.response?.data?.error || 
+                          err.response?.data?.message || 
+                          err.message || 
+                          'An error occurred. Please try again.';
+      setError(errorMessage);
+      console.error('Reset password error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +94,7 @@ const ResetPasswordPage: React.FC = () => {
           {/* Back to Home */}
           <div className="mt-6 text-center">
             <Link to="/" className="text-sm text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors duration-300">
-               Back to home
+              Back to home
             </Link>
           </div>
         </div>
@@ -143,7 +150,7 @@ const ResetPasswordPage: React.FC = () => {
           {/* Back to Home */}
           <div className="mt-6 text-center">
             <Link to="/" className="text-sm text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors duration-300">
-               Back to home
+              Back to home
             </Link>
           </div>
         </div>
@@ -192,7 +199,7 @@ const ResetPasswordPage: React.FC = () => {
                   className="w-full pl-10 pr-12 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
                   placeholder="Enter new password"
                   required
-                  minLength={6}
+                  minLength={8}
                 />
                 <button
                   type="button"
@@ -202,7 +209,8 @@ const ResetPasswordPage: React.FC = () => {
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
-              <p className="mt-1 text-xs text-gray-400">Must be at least 6 characters</p>
+              {/* FIXED: Changed helper text from 6 to 8 characters */}
+              <p className="mt-1 text-xs text-gray-400">Must be at least 8 characters</p>
             </div>
 
             {/* Confirm Password */}
@@ -219,7 +227,7 @@ const ResetPasswordPage: React.FC = () => {
                   className="w-full pl-10 pr-12 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
                   placeholder="Confirm new password"
                   required
-                  minLength={6}
+                  minLength={8}
                 />
                 <button
                   type="button"
@@ -251,7 +259,7 @@ const ResetPasswordPage: React.FC = () => {
 
             <div className="text-center">
               <Link to="/login" className="text-gray-300 dark:text-gray-300 hover:text-cyan-400 dark:hover:text-cyan-400 transition-colors duration-300">
-                 Back to Login
+                Back to Login
               </Link>
             </div>
           </form>
@@ -260,7 +268,7 @@ const ResetPasswordPage: React.FC = () => {
         {/* Back to Home */}
         <div className="mt-6 text-center">
           <Link to="/" className="text-sm text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors duration-300">
-             Back to home
+            Back to home
           </Link>
         </div>
       </div>
