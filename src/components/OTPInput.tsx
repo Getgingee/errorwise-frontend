@@ -17,11 +17,14 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   const handleChange = (index: number, value: string) => {
     // Only allow numbers
     if (isNaN(Number(value)) && value !== '') return;
-    
+
     const newOtp = [...otp];
     // Take only the last character if multiple are entered
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
+
+    console.log('📝 OTP digit entered at index', index, ':', value);
+    console.log('📋 Current OTP:', newOtp.join(''));
 
     // Auto-focus next input
     if (value && index < length - 1) {
@@ -31,11 +34,10 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     // Call onComplete when all filled
     const otpString = newOtp.join('');
     if (otpString.length === length && !otpString.includes('')) {
+      console.log('✅ OTP Complete! Calling onComplete with:', otpString);
       onComplete(otpString);
     }
-  };
-
-  const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
+  };  const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
       if (!otp[index] && index > 0) {
         // Move to previous input if current is empty
@@ -93,6 +95,13 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             className="otp-input"
             autoFocus={index === 0}
             aria-label={`OTP digit ${index + 1} of ${length}`}
+            style={{
+              fontSize: '32px',
+              fontWeight: '700',
+              color: '#0f172a',
+              backgroundColor: '#ffffff',
+              textAlign: 'center'
+            }}
           />
         ))}
       </div>
@@ -119,26 +128,35 @@ export const OTPInput: React.FC<OTPInputProps> = ({
         }
 
         .otp-input {
-          width: 50px;
-          height: 60px;
-          text-align: center;
-          font-size: 24px;
-          font-weight: 600;
-          border: 2px solid #e0e0e0;
-          border-radius: 8px;
-          outline: none;
-          transition: all 0.3s;
-          background: white;
-          color: #333;
+          width: 50px !important;
+          height: 60px !important;
+          text-align: center !important;
+          font-size: 32px !important;
+          font-weight: 700 !important;
+          font-family: 'Courier New', Courier, monospace !important;
+          border: 2px solid rgba(255, 255, 255, 0.3) !important;
+          border-radius: 12px !important;
+          outline: none !important;
+          transition: all 0.3s !important;
+          background: #ffffff !important;
+          color: #1e293b !important;
+          caret-color: #3b82f6 !important;
+          padding: 0 !important;
+          line-height: 60px !important;
         }
 
         .otp-input:focus {
-          border-color: #4F46E5;
-          box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+          border-color: #60a5fa !important;
+          box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.3) !important;
+          background: #ffffff !important;
+          transform: scale(1.05) !important;
+          color: #0f172a !important;
         }
 
         .otp-input:not(:placeholder-shown) {
-          border-color: #4F46E5;
+          border-color: #3b82f6 !important;
+          background: #ffffff !important;
+          color: #0f172a !important;
         }
 
         .otp-resend {

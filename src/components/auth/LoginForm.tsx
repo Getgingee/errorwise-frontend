@@ -19,6 +19,11 @@ export const LoginForm: React.FC = () => {
   const { loginStep1, loginStep2, otpSent, isLoading, error: storeError, resetOtpState } = useAuthStore();
   const navigate = useNavigate();
 
+  // Debug: Log otpSent changes
+  useEffect(() => {
+    console.log('🔔 otpSent changed:', otpSent);
+  }, [otpSent]);
+
   useEffect(() => {
     if (otpSent && otpTimer > 0) {
       const timer = setInterval(() => {
@@ -46,8 +51,13 @@ export const LoginForm: React.FC = () => {
     setRequiresVerification(false);
     setVerificationMessage('');
 
+    console.log('🔐 Step 1: Submitting login...');
     const result = await loginStep1(email, password);
+    console.log('📨 Step 1 result:', result);
+    console.log('📬 OTP sent state:', otpSent);
+    
     if (result.success) {
+      console.log('✅ Login Step 1 successful, OTP should be sent');
       setOtpTimer(600);
       setCanResendOtp(false);
     } else if (result.error) {
@@ -77,17 +87,34 @@ export const LoginForm: React.FC = () => {
     }
   };
 
-  const handleStep2Submit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleStep2Submit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError('');
+
+    console.log('🔐 Verifying OTP:', otp);
+    
+    if (otp.length !== 6) {
+      setError('Please enter all 6 digits');
+      return;
+    }
 
     const result = await loginStep2(otp);
     if (result.success) {
+      console.log('✅ OTP verified! Redirecting to dashboard...');
       navigate('/dashboard');
     } else if (result.error) {
+      console.log('❌ OTP verification failed:', result.error);
       setError(result.error);
     }
   };
+
+  // Auto-verify when OTP is complete
+  useEffect(() => {
+    if (otp.length === 6 && otpSent) {
+      console.log('🚀 Auto-verifying OTP...');
+      handleStep2Submit();
+    }
+  }, [otp]);
 
   const handleResendOtp = async () => {
     setError('');
@@ -116,6 +143,8 @@ export const LoginForm: React.FC = () => {
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
+
+  console.log('🎨 LoginForm rendering, otpSent:', otpSent);
 
   if (otpSent) {
     return (
@@ -146,7 +175,10 @@ export const LoginForm: React.FC = () => {
             </label>
             <OTPInput
               length={6}
-              onComplete={(code) => setOtp(code)}
+              onComplete={(code) => {
+                console.log('✅ OTP Complete callback received:', code);
+                setOtp(code);
+              }}
             />
           </div>
 

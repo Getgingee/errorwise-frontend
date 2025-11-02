@@ -52,7 +52,8 @@ export const useAuthStore = create<AuthState>()(
         try {
           const result = await apiLoginStep1({ email, password });
 
-          if (result.success && result.requiresOTP) {
+          // Backend returns requiresOTP (no 'success' field)
+          if (result.requiresOTP) {
             set({
               isLoading: false,
               otpSent: true,
