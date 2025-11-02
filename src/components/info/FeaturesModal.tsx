@@ -95,8 +95,8 @@ const FeaturesModal: React.FC<FeaturesModalProps> = ({ isOpen, onClose }) => {
                     </p>
                     <ul className="space-y-1">
                       {feature.details.map((detail, idx) => (
-                        <li key={idx} className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                          <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-2"></span>
+                        <li key={idx} className="text-sm text-gray-200 flex items-center">
+                          <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-2"></span>
                           {detail}
                         </li>
                       ))}

@@ -89,15 +89,15 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <h4 className="font-bold text-white mb-3">Our Values</h4>
             <ul className="space-y-2">
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
+                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
                 <span className="text-gray-200"><strong>Developer First:</strong> Built by developers, for developers</span>
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
+                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
                 <span className="text-gray-200"><strong>Privacy Focused:</strong> Your code is yours, we never store it permanently</span>
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
+                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
                 <span className="text-gray-200"><strong>Continuous Innovation:</strong> Always improving our AI models</span>
               </li>
             </ul>
@@ -141,7 +141,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 backdrop-blur-sm text-xs font-semibold rounded">
                     {post.category}
                   </span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{post.date}</span>
+                  <span className="text-sm text-gray-200">{post.date}</span>
                 </div>
                 <h4 className="font-bold text-white mb-2">{post.title}</h4>
                 <p className="text-sm text-gray-200">{post.excerpt}</p>
@@ -206,7 +206,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                 'Learning & development budget',
               ].map((benefit, idx) => (
                 <li key={idx} className="flex items-center text-gray-200">
-                  <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3"></span>
+                  <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3"></span>
                   {benefit}
                 </li>
               ))}
@@ -291,7 +291,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
               placeholder="Search for help..."
               className="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             />
-            <HelpCircle className="absolute left-3 top-3.5 text-gray-400" size={20} />
+            <HelpCircle className="absolute left-3 top-3.5 text-gray-200" size={20} />
           </div>
 
           <div>
@@ -344,7 +344,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
               <div key={idx} className={`p-6 bg-gradient-to-br ${platform.color} rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-shadow cursor-pointer`}>
                 <h4 className="font-bold text-white mb-1">{platform.name}</h4>
                 <p className="text-sm font-medium text-gray-200 mb-2">{platform.members}</p>
-                <p className="text-sm text-gray-300 dark:text-gray-400">{platform.desc}</p>
+                <p className="text-sm text-gray-300 dark:text-gray-200">{platform.desc}</p>
               </div>
             ))}
           </div>
@@ -353,15 +353,15 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <h4 className="font-bold text-white mb-2">Community Guidelines</h4>
             <ul className="space-y-2 text-sm text-gray-200">
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
+                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
                 Be respectful and professional
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
+                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
                 Help others and share knowledge
               </li>
               <li className="flex items-start">
-                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3 mt-2"></span>
+                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
                 No spam or self-promotion
               </li>
             </ul>
