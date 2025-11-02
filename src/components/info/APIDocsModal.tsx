@@ -56,7 +56,7 @@ const APIDocsModal: React.FC<APIDocsModalProps> = ({ isOpen, onClose }) => {
                     <span className="px-2 py-1 bg-green-600 text-white text-xs font-bold rounded">POST</span>
                     <code className="text-sm font-mono text-gray-900 dark:text-white">/v1/analyze</code>
                   </div>
-                  <p className="text-gray-200 dark:text-gray-300 text-sm">Analyze an error and get AI-powered solutions</p>
+                  <p className="text-gray-300 dark:text-gray-300 text-sm">Analyze an error and get AI-powered solutions</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
@@ -64,7 +64,7 @@ const APIDocsModal: React.FC<APIDocsModalProps> = ({ isOpen, onClose }) => {
                     <span className="px-2 py-1 bg-cyan-400 text-white text-xs font-bold rounded">GET</span>
                     <code className="text-sm font-mono text-gray-900 dark:text-white">/v1/history</code>
                   </div>
-                  <p className="text-gray-200 dark:text-gray-300 text-sm">Retrieve your error analysis history</p>
+                  <p className="text-gray-300 dark:text-gray-300 text-sm">Retrieve your error analysis history</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
@@ -72,7 +72,7 @@ const APIDocsModal: React.FC<APIDocsModalProps> = ({ isOpen, onClose }) => {
                     <span className="px-2 py-1 bg-cyan-400 text-white text-xs font-bold rounded">GET</span>
                     <code className="text-sm font-mono text-gray-900 dark:text-white">/v1/usage</code>
                   </div>
-                  <p className="text-gray-200 dark:text-gray-300 text-sm">Check your current usage and limits</p>
+                  <p className="text-gray-300 dark:text-gray-300 text-sm">Check your current usage and limits</p>
                 </div>
               </div>
             </div>

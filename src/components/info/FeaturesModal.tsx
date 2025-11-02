@@ -90,12 +90,12 @@ const FeaturesModal: React.FC<FeaturesModalProps> = ({ isOpen, onClose }) => {
                     <h3 className="text-xl font-bold text-white mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-200 dark:text-gray-300 mb-3">
+                    <p className="text-gray-300 dark:text-gray-300 mb-3">
                       {feature.description}
                     </p>
                     <ul className="space-y-1">
                       {feature.details.map((detail, idx) => (
-                        <li key={idx} className="text-sm text-gray-200 flex items-center">
+                        <li key={idx} className="text-sm text-gray-300 flex items-center">
                           <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-2"></span>
                           {detail}
                         </li>
@@ -112,7 +112,7 @@ const FeaturesModal: React.FC<FeaturesModalProps> = ({ isOpen, onClose }) => {
             <h3 className="text-2xl font-bold text-white mb-2">
               Ready to get started?
             </h3>
-            <p className="text-gray-200 mb-4">
+            <p className="text-gray-300 mb-4">
               Join thousands of developers using ErrorWise to debug faster
             </p>
             <button

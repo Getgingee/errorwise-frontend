@@ -280,11 +280,11 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                       <span className="text-4xl font-bold text-gray-900 dark:text-white">
                         {plan.price}
                       </span>
-                      <span className="text-gray-200 dark:text-gray-300 ml-2">
+                      <span className="text-gray-300 dark:text-gray-300 ml-2">
                         {plan.period}
                       </span>
                     </div>
-                    <p className="text-gray-200 dark:text-gray-300 text-sm">
+                    <p className="text-gray-300 dark:text-gray-300 text-sm">
                       {plan.description}
                     </p>
                   </div>
@@ -323,15 +323,15 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
             <div className="space-y-3 text-sm">
               <div>
                 <p className="font-semibold text-white dark:text-white">Can I change plans later?</p>
-                <p className="text-gray-200 dark:text-gray-300">Yes, you can upgrade or downgrade anytime.</p>
+                <p className="text-gray-300 dark:text-gray-300">Yes, you can upgrade or downgrade anytime.</p>
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">Is there a free trial?</p>
-                <p className="text-gray-200 dark:text-gray-300">Pro plan includes a 7-day free trial, no credit card required.</p>
+                <p className="text-gray-300 dark:text-gray-300">Pro plan includes a 7-day free trial, no credit card required.</p>
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">What payment methods do you accept?</p>
-                <p className="text-gray-200 dark:text-gray-300">We accept all major credit cards via Dodo Payments.</p>
+                <p className="text-gray-300 dark:text-gray-300">We accept all major credit cards via Dodo Payments.</p>
               </div>
             </div>
           </div>

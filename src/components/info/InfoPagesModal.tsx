@@ -17,7 +17,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       icon: Package,
       content: (
         <div className="space-y-6">
-          <p className="text-gray-200">
+          <p className="text-gray-300">
             ErrorWise seamlessly integrates with the tools you already use, making error debugging a natural part of your workflow.
           </p>
           
@@ -41,13 +41,13 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                     {integration.status}
                   </span>
                 </div>
-                <p className="text-sm text-gray-200">{integration.desc}</p>
+                <p className="text-sm text-gray-300">{integration.desc}</p>
               </div>
             ))}
           </div>
 
           <div className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30 shadow-lg shadow-blue-500/10">
-            <p className="text-sm text-gray-200">
+            <p className="text-sm text-gray-300">
               <strong>Custom Integration?</strong> Contact our team to discuss custom integrations for your enterprise needs.
             </p>
           </div>
@@ -61,10 +61,10 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       content: (
         <div className="space-y-6">
           <div className="prose dark:prose-invert max-w-none">
-            <p className="text-gray-200">
+            <p className="text-gray-300">
               ErrorWise was founded in 2024 with a simple mission: make debugging faster and less frustrating for developers everywhere.
             </p>
-            <p className="text-gray-200">
+            <p className="text-gray-300">
               We believe that developers should spend their time building amazing products, not deciphering cryptic error messages. 
               Our AI-powered platform analyzes errors in seconds and provides clear, actionable solutions.
             </p>
@@ -73,15 +73,15 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
           <div className="grid md:grid-cols-3 gap-4 text-center">
             <div className="p-6 bg-gradient-to-br from-blue-500/20 to-cyan-400/20 backdrop-blur-md border border-blue-500/30 rounded-xl">
               <div className="text-3xl font-bold text-blue-300 dark:text-blue-400 mb-2">50K+</div>
-              <div className="text-sm text-gray-200">Active Developers</div>
+              <div className="text-sm text-gray-300">Active Developers</div>
             </div>
             <div className="p-6 bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-md border border-purple-500/30 rounded-xl">
               <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">1M+</div>
-              <div className="text-sm text-gray-200">Errors Analyzed</div>
+              <div className="text-sm text-gray-300">Errors Analyzed</div>
             </div>
             <div className="p-6 bg-gradient-to-br from-green-500/20 to-cyan-400/20 backdrop-blur-md border border-green-500/30 rounded-xl">
               <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">95%</div>
-              <div className="text-sm text-gray-200">Accuracy Rate</div>
+              <div className="text-sm text-gray-300">Accuracy Rate</div>
             </div>
           </div>
 
@@ -90,15 +90,15 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <ul className="space-y-2">
               <li className="flex items-start">
                 <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
-                <span className="text-gray-200"><strong>Developer First:</strong> Built by developers, for developers</span>
+                <span className="text-gray-300"><strong>Developer First:</strong> Built by developers, for developers</span>
               </li>
               <li className="flex items-start">
                 <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
-                <span className="text-gray-200"><strong>Privacy Focused:</strong> Your code is yours, we never store it permanently</span>
+                <span className="text-gray-300"><strong>Privacy Focused:</strong> Your code is yours, we never store it permanently</span>
               </li>
               <li className="flex items-start">
                 <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
-                <span className="text-gray-200"><strong>Continuous Innovation:</strong> Always improving our AI models</span>
+                <span className="text-gray-300"><strong>Continuous Innovation:</strong> Always improving our AI models</span>
               </li>
             </ul>
           </div>
@@ -111,7 +111,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       icon: BookOpen,
       content: (
         <div className="space-y-6">
-          <p className="text-gray-200">
+          <p className="text-gray-300">
             Stay updated with the latest debugging tips, AI insights, and product updates.
           </p>
 
@@ -141,10 +141,10 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 backdrop-blur-sm text-xs font-semibold rounded">
                     {post.category}
                   </span>
-                  <span className="text-sm text-gray-200">{post.date}</span>
+                  <span className="text-sm text-gray-300">{post.date}</span>
                 </div>
                 <h4 className="font-bold text-white mb-2">{post.title}</h4>
-                <p className="text-sm text-gray-200">{post.excerpt}</p>
+                <p className="text-sm text-gray-300">{post.excerpt}</p>
               </div>
             ))}
           </div>
@@ -164,7 +164,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       content: (
         <div className="space-y-6">
           <div className="p-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-blue-500/30 rounded-xl border border-blue-200 dark:border-blue-800">
-            <p className="text-gray-200">
+            <p className="text-gray-300">
               We're building the future of debugging. Join a team of passionate developers, AI researchers, and product designers.
             </p>
           </div>
@@ -183,8 +183,8 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                     <div>
                       <h5 className="font-semibold text-white">{job.title}</h5>
                       <div className="flex gap-3 mt-1">
-                        <span className="text-sm text-gray-200">{job.location}</span>
-                        <span className="text-sm text-gray-200">• {job.type}</span>
+                        <span className="text-sm text-gray-300">{job.location}</span>
+                        <span className="text-sm text-gray-300">• {job.type}</span>
                       </div>
                     </div>
                     <span className="text-blue-300 dark:text-blue-400 text-sm font-medium">Apply →</span>
@@ -228,7 +228,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
               <a href="mailto:support@errorwise.com" className="text-blue-300 dark:text-blue-400 hover:underline">
                 support@errorwise.com
               </a>
-              <p className="text-sm text-gray-200 mt-2">Response within 24 hours</p>
+              <p className="text-sm text-gray-300 mt-2">Response within 24 hours</p>
             </div>
 
             <div className="p-6 bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-md border border-purple-500/30 rounded-xl">
@@ -237,7 +237,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
               <a href="mailto:sales@errorwise.com" className="text-purple-600 dark:text-purple-400 hover:underline">
                 sales@errorwise.com
               </a>
-              <p className="text-sm text-gray-200 mt-2">For Enterprise plans</p>
+              <p className="text-sm text-gray-300 mt-2">For Enterprise plans</p>
             </div>
           </div>
 
@@ -314,7 +314,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 
           <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
             <h4 className="font-bold text-white mb-2">Can't find what you're looking for?</h4>
-            <p className="text-gray-200 mb-3">
+            <p className="text-gray-300 mb-3">
               Our support team is here to help. Contact us at support@errorwise.com
             </p>
             <button className="px-4 py-2 bg-cyan-400 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -330,7 +330,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       icon: MessageSquare,
       content: (
         <div className="space-y-6">
-          <p className="text-gray-200">
+          <p className="text-gray-300">
             Connect with other developers, share knowledge, and get help from the ErrorWise community.
           </p>
 
@@ -375,7 +375,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       icon: ThumbsUp,
       content: (
         <div className="space-y-6">
-          <p className="text-gray-200">
+          <p className="text-gray-300">
             Your feedback helps us build a better product. Let us know what you think!
           </p>
 
@@ -418,15 +418,15 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
           <div className="grid md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
               <div className="text-2xl font-bold text-blue-300 dark:text-blue-400 mb-1">500+</div>
-              <div className="text-sm text-gray-200">Features Requested</div>
+              <div className="text-sm text-gray-300">Features Requested</div>
             </div>
             <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-center">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">150+</div>
-              <div className="text-sm text-gray-200">Implemented</div>
+              <div className="text-sm text-gray-300">Implemented</div>
             </div>
             <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-center">
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">95%</div>
-              <div className="text-sm text-gray-200">Satisfaction Rate</div>
+              <div className="text-sm text-gray-300">Satisfaction Rate</div>
             </div>
           </div>
         </div>
@@ -463,7 +463,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                       <span className="font-medium text-white">{service.name}</span>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-sm text-gray-200">{service.uptime} uptime</span>
+                      <span className="text-sm text-gray-300">{service.uptime} uptime</span>
                       <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs font-semibold rounded">
                         {service.status}
                       </span>
@@ -476,7 +476,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 
           <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
             <h4 className="font-bold text-white mb-2">Subscribe to Updates</h4>
-            <p className="text-sm text-gray-200 mb-3">
+            <p className="text-sm text-gray-300 mb-3">
               Get notified about service incidents and scheduled maintenance.
             </p>
             <div className="flex gap-2">
