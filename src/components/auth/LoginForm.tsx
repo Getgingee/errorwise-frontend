@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
+import { OTPInput } from '../OTPInput';
 import { resendLoginOTP, resendVerification } from '../../services/auth';
 
 export const LoginForm: React.FC = () => {
@@ -140,24 +141,14 @@ export const LoginForm: React.FC = () => {
         </div>
 
         <div>
-          <label htmlFor="otp" className="block text-sm font-medium text-gray-300 mb-2">
-            Enter OTP
-          </label>
-          <input
-            id="otp"
-            name="otp"
-            type="text"
-            value={otp}
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, '').slice(0, 6);
-              setOtp(value);
-            }}
-            placeholder="Enter 6-digit code"
-            required
-            maxLength={6}
-            className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 text-center text-2xl tracking-widest font-mono focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
-          />
-        </div>
+            <label className="block text-sm font-medium text-gray-300 mb-3">
+              Enter OTP
+            </label>
+            <OTPInput
+              length={6}
+              onComplete={(code) => setOtp(code)}
+            />
+          </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-400">
