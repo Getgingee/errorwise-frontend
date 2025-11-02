@@ -466,17 +466,7 @@ const LandingPage: React.FC = () => {
               </Button>
             </Link>
             
-            <a href="mailto:contact@errorwise.com" className="group w-full sm:w-auto">
-              <Button variant="secondary" className="w-full sm:w-auto border-2 border-gray-600 dark:border-gray-600 text-gray-300 dark:text-gray-300 hover:bg-gray-800 dark:hover:bg-gray-800 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-300 dark:hover:text-cyan-300 px-8 sm:px-10 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 group-hover:shadow-lg">
-                <span className="flex items-center justify-center">
-                  Contact Sales
-                  <svg className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </span>
-              </Button>
-            </a>
-          </div>
+            </div>
           
           {/* Trust Indicators */}
           <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-700/50 dark:border-gray-700/70 px-4">
@@ -527,7 +517,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="px-4 py-8 sm:py-12 lg:px-8 border-t border-gray-700/50 dark:border-gray-700/70">
+      <footer className="px-4 py-8 sm:py-12 lg:px-8 bg-white/5 backdrop-blur-md border-t border-white/10">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {/* Brand Section */}
@@ -547,12 +537,12 @@ const LandingPage: React.FC = () => {
             
             {/* Company Section */}
             <div className="space-y-3 sm:space-y-4">
-              <h4 className="text-white dark:text-white font-semibold text-sm sm:text-base">Company</h4>
+              <h4 className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Company</h4>
               <ul className="space-y-2 sm:space-y-2.5">
                 <li>
                   <button 
                     onClick={() => openInfoModal('about')} 
-                    className="text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors text-sm sm:text-base text-left w-full"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
                   >
                     About
                   </button>
@@ -560,7 +550,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <button 
                     onClick={() => openInfoModal('blog')} 
-                    className="text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors text-sm sm:text-base text-left w-full"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
                   >
                     Blog
                   </button>
@@ -570,12 +560,12 @@ const LandingPage: React.FC = () => {
             
             {/* Support Section */}
             <div className="space-y-3 sm:space-y-4">
-              <h4 className="text-white dark:text-white font-semibold text-sm sm:text-base">Support</h4>
+              <h4 className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Support</h4>
               <ul className="space-y-2 sm:space-y-2.5">
                 <li>
                   <button 
                     onClick={() => openInfoModal('help')} 
-                    className="text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors text-sm sm:text-base text-left w-full"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
                   >
                     Help Center
                   </button>
@@ -583,7 +573,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <button 
                     onClick={() => openInfoModal('community')} 
-                    className="text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors text-sm sm:text-base text-left w-full"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
                   >
                     Community
                   </button>
@@ -591,7 +581,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <button 
                     onClick={() => openInfoModal('feedback')} 
-                    className="text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors text-sm sm:text-base text-left w-full"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1"
                   >
                     Feedback
                   </button>
@@ -600,7 +590,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="border-t border-gray-700/50 dark:border-gray-700/70 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-400 dark:text-gray-400">
+          <div className="border-t border-white/10 mt-8 bg-white/5 backdrop-blur-sm sm:mt-12 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-400 dark:text-gray-400">
             <p>&copy; 2025 ErrorWise. All rights reserved.</p>
           </div>
         </div>
