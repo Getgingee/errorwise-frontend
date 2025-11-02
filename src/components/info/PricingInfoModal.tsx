@@ -215,8 +215,8 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
   }));
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 border border-white/20 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 scrollbar-hide">
+      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 border border-white/20 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide">
         {/* Header */}
         <div className="sticky top-0 bg-white/10 backdrop-blur-md border-b border-white/10 text-white p-6 rounded-t-2xl flex justify-between items-center">
           <div>
@@ -255,29 +255,29 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
               {displayPlans.map((plan, index) => (
                 <div
                   key={index}
-                  className={`relative p-6 rounded-xl border-2 ${
+                  className={`relative p-6 rounded-xl border ${
                     plan.popular
-                      ? 'border-blue-600 shadow-xl scale-105'
-                      : 'border-gray-200 dark:border-gray-600'
-                  } bg-white dark:bg-gray-700 transition-transform hover:scale-105`}
+                      ? 'border-blue-500/50 shadow-xl shadow-blue-500/20 scale-105 bg-white/10 backdrop-blur-md'
+                      : 'border-white/20 bg-white/5 backdrop-blur-sm'
+                  } transition-all duration-300 hover:scale-105 hover:border-blue-400/50 hover:shadow-2xl`}
                 >
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-white/10 backdrop-blur-md border-b border-white/10 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                      <span className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
                         Most Popular
                       </span>
                     </div>
                   )}
 
                   <div className="text-center mb-6">
-                    <div className="inline-flex p-3 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
-                      <plan.icon className="text-blue-300 dark:text-blue-400" size={32} />
+                    <div className="inline-flex p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mb-4 shadow-lg">
+                      <plan.icon className="text-white" size={32} />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-2xl font-bold text-white mb-2">
                       {plan.name}
                     </h3>
                     <div className="mb-2">
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                      <span className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
                         {plan.price}
                       </span>
                       <span className="text-gray-500 ml-2">
@@ -292,7 +292,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                   <ul className="space-y-3 mb-6">
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start">
-                        <Check className="text-green-600 dark:text-green-400 mr-2 flex-shrink-0" size={20} />
+                        <Check className="text-green-400 mr-2 flex-shrink-0" size={20} />
                         <span className="text-gray-300 text-sm">
                           {feature}
                         </span>
@@ -302,10 +302,10 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
 
                   <button
                     onClick={() => handlePlanClick(plan)}
-                    className={`w-full py-3 rounded-lg font-semibold transition-colors ${
+                    className={`w-full py-3 rounded-full font-semibold transition-all duration-300 ${
                       plan.popular
-                        ? 'bg-white/10 backdrop-blur-md border-b border-white/10 text-white hover:shadow-lg'
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-500'
+                        ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:shadow-xl hover:scale-105'
+                        : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/20'
                     }`}
                   >
                     {plan.cta}
@@ -316,8 +316,8 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
           )}
 
           {/* FAQ Section */}
-          <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="mt-8 p-6 bg-white/10 backdrop-blur-md rounded-xl border border-white/20">
+            <h3 className="text-xl font-bold bg-gradient-to-r from-blue-300 to-cyan-200 bg-clip-text text-transparent mb-4">
               Frequently Asked Questions
             </h3>
             <div className="space-y-3 text-sm">
