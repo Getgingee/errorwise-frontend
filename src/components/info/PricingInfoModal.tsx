@@ -277,14 +277,14 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                       {plan.name}
                     </h3>
                     <div className="mb-2">
-                      <span className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
+                      <span className="text-4xl font-bold bg-gradient-to-r from-blue-200 to-cyan-200 bg-clip-text text-transparent">
                         {plan.price}
                       </span>
-                      <span className="text-gray-500 ml-2">
+                      <span className="text-gray-300 ml-2">
                         {plan.period}
                       </span>
                     </div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-200 text-sm">
                       {plan.description}
                     </p>
                   </div>
@@ -293,7 +293,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start">
                         <Check className="text-green-400 mr-2 flex-shrink-0" size={20} />
-                        <span className="text-gray-300 text-sm">
+                        <span className="text-gray-200 text-sm">
                           {feature}
                         </span>
                       </li>
@@ -323,15 +323,15 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
             <div className="space-y-3 text-sm">
               <div>
                 <p className="font-semibold text-white dark:text-white">Can I change plans later?</p>
-                <p className="text-gray-500">Yes, you can upgrade or downgrade anytime.</p>
+                <p className="text-gray-300">Yes, you can upgrade or downgrade anytime.</p>
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">Is there a free trial?</p>
-                <p className="text-gray-500">Pro plan includes a 7-day free trial, no credit card required.</p>
+                <p className="text-gray-300">Pro plan includes a 7-day free trial, no credit card required.</p>
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">What payment methods do you accept?</p>
-                <p className="text-gray-500">We accept all major credit cards via Dodo Payments.</p>
+                <p className="text-gray-300">We accept all major credit cards via Dodo Payments.</p>
               </div>
             </div>
           </div>
