@@ -183,7 +183,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
           onChange={handleChange}
           required
           minLength={3}
-          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+          className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
         />
       </div>
 
@@ -200,7 +200,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+          className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
         />
       </div>
 
@@ -218,7 +218,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
           onChange={handleChange}
           required
           minLength={8}
-          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+          className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
         />
       </div>
 
@@ -236,7 +236,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
           onChange={handleChange}
           required
           minLength={8}
-          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+          className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
         />
       </div>
 

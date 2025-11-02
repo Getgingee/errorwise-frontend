@@ -44,7 +44,7 @@ export function SubscriptionCard({ subscription, onCancel, onUpgrade }: Subscrip
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-400 p-6 text-white">
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-1">{plan.name} Plan</h2>
@@ -123,7 +123,7 @@ export function SubscriptionCard({ subscription, onCancel, onUpgrade }: Subscrip
           {canUpgrade && sub.status !== 'cancelled' && (
             <button
               onClick={onUpgrade}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-400 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2"
             >
               <TrendingUp className="w-5 h-5" />
               Upgrade Plan

@@ -70,7 +70,7 @@ export const AccountSettings: React.FC = () => {
               {user?.isPhoneVerified ? (
                 <span className="text-green-400 font-medium"> Verified</span>
               ) : (
-                <span className="text-gray-400">Not Set</span>
+                <span className="text-yellow-400 font-medium"> Not Verified</span>
               )}
             </div>
           </div>

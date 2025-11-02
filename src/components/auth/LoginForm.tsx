@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { resendLoginOTP, resendVerification } from '../../services/auth';
@@ -155,7 +155,7 @@ export const LoginForm: React.FC = () => {
             placeholder="Enter 6-digit code"
             required
             maxLength={6}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 text-center text-2xl tracking-widest font-mono focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+            className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 text-center text-2xl tracking-widest font-mono focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
           />
         </div>
 
@@ -255,7 +255,7 @@ export const LoginForm: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
           required
-          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+          className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
         />
       </div>
 
@@ -271,7 +271,7 @@ export const LoginForm: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
           required
-          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+          className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
         />
       </div>
 

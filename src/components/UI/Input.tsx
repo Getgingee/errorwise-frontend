@@ -25,7 +25,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const variantClasses = {
       default: 'border-gray-300 focus:border-blue-500 focus:ring-blue-500/20',
       outlined: 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20',
-      filled: 'border-transparent bg-gray-100 focus:bg-white focus:border-blue-500 focus:ring-blue-500/20'
+      filled: 'border-transparent bg-white/5 backdrop-blur-sm focus:bg-white focus:border-blue-500 focus:ring-blue-500/20'
     };
 
     const sizeClasses = {

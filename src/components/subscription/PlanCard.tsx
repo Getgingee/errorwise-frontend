@@ -13,13 +13,13 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
   
   return (
     <div
-      className={`relative bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl ${
+      className={`relative bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-blue-500/30 hover:shadow-blue-500/20 ${
         isPopular ? 'ring-2 ring-blue-600 scale-105' : ''
       }`}
     >
       {/* Popular Badge */}
       {isPopular && (
-        <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg flex items-center gap-1">
+        <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg flex items-center gap-1">
           <Star className="w-4 h-4 fill-current" />
           Most Popular
         </div>
@@ -57,7 +57,7 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
             isFree
               ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
               : isPopular
-              ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg'
+              ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg'
               : 'bg-blue-600 text-white hover:bg-blue-700'
           } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >

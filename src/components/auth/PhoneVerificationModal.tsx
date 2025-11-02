@@ -47,7 +47,7 @@ export const PhoneVerificationModal: React.FC<Props> = ({ isOpen, onClose, onSuc
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full">
+      <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-lg p-8 max-w-md w-full">
         <h2 className="text-2xl font-bold mb-4">Verify Phone Number</h2>
 
         {error && (
@@ -78,7 +78,7 @@ export const PhoneVerificationModal: React.FC<Props> = ({ isOpen, onClose, onSuc
               </button>
               <button
                 onClick={onClose}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border rounded-lg hover:bg-white/5 backdrop-blur-sm"
               >
                 Cancel
               </button>
@@ -109,7 +109,7 @@ export const PhoneVerificationModal: React.FC<Props> = ({ isOpen, onClose, onSuc
               </button>
               <button
                 onClick={() => setStep('phone')}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border rounded-lg hover:bg-white/5 backdrop-blur-sm"
               >
                 Back
               </button>

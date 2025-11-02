@@ -121,10 +121,10 @@ const LiveDemoModal: React.FC<LiveDemoModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 rounded-2xl shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 border border-white/20 rounded-2xl shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border-b border-white/10">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-6 bg-white/10 backdrop-blur-md border-b border-white/10">
           <div className="flex items-center space-x-3">
             <Sparkles className="h-6 w-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">Try ErrorWise - Free Demo</h2>
@@ -149,7 +149,7 @@ const LiveDemoModal: React.FC<LiveDemoModalProps> = ({ isOpen, onClose }) => {
                 <button
                   key={index}
                   onClick={() => handleExampleClick(example)}
-                  className="text-left p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-200"
+                  className="text-left p-3 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-blue-500/30 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-200"
                 >
                   {example}
                 </button>

@@ -1,229 +1,216 @@
-/**
- * Subscription API Client
- * Handles all subscription-related API calls
- */
+import { apiClient } from './api';
 
-import axios, { AxiosError } from 'axios';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-// Types
-export interface Plan {
+interface Plan {
   id: string;
   name: string;
   price: number;
-  interval: 'month' | 'year';
-  trialDays: number;
-  features: {
-    dailyQueries: number;
-    monthlyQueries?: number;
-    errorExplanation: boolean;
-    fixSuggestions: boolean;
-    codeExamples: boolean;
-    documentationLinks: boolean;
-    errorHistory: string;
-    teamFeatures: boolean;
-    aiProvider: string;
-    maxTokens: number;
-    supportLevel: string;
-    advancedAnalysis: boolean;
-    priorityQueue: boolean;
-    multiLanguageSupport?: boolean;
-    exportHistory?: boolean;
-    apiAccess?: boolean;
-    customIntegrations?: boolean;
+  features: string[];
+  limits: {
+    daily_queries: number;
+    explanation_type: string;
+    solutions_provided: boolean;
+    team_features: boolean;
+    video_chat: boolean;
+    video_session_duration?: number;
+    max_team_members?: number;
+    min_team_members?: number;
   };
   popular?: boolean;
-  description?: string;
-  dodo_plan_id?: string;
 }
 
-export interface Subscription {
-  tier: 'free' | 'pro' | 'team';
-  status: 'active' | 'cancelled' | 'expired' | 'trial' | 'past_due';
-  startDate: string;
-  endDate: string;
-  trialEndsAt?: string;
-  isActive: boolean;
-  isTrial: boolean;
-}
-
-export interface Usage {
-  queriesUsed: number;
-  queriesRemaining: number | 'unlimited';
-  dailyLimit: number | 'unlimited';
-  resetTime: string | null;
-  planType: string;
-  limitReached?: boolean;
-}
-
-export interface SubscriptionData {
-  user: {
-    id: string;
-    email: string;
-    username: string;
-  };
-  subscription: Subscription;
-  plan: {
-    name: string;
-    price: number;
-    interval: string;
-    features: Plan['features'];
-  };
-  usage: Usage;
-  canUpgrade: boolean;
-  canDowngrade: boolean;
-}
-
-export interface CreateSubscriptionPayload {
-  planId: 'pro' | 'team';
-  successUrl: string;
-  cancelUrl: string;
-  skipPayment?: boolean; // For development only
-}
-
-export interface CreateSubscriptionResponse {
-  message: string;
-  sessionId: string;
-  sessionUrl: string;
-  plan: {
-    id: string;
-    name: string;
-    price: number;
-    interval: string;
-    trialDays: number;
-  };
-}
-
-export interface VerifyPaymentResponse {
+interface ApiResponse<T> {
   success: boolean;
-  subscription: Subscription & {
-    features: Plan['features'];
-  };
+  data?: T;
+  message?: string;
+  error?: string;
 }
 
-class SubscriptionService {
-  private getAuthHeaders() {
-    const token = localStorage.getItem('token');
-    return {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    };
-  }
+interface CheckoutSession {
+  url: string;
+  sessionId: string;
+}
 
+export class SubscriptionService {
   /**
    * Get all available subscription plans
    */
-  async getPlans(): Promise<{ plans: Plan[] }> {
+  async getPlans(): Promise<ApiResponse<Plan[]>> {
     try {
-      const { data } = await axios.get(`${API_BASE}/api/subscriptions/plans`);
-      return data;
+      const response = await apiClient.get<Plan[]>('/subscription/plans');
+      return response;
     } catch (error) {
-      console.error('Failed to fetch plans:', error);
-      throw this.handleError(error);
+      console.error('Error fetching plans:', error);
+      return { 
+        success: false, 
+        error: 'Failed to fetch subscription plans',
+        data: []
+      };
     }
   }
 
   /**
-   * Get current user's subscription details
+   * Get current user's subscription
    */
-  async getSubscription(): Promise<SubscriptionData> {
-    try {`n      console.log(' API Request: GET', `${API_BASE}/api/subscriptions);`n      const token = localStorage.getItem('token');`n      console.log(' Token present:', !!token);
-      const { data } = await axios.get(`${API_BASE}/api/subscriptions`, {
-        headers: this.getAuthHeaders()
+  async getCurrentSubscription(): Promise<ApiResponse<any>> {
+    try {
+      const response = await apiClient.get('/subscription');
+      return response;
+    } catch (error) {
+      console.error('Error fetching current subscription:', error);
+      return { 
+        success: false, 
+        error: 'Failed to fetch subscription' 
+      };
+    }
+  }
+
+  /**
+   * Create checkout session for plan upgrade
+   */
+  async createCheckoutSession(planId: string): Promise<ApiResponse<CheckoutSession>> {
+    try {
+      const response = await apiClient.post<CheckoutSession>('/subscription/checkout', {
+        planId,
+        successUrl: `${window.location.origin}/dashboard?upgraded=true`,
+        cancelUrl: `${window.location.origin}/subscription`
       });
-      return data;
+      return response;
     } catch (error) {
-      console.error('Failed to fetch subscription:', error);
-      throw this.handleError(error);
+      console.error('Error creating checkout session:', error);
+      return { 
+        success: false, 
+        error: 'Failed to create checkout session' 
+      };
     }
   }
 
   /**
-   * Create a new subscription (upgrade)
+   * Upgrade subscription to a new plan
    */
-  async createSubscription(payload: CreateSubscriptionPayload): Promise<CreateSubscriptionResponse> {
+  async upgradePlan(planId: string): Promise<ApiResponse<any>> {
     try {
-      const { data } = await axios.post(
-        `${API_BASE}/api/subscriptions`,
-        payload,
-        { headers: this.getAuthHeaders() }
-      );
-      return data;
+      const response = await apiClient.post('/subscription/upgrade', {
+        planId
+      });
+      return response;
     } catch (error) {
-      console.error('Failed to create subscription:', error);
-      throw this.handleError(error);
+      console.error('Error upgrading plan:', error);
+      return { 
+        success: false, 
+        error: 'Failed to upgrade plan' 
+      };
     }
   }
 
   /**
    * Cancel current subscription
    */
-  async cancelSubscription(): Promise<{
-    message: string;
-    subscription: Subscription;
-  }> {
+  async cancelSubscription(): Promise<ApiResponse<any>> {
     try {
-      const { data } = await axios.delete(`${API_BASE}/api/subscriptions`, {
-        headers: this.getAuthHeaders()
-      });
-      return data;
+      const response = await apiClient.post('/subscription/cancel');
+      return response;
     } catch (error) {
-      console.error('Failed to cancel subscription:', error);
-      throw this.handleError(error);
+      console.error('Error cancelling subscription:', error);
+      return { 
+        success: false, 
+        error: 'Failed to cancel subscription' 
+      };
     }
   }
 
   /**
-   * Verify payment after redirect from Dodo
+   * Get billing information
    */
-  async verifyPayment(sessionId: string): Promise<VerifyPaymentResponse> {
+  async getBillingInfo(): Promise<ApiResponse<any>> {
     try {
-      const { data } = await axios.post(
-        `${API_BASE}/api/subscriptions/verify-payment`,
-        { sessionId },
-        { headers: this.getAuthHeaders() }
-      );
-      return data;
+      const response = await apiClient.get('/subscription/billing');
+      return response;
     } catch (error) {
-      console.error('Payment verification failed:', error);
-      throw this.handleError(error);
+      console.error('Error fetching billing info:', error);
+      return { 
+        success: false, 
+        error: 'Failed to fetch billing information' 
+      };
     }
   }
 
   /**
-   * Get usage statistics
+   * Get subscription usage statistics
    */
-  async getUsage(): Promise<{
-    tier: string;
-    usage: Usage;
-    features: Plan['features'];
-  }> {
+  async getUsageStats(): Promise<ApiResponse<any>> {
     try {
-      const { data } = await axios.get(`${API_BASE}/api/subscriptions/usage`, {
-        headers: this.getAuthHeaders()
-      });
-      return data;
+      const response = await apiClient.get('/subscription/usage');
+      return response;
     } catch (error) {
-      console.error('Failed to fetch usage:', error);
-      throw this.handleError(error);
+      console.error('Error fetching usage stats:', error);
+      return { 
+        success: false, 
+        error: 'Failed to fetch usage statistics' 
+      };
     }
   }
 
   /**
-   * Error handler
+   * Get subscription history
    */
-  private handleError(error: unknown): Error {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<{ error: string; message: string }>;
-      const message = axiosError.response?.data?.message || 
-                     axiosError.response?.data?.error || 
-                     axiosError.message;
-      return new Error(message);
+  async getSubscriptionHistory(): Promise<ApiResponse<any>> {
+    try {
+      const response = await apiClient.get('/subscription/history');
+      return response;
+    } catch (error) {
+      console.error('Error fetching subscription history:', error);
+      return { 
+        success: false, 
+        error: 'Failed to fetch subscription history' 
+      };
     }
-    return error instanceof Error ? error : new Error('Unknown error occurred');
+  }
+
+  /**
+   * Get upgrade options for current user
+   */
+  async getUpgradeOptions(): Promise<ApiResponse<any>> {
+    try {
+      const response = await apiClient.get('/subscription/upgrade-options');
+      return response;
+    } catch (error) {
+      console.error('Error fetching upgrade options:', error);
+      return { 
+        success: false, 
+        error: 'Failed to fetch upgrade options' 
+      };
+    }
+  }
+
+  /**
+   * Format price for display
+   */
+  formatPrice(price: number, currency: string = 'USD'): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+    }).format(price);
+  }
+
+  /**
+   * Check if user is on a specific plan
+   */
+  isOnPlan(userPlan: string, targetPlan: string): boolean {
+    return userPlan === targetPlan;
+  }
+
+  /**
+   * Get plan display name
+   */
+  getPlanDisplayName(planId: string): string {
+    const planNames: { [key: string]: string } = {
+      free: 'Free',
+      pro: 'Pro',
+      team: 'Team'
+    };
+    return planNames[planId] || planId;
   }
 }
 
-// Export singleton instance
 export const subscriptionService = new SubscriptionService();
+export default subscriptionService;
