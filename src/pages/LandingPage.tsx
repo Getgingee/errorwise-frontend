@@ -533,6 +533,37 @@ const LandingPage: React.FC = () => {
               <p className="text-gray-400 dark:text-gray-400 text-sm sm:text-base max-w-md">
                 AI-powered debugging assistant for modern developers.
               </p>
+              
+              {/* Social Icons - Simple like reference */}
+              <div className="flex items-center gap-3 pt-2">
+                <a 
+                  href="https://github.com/errorwise" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
+                  aria-label="GitHub"
+                >
+                  <Github size={20} />
+                </a>
+                <a 
+                  href="https://twitter.com/errorwise" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
+                  aria-label="Twitter"
+                >
+                  <Twitter size={20} />
+                </a>
+                <a 
+                  href="https://linkedin.com/company/errorwise" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin size={20} />
+                </a>
+              </div>
             </div>
             
             {/* Company Section */}
@@ -595,50 +626,9 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           
-          {/* Social Links */}
-          <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <span className="text-gray-400 text-sm">Follow us:</span>
-                <div className="flex items-center gap-3">
-                  <a 
-                    href="https://github.com/errorwise" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
-                    aria-label="GitHub"
-                  >
-                    <Github size={18} />
-                  </a>
-                  <a 
-                    href="https://twitter.com/errorwise" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
-                    aria-label="Twitter"
-                  >
-                    <Twitter size={18} />
-                  </a>
-                  <a 
-                    href="https://linkedin.com/company/errorwise" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
-                    aria-label="LinkedIn"
-                  >
-                    <Linkedin size={18} />
-                  </a>
-                  <a 
-                    href="mailto:support@errorwise.com" 
-                    className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-400 hover:border-transparent transform hover:scale-110 transition-all duration-300"
-                    aria-label="Email"
-                  >
-                    <Mail size={18} />
-                  </a>
-                </div>
-              </div>
-              <p className="text-xs sm:text-sm text-gray-400">&copy; 2025 ErrorWise. All rights reserved.</p>
-            </div>
+          {/* Copyright */}
+          <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10 text-center">
+            <p className="text-xs sm:text-sm text-gray-400">&copy; 2025 ErrorWise. All rights reserved.</p>
           </div>
         </div>
       </footer>
