@@ -1,0 +1,246 @@
+﻿import React, { useState, useEffect } from 'react';
+
+import { useAuthStore } from '../store/authStore';
+import { toast } from 'react-hot-toast';
+import { Check, CreditCard, Loader, Star, Users, Zap } from 'lucide-react';
+
+
+
+interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  interval: string;
+  features: {
+    maxQueries: number;
+    aiProviders: string[];
+  };
+}
+
+interface Subscription {
+  id: string;
+  planId: string;
+  status: string;
+  currentPeriodEnd: string;
+}
+
+const Subscription: React.FC = () => {
+  const { token } = useAuthStore();
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpgrading, setIsUpgrading] = useState(false);
+
+  useEffect(() => {
+
+    fetchPlansAndSubscription();
+  }, []);
+
+
+
+  const fetchPlansAndSubscription = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/subscriptions/plans', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setPlans(data.plans);
+      } else {
+        toast.error('Failed to fetch subscription plans');
+      }
+
+      if (token) {
+        const subResponse = await fetch('http://localhost:3001/api/subscriptions/current', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        });
+
+        if (subResponse.ok) {
+          const subData = await subResponse.json();
+          setCurrentSubscription(subData.subscription);
+        } else {
+          toast.error('Failed to fetch current subscription');
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error fetching plans or subscription:', error);
+      toast.error('An error occurred while fetching data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubscribe = async (planId: string) => {
+    setIsUpgrading(true);
+    try {
+      const response = await fetch('http://localhost:3001/api/subscriptions/subscribe', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ planId })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.checkoutUrl;
+      } else {
+        toast.error('Failed to initiate subscription');
+      }
+    } catch (error) {
+      console.error('Error initiating subscription:', error);
+      toast.error('An error occurred while processing your request');
+    } finally {
+      setIsUpgrading(false);
+    }
+  };
+
+
+  const isCurrentPlan = (planId: string) => {
+    return currentSubscription?.planId === planId || (planId === 'free' && !currentSubscription);
+  };
+
+
+  const getPlanIcon = (planId: string) => {
+    switch (planId) {
+
+      case 'pro':
+        return <Zap className="h-5 w-5 text-blue-600" />;
+
+      case 'team':
+        return <Users className="h-5 w-5 text-purple-600" />;
+
+      default:
+        return <Star className="h-5 w-5 text-gray-600" />;
+
+    }
+  };  
+
+
+  if (isLoading) {
+    return ( 
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+    );
+  }
+      
+
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Plan</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Get the power of AI-driven error analysis with our flexible pricing plans
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <button
+              disabled={isCurrentPlan('free')}
+              className="mt-6 w-full py-2 px-4 rounded-md transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed bg-gray-900 text-white hover:bg-gray-800"
+            >
+              {isCurrentPlan('free') ? 'Current Plan' : 'Get Started'}
+            </button>
+          </div>
+
+          {/* Dynamic Plans */}
+          {plans.map((plan) => (
+            <div key={plan.id} className={`bg-white rounded-lg shadow-sm border p-6 relative ${plan.id === 'pro' ? 'border-blue-200' : 'border-gray-200'}`}>
+              {plan.id === 'pro' && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Most Popular
+                  </div>
+                </div>
+              )}
+              
+              <div className="text-center">
+                <div className="mb-4">
+                  {getPlanIcon(plan.id)}
+                </div>
+                <h3 className="text-xl font-medium text-gray-900 mb-2">{plan.name}</h3>
+                <p className="text-gray-600 mb-4">{plan.description}</p>
+                <div className="mb-6">
+                  <span className="text-3xl font-bold text-gray-900">${plan.price}</span>
+                  <span className="text-gray-600">/{plan.interval}</span>
+                </div>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center">
+                  <Check className="h-4 w-4 text-green-500 mr-2" />
+                  <span className="text-sm text-gray-700">
+                    {plan.features.maxQueries === -1 ? 'Unlimited' : plan.features.maxQueries} queries per month
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <Check className="h-4 w-4 text-green-500 mr-2" />
+                  <span className="text-sm text-gray-700">
+                    {plan.features.aiProviders.length > 1 ? 'Multiple AI providers' : 'Advanced AI analysis'}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleSubscribe(plan.id)}
+                disabled={isUpgrading || isCurrentPlan(plan.id)}
+                className={`mt-6 w-full py-2 px-4 rounded-md transition-colors inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed ${
+                  plan.id === 'pro' 
+                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                }`}
+              >
+                {isUpgrading ? (
+                  <Loader className="h-4 w-4 mr-2 animate-spin" />
+                ) : isCurrentPlan(plan.id) ? (
+                  'Current Plan'
+                ) : (
+                  <>
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Upgrade to {plan.name}
+                  </>
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {currentSubscription && (
+          <div className="mt-12 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">Current Subscription</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Plan</p>
+                <p className="font-medium">{plans.find(p => p.id === currentSubscription.planId)?.name || currentSubscription.planId}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Status</p>
+                <p className={`font-medium capitalize ${currentSubscription.status === 'active' ? 'text-green-600' : 'text-gray-900'}`}>
+                  {currentSubscription.status}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Next billing date</p>
+                <p className="font-medium">{new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+  );
+};
+
+const SubscriptionPage: React.FC = Subscription;
+export default SubscriptionPage;

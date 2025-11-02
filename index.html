@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ErrorWise - AI-powered error explanation platform. Get instant explanations for any error message with smart categorization and tiered solutions." />
+    <meta name="keywords" content="error explanation, debugging, AI, programming help, error analysis" />
+    <meta name="author" content="ErrorWise" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ErrorWise - AI-Powered Error Explanations" />
+    <meta property="og:description" content="Turn cryptic errors into clear, actionable solutions with AI-powered explanations" />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="ErrorWise - AI-Powered Error Explanations" />
+    <meta property="twitter:description" content="Turn cryptic errors into clear, actionable solutions with AI-powered explanations" />
+    <meta property="twitter:image" content="/og-image.png" />
+    
+    <title>ErrorWise - AI-Powered Error Explanations</title>
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Theme script to prevent flash -->
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme') || 'auto';
+        if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

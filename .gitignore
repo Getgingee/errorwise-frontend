@@ -1,0 +1,154 @@
+﻿# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Environment variables - NEVER COMMIT THESE!
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production.template
+
+# Backup files - DO NOT COMMIT
+*.backup
+*.bak
+*.old
+*.orig
+*~
+.*.swp
+.*.swo
+*.backup.*
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+out/
+.output/
+.vercel/
+.netlify/
+
+# Vite
+.vite/
+vite.config.ts.timestamp-*
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.turbo/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE / Editor
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+*.test.ts.snap
+*.test.tsx.snap
+
+# TypeScript
+*.tsbuildinfo
+.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Local only
+.local/
+local-only/
+
+# Documentation files (keep locally, don't push)
+*-SUMMARY.md
+*-COMPLETE.md
+*-GUIDE.md
+*-ROADMAP.md
+*-IMPLEMENTATION.md
+*-STATUS.md
+*-REPORT.md
+*-ANALYSIS.md
+*-UPDATES.md
+*-FIX*.md
+*DEPLOYMENT*.md
+*MIGRATION*.md
+FEATURES.md
+COMPLETE-*.md
+COMPREHENSIVE-*.md
+ENHANCED-*.md
+FRONTEND-*.md
+LANDING-*.md
+LOGIN-*.md
+
+# Test/Debug files (keep locally, don't push)
+test-*.js
+test-*.ts
+test-*.tsx
+debug-*.js
+debug-*.ts
+debug-*.tsx
+check-*.js
+check-*.html
+*-test.js
+*-test.ts
+*-debug.js
+
+# Demo/Sample files
+*-demo.html
+*-demo.tsx
+check-*.html
+
+
+# Test HTML files
+*-test.html
+test-*.html
+login-test.html
+connection-test.html
+debug-*.html
+
+# Dev setup scripts
+dev-setup.*
+fix-*.ps1
+fix-*.sh
+

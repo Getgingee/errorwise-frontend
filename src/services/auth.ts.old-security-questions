@@ -1,0 +1,171 @@
+// Enhanced Auth Service with Security Questions
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+
+// Configure axios to include credentials (cookies)
+axios.defaults.withCredentials = true;
+
+// Request interceptor to add token
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor for token refresh
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, { refreshToken });
+        const { accessToken } = response.data;
+        localStorage.setItem('token', accessToken);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return axios(originalRequest);
+      } catch (refreshError) {
+        authService.logout();
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+  security_question_1: string;
+  security_answer_1: string;
+  security_question_2: string;
+  security_answer_2: string;
+  security_question_3: string;
+  security_answer_3: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+export const authService = {
+  // Registration with security questions
+  async register(data: RegisterData) {
+    // Convert frontend field names to backend format
+    const backendData = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      securityQuestion1: data.security_question_1,
+      securityAnswer1: data.security_answer_1,
+      securityQuestion2: data.security_question_2,
+      securityAnswer2: data.security_answer_2,
+      securityQuestion3: data.security_question_3,
+      securityAnswer3: data.security_answer_3,
+    };
+
+    const response = await axios.post(`${API_BASE_URL}/auth/register`, backendData);
+    if (response.data.accessToken) {
+      localStorage.setItem('token', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+    return response.data;
+  },
+
+  // Login
+  async login(data: LoginData) {
+    const response = await axios.post(`${API_BASE_URL}/auth/login`, data);
+    if (response.data.accessToken) {
+      localStorage.setItem('token', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+    return response.data;
+  },
+
+  // Get current user profile
+  async getProfile() {
+    const response = await axios.get(`${API_BASE_URL}/auth/profile`);
+    return response.data;
+  },
+
+  // Forgot password - Get security questions
+  async forgotPassword(email: string) {
+    const response = await axios.post(`${API_BASE_URL}/auth/forgot-password`, { email });
+    return response.data;
+  },
+
+  // Reset password with security answers
+  async resetPassword(data: {
+    email: string;
+    security_answer_1: string;
+    security_answer_2: string;
+    security_answer_3: string;
+    newPassword: string;
+  }) {
+    // Convert frontend field names to backend format
+    const backendData = {
+      email: data.email,
+      answer1: data.security_answer_1,
+      answer2: data.security_answer_2,
+      answer3: data.security_answer_3,
+      newPassword: data.newPassword,
+    };
+
+    const response = await axios.post(`${API_BASE_URL}/auth/reset-password`, backendData);
+    return response.data;
+  },
+
+  // Refresh token
+  async refreshToken() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, { refreshToken });
+    if (response.data.accessToken) {
+      localStorage.setItem('token', response.data.accessToken);
+    }
+    return response.data;
+  },
+
+  // Logout
+  async logout() {
+    try {
+      await axios.post(`${API_BASE_URL}/auth/logout`);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+    }
+  },
+   
+  async deleteAccount(reason: string) {
+    const response = await axios.delete(`${API_BASE_URL}/auth/delete-account`, {
+      data: { reason },
+    });
+    return response.data;
+  },
+
+  // Get current user from localStorage
+  getCurrentUser() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  },
+
+  // Check if authenticated
+  isAuthenticated() {
+    return !!localStorage.getItem('token');
+  }
+};

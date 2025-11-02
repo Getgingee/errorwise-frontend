@@ -1,0 +1,251 @@
+import React, { useEffect, useState } from 'react';
+import { apiClient } from '../services/api';
+
+interface SubscriptionPlan {
+  plan_id: number;
+  name: string;
+  price: string;
+  features: string[];
+  limits: Record<string, any>;
+  max_users: number;
+  max_team_members: number;
+  video_session_duration: number;
+  description: string;
+  dodo_plan_id: string | null;
+  billing_interval: 'day' | 'month' | 'year';
+  trial_period_days: number;
+  is_active: boolean;
+}
+
+interface Subscription {
+  id: string;
+  userId: string;
+  tier: 'free' | 'pro' | 'team';
+  status: 'active' | 'cancelled' | 'expired' | 'trial' | 'past_due';
+  startDate: string;
+  endDate: string | null;
+  dodoSubscriptionId: string | null;
+  lastPaymentDate: string | null;
+}
+
+interface CheckoutSessionResponse {
+  checkoutUrl: string;
+}
+
+const SubscriptionPage: React.FC = () => {
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [processingPlanId, setProcessingPlanId] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetchPlansAndSubscription();
+  }, []);
+
+  const fetchPlansAndSubscription = async () => {
+    try {
+      setLoading(true);
+      const [plansResponse, subscriptionResponse] = await Promise.all([
+        apiClient.get('/subscriptions/plans'),
+        apiClient.get('/subscriptions/current')
+      ]);
+      
+      setPlans(plansResponse.data as SubscriptionPlan[]);
+      setCurrentSubscription(subscriptionResponse.data as Subscription);
+      setError(null);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to load subscription data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectPlan = async (planId: number) => {
+    try {
+      setProcessingPlanId(planId);
+      setError(null);
+      
+      const response = await apiClient.post<CheckoutSessionResponse>('/subscriptions/create-checkout-session', {
+        plan_id: planId
+      });
+      
+      if (response.data && response.data.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl;
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to create checkout session');
+      setProcessingPlanId(null);
+    }
+  };
+
+  const isCurrentPlan = (planName: string) => {
+    return currentSubscription?.tier === planName.toLowerCase() && 
+           currentSubscription?.status === 'active';
+  };
+
+  const getButtonText = (plan: SubscriptionPlan) => {
+    if (isCurrentPlan(plan.name)) {
+      return 'Current Plan';
+    }
+    if (plan.price === '0' || plan.price === '0.00') {
+      return 'Get Started Free';
+    }
+    return 'Upgrade Now';
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading subscription plans...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Choose Your Plan
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Select the perfect plan for your needs. Upgrade or downgrade anytime.
+          </p>
+        </div>
+
+        {error && (
+          <div className="max-w-3xl mx-auto mb-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-center justify-between">
+            <span className="text-red-800 dark:text-red-200">?? {error}</span>
+            <button 
+              onClick={() => setError(null)}
+              className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200 text-2xl leading-none"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {plans
+            .filter(plan => plan.is_active)
+            .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
+            .map((plan) => {
+              const isCurrent = isCurrentPlan(plan.name);
+              const isProcessing = processingPlanId === plan.plan_id;
+              const isPro = plan.name.toLowerCase() === 'pro';
+              
+              return (
+                <div 
+                  key={plan.plan_id} 
+                  className={`relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transition-all duration-300 hover:scale-105 ${
+                    isPro ? 'ring-4 ring-blue-500 dark:ring-blue-400' : ''
+                  } ${isCurrent ? 'ring-4 ring-green-500 dark:ring-green-400' : ''}`}
+                >
+                  {isPro && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                      Most Popular
+                    </div>
+                  )}
+                  
+                  {isCurrent && (
+                    <div className="absolute -top-4 right-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                      Active
+                    </div>
+                  )}
+
+                  <div className="text-center mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                      {plan.name}
+                    </h2>
+                    <div className="mb-4">
+                      <span className="text-5xl font-extrabold text-gray-900 dark:text-white">
+                        ${plan.price}
+                      </span>
+                      <span className="text-gray-600 dark:text-gray-400 ml-2">
+                        /{plan.billing_interval}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-400">{plan.description}</p>
+                  </div>
+
+                  <ul className="space-y-4 mb-8">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-green-500 dark:text-green-400 mr-3 text-xl flex-shrink-0">?</span>
+                        <span className="text-gray-700 dark:text-gray-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Max Users:</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {plan.max_users === -1 ? 'Unlimited' : plan.max_users}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Team Members:</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {plan.max_team_members === -1 ? 'Unlimited' : plan.max_team_members}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Video Duration:</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {plan.video_session_duration} min
+                      </span>
+                    </div>
+                  </div>
+
+                  {plan.trial_period_days > 0 && !isCurrent && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg p-3 mb-6 text-center text-sm font-medium">
+                      ?? {plan.trial_period_days} days free trial
+                    </div>
+                  )}
+
+                  <button 
+                    className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+                      isCurrent 
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-not-allowed'
+                        : isPro
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl'
+                        : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100'
+                    }`}
+                    onClick={() => handleSelectPlan(plan.plan_id)}
+                    disabled={isCurrent || isProcessing}
+                  >
+                    {isProcessing ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </span>
+                    ) : getButtonText(plan)}
+                  </button>
+                </div>
+              );
+            })}
+        </div>
+
+        <div className="text-center space-y-2">
+          <p className="text-gray-600 dark:text-gray-400">
+            All plans include 24/7 customer support and can be cancelled anytime.
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Need help choosing? <a href="/contact" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">Contact our team</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SubscriptionPage;
+

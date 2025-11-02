@@ -1,0 +1,27 @@
+﻿# SUBSCRIPTION PAGE ISSUES FOUND
+
+## Problem 1: Wrong API Endpoint
+**Frontend (SubscriptionPage.tsx line 50):**
+- Calling: /subscription-plans
+- Should be: /subscriptions/plans
+
+**Backend Route (subscriptions.js line 8):**
+- Defined as: /subscriptions/plans
+- With baseURL becomes: http://localhost:5000/api/subscriptions/plans
+
+## Problem 2: Endpoint Mismatch
+Frontend: apiClient.get('/subscription-plans')
+Backend: GET /api/subscriptions/plans
+
+## Fix Required:
+Change line 50 in SubscriptionPage.tsx from:
+  apiClient.get('/subscription-plans')
+To:
+  apiClient.get('/subscriptions/plans')
+
+## Testing:
+1. Start backend: npm run dev (in backend folder)
+2. Test endpoint: curl http://localhost:5000/api/subscriptions/plans
+3. Expected: JSON with 3 plans (free, pro, team)
+
+Would you like me to fix this now?

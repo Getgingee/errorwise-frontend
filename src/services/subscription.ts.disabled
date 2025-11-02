@@ -1,0 +1,278 @@
+﻿import { apiClient } from './api';
+import {
+  SubscriptionPlan,
+  BillingInfo,
+  ApiResponse,
+  DodoCheckoutSession
+} from '../types';
+
+export class SubscriptionService {
+  /**
+   * Get all available subscription plans
+   */
+  async getPlans(): Promise<ApiResponse<SubscriptionPlan[]>> {
+    return await apiClient.get<SubscriptionPlan[]>('/subscriptions/plans');
+  }
+
+  /**
+   * Get current user's subscription and billing info
+   */
+  async getCurrentSubscription(): Promise<ApiResponse<BillingInfo>> {
+    return await apiClient.get<BillingInfo>('/subscriptions/current');
+  }
+
+  /**
+   * Create Dodo Payments checkout session for plan upgrade
+   */
+  async createCheckoutSession(
+    planId: string,
+    successUrl?: string,
+    cancelUrl?: string
+  ): Promise<ApiResponse<DodoCheckoutSession>> {
+    return await apiClient.post<DodoCheckoutSession>('/subscriptions/checkout', {
+      planId,
+      successUrl: successUrl || ${window.location.origin}/dashboard?upgraded=true,
+      cancelUrl: cancelUrl || ${window.location.origin}/pricing
+    });
+  }
+
+  /**
+   * Get billing information and manage subscription through Dodo
+   */
+  async getBillingInfo(): Promise<ApiResponse<{
+    customer: {
+      id: string;
+      email: string;
+      created: string;
+    };
+    subscription?: {
+      id: string;
+      status: string;
+      current_period_start: string;
+      current_period_end: string;
+      plan: {
+        id: string;
+        name: string;
+        amount: number;
+        currency: string;
+      };
+    };
+    payment_methods: Array<{
+      id: string;
+      type: string;
+      card?: {
+        brand: string;
+        last4: string;
+        exp_month: number;
+        exp_year: number;
+      };
+    }>;
+  }>> {
+    return await apiClient.get('/subscriptions/billing-info');
+  }
+
+  /**
+   * Cancel current subscription
+   */
+  async cancelSubscription(): Promise<ApiResponse<{ message: string }>> {
+    return await apiClient.post<{ message: string }>('/subscriptions/cancel');
+  }
+
+  /**
+   * Resume cancelled subscription
+   */
+  async resumeSubscription(): Promise<ApiResponse<{ message: string }>> {
+    return await apiClient.post<{ message: string }>('/subscriptions/resume');
+  }
+
+  /**
+   * Update payment method (redirects to Dodo portal)
+   */
+  async updatePaymentMethod(): Promise<ApiResponse<{ url: string }>> {
+    return await apiClient.post<{ url: string }>('/subscriptions/update-payment');
+  }
+
+  /**
+   * Get billing history from Dodo
+   */
+  async getBillingHistory(): Promise<ApiResponse<{
+    id: string;
+    amount: number;
+    currency: string;
+    status: string;
+    description: string;
+    invoice_url?: string;
+    created_at: string;
+  }[]>> {
+    return await apiClient.get('/subscriptions/billing-history');
+  }
+
+  /**
+   * Get upcoming invoice from Dodo
+   */
+  async getUpcomingInvoice(): Promise<ApiResponse<{
+    amount: number;
+    currency: string;
+    periodStart: string;
+    periodEnd: string;
+    items: {
+      description: string;
+      amount: number;
+    }[];
+  }>> {
+    return await apiClient.get('/subscriptions/upcoming-invoice');
+  }
+
+  /**
+   * Apply coupon code through Dodo
+   */
+  async applyCoupon(couponCode: string): Promise<ApiResponse<{
+    valid: boolean;
+    discount: {
+      percent_off?: number;
+      amount_off?: number;
+      currency?: string;
+    };
+    message: string;
+  }>> {
+    return await apiClient.post('/subscriptions/apply-coupon', {
+      couponCode
+    });
+  }
+
+  /**
+   * Get subscription usage stats
+   */
+  async getUsageStats(): Promise<ApiResponse<{
+    currentPeriod: {
+      start: string;
+      end: string;
+    };
+    usage: {
+      queriesUsed: number;
+      queriesLimit: number;
+      percentageUsed: number;
+    };
+    features: {
+      name: string;
+      available: boolean;
+      used?: number;
+      limit?: number;
+    }[];
+  }>> {
+    return await apiClient.get('/subscriptions/usage');
+  }
+
+  /**
+   * Download invoice from Dodo
+   */
+  async downloadInvoice(invoiceId: string): Promise<Blob> {
+    const response = await apiClient.get(/subscriptions/invoices//download);
+    return new Blob([response.data as BlobPart], { type: 'application/pdf' });
+  }
+
+  /**
+   * Check if user can upgrade to plan
+   */
+  async canUpgradeToplan(planId: string): Promise<ApiResponse<{
+    canUpgrade: boolean;
+    reason?: string;
+    currentPlan: string;
+    targetPlan: string;
+  }>> {
+    return await apiClient.get(/subscriptions/can-upgrade/);
+  }
+
+  /**
+   * Get subscription limits for current plan
+   */
+  async getSubscriptionLimits(): Promise<ApiResponse<{
+    plan: string;
+    limits: {
+      daily_queries: number;
+      advanced_explanations: boolean;
+      code_suggestions: boolean;
+      priority_support: boolean;
+      team_features: boolean;
+      api_access: boolean;
+    };
+    usage: {
+      queries_today: number;
+      queries_this_month: number;
+    };
+  }>> {
+    return await apiClient.get('/subscriptions/limits');
+  }
+
+  /**
+   * Get Dodo customer portal URL
+   */
+  async getCustomerPortalUrl(): Promise<ApiResponse<{ url: string }>> {
+    return await apiClient.get<{ url: string }>('/subscriptions/portal');
+  }
+
+  /**
+   * Preview subscription change
+   */
+  async previewPlanChange(newPlanId: string): Promise<ApiResponse<{
+    immediate_total: number;
+    next_invoice_total: number;
+    proration_date: string;
+    currency: string;
+    items: {
+      description: string;
+      amount: number;
+    }[];
+  }>> {
+    return await apiClient.get(/subscriptions/preview-change/);
+  }
+
+  /**
+   * Get referral information
+   */
+  async getReferralInfo(): Promise<ApiResponse<{
+    referral_code: string;
+    referrals_count: number;
+    rewards_earned: number;
+    pending_rewards: number;
+  }>> {
+    return await apiClient.get('/subscriptions/referrals');
+  }
+
+  /**
+   * Format price for display
+   */
+  formatPrice(price: number, currency: string = 'USD'): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+    }).format(price / 100); // Assuming price is in cents
+  }
+
+  /**
+   * Handle Dodo webhook events (for real-time updates)
+   */
+  async handleWebhookEvent(eventType: string, data: any): Promise<void> {
+    // This would be called when receiving webhook events from Dodo
+    // to update the UI in real-time
+    switch (eventType) {
+      case 'subscription.updated':
+        // Refresh subscription data
+        window.dispatchEvent(new CustomEvent('subscription-updated', { detail: data }));
+        break;
+      case 'payment.succeeded':
+        // Show success message
+        window.dispatchEvent(new CustomEvent('payment-succeeded', { detail: data }));
+        break;
+      case 'payment.failed':
+        // Show error message
+        window.dispatchEvent(new CustomEvent('payment-failed', { detail: data }));
+        break;
+      default:
+        console.log('Unhandled webhook event:', eventType, data);
+    }
+  }
+}
+
+export const subscriptionService = new SubscriptionService();
+export default subscriptionService;

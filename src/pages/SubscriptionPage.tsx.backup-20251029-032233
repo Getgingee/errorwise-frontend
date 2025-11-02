@@ -1,0 +1,307 @@
+import React, { useEffect, useState } from 'react';
+import { apiClient } from '../services/api';
+import Navigation from '../components/Navigation';
+
+// Config-based plan structure (from backend /api/subscriptions/plans)
+interface ConfigPlan {
+  id: string;
+  name: string;
+  price: number;
+  interval: string;
+  trialDays?: number;
+  features: {
+    dailyQueries: number;
+    errorExplanation: boolean;
+    fixSuggestions: boolean;
+    documentationLinks: boolean;
+    errorHistory: boolean;
+    advancedAnalysis?: boolean;
+    teamFeatures?: boolean;
+    sharedHistory?: boolean;
+    teamDashboard?: boolean;
+    teamMembers?: number;
+  };
+  description: string;
+}
+
+interface Subscription {
+  id?: string;
+  userId?: string;
+  tier: 'free' | 'pro' | 'team';
+  status: 'active' | 'cancelled' | 'expired' | 'trial' | 'past_due';
+  startDate?: string;
+  endDate?: string | null;
+}
+
+interface PlansResponse {
+  plans: ConfigPlan[];
+}
+
+interface SubscriptionResponse {
+  sessionUrl?: string;
+}
+
+const SubscriptionPage: React.FC = () => {
+  const [plans, setPlans] = useState<ConfigPlan[]>([]);
+  const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [processingPlanId, setProcessingPlanId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPlansAndSubscription = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch plans from config-based endpoint
+        const plansResponse = await apiClient.get<PlansResponse>('/subscriptions/plans');
+        
+        // Fetch current subscription (may fail if not authenticated)
+        let subscriptionData = null;
+        try {
+          const subscriptionResponse = await apiClient.get<Subscription>('/subscriptions');
+          subscriptionData = subscriptionResponse.data;
+        } catch (subError) {
+          console.log('No active subscription or not authenticated');
+        }
+
+        setPlans(plansResponse.data?.plans || []);
+        setCurrentSubscription(subscriptionData ?? null);
+        setError(null);
+      } catch (err: any) {
+        console.error('Error fetching plans:', err);
+        setError(err.response?.data?.error || 'Failed to load subscription data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlansAndSubscription();
+  }, []);
+
+  const handleSelectPlan = async (planId: string) => {
+    try {
+      setProcessingPlanId(planId);
+      setError(null);
+
+      const response = await apiClient.post<SubscriptionResponse>('/subscriptions', {
+        planId,
+        successUrl: `${window.location.origin}/subscription?success=true`,
+        cancelUrl: `${window.location.origin}/subscription?cancelled=true`
+      });
+
+      if (response.data && response.data.sessionUrl) {
+        window.location.href = response.data.sessionUrl;
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to create subscription');
+      setProcessingPlanId(null);
+    }
+  };
+
+  const isCurrentPlan = (planId: string) => {
+    return currentSubscription?.tier === planId &&
+           currentSubscription?.status === 'active';
+  };
+
+  const getButtonText = (plan: ConfigPlan) => {
+    if (isCurrentPlan(plan.id)) {
+      return 'Current Plan';
+    }
+    if (plan.price === 0) {
+      return 'Get Started Free';
+    }
+    return 'Upgrade Now';
+  };
+
+  const formatFeaturesList = (features: ConfigPlan['features']): string[] => {
+    const featuresList: string[] = [];
+    
+    if (features.dailyQueries === -1) {
+      featuresList.push('Unlimited error queries per day');
+    } else {
+      featuresList.push(`${features.dailyQueries} error queries per day`);
+    }
+    
+    if (features.errorExplanation) {
+      featuresList.push('AI-powered error explanations');
+    }
+    
+    if (features.fixSuggestions) {
+      featuresList.push('Code fix suggestions');
+    }
+    
+    if (features.documentationLinks) {
+      featuresList.push('Documentation links');
+    }
+    
+    if (features.errorHistory) {
+      featuresList.push('Complete error history');
+    }
+    
+    if (features.advancedAnalysis) {
+      featuresList.push('Advanced AI analysis');
+    }
+    
+    if (features.teamFeatures) {
+      featuresList.push('Team collaboration features');
+    }
+    
+    if (features.sharedHistory) {
+      featuresList.push('Shared team history');
+    }
+    
+    if (features.teamDashboard) {
+      featuresList.push('Team dashboard');
+    }
+    
+    if (features.teamMembers) {
+      featuresList.push(`Up to ${features.teamMembers} team members`);
+    }
+    
+    return featuresList;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 transition-colors duration-300">
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-cyan-400 mx-auto mb-4"></div>
+            <p className="text-gray-300 dark:text-gray-300">Loading subscription plans...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 transition-colors duration-300">
+      {/* Navigation Sidebar */}
+      <Navigation />
+
+      {/* Main Content Area with padding for sidebar */}
+      <div className="md:pl-64 pt-16 md:pt-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-white dark:text-white mb-4">
+            Choose Your <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Plan</span>
+          </h1>
+          <p className="text-lg text-gray-300 dark:text-gray-300">
+            Select the perfect plan for your needs. Upgrade or downgrade anytime.
+          </p>
+        </div>
+
+        {error && (
+          <div className="max-w-3xl mx-auto mb-8 bg-red-500/10 border border-red-500/50 rounded-xl p-4 flex items-center justify-between backdrop-blur-sm">
+            <span className="text-red-400 dark:text-red-400">{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="text-red-400 dark:text-red-400 hover:text-red-300 dark:hover:text-red-300 text-2xl leading-none transition-colors"
+              title="Dismiss error message"
+              aria-label="Dismiss error message"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {plans
+            .sort((a, b) => a.price - b.price)
+            .map((plan) => {
+              const isCurrent = isCurrentPlan(plan.id);
+              const isProcessing = processingPlanId === plan.id;
+              const isPro = plan.id === 'pro';
+              const featuresList = formatFeaturesList(plan.features);
+
+              return (
+                <div
+                  key={plan.id}
+                  className={`relative bg-white/5 dark:bg-white/5 backdrop-blur-sm border rounded-2xl shadow-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-3xl ${
+                    isPro ? 'border-blue-500/50 ring-2 ring-blue-500/30' : 'border-white/10'
+                  } ${isCurrent ? 'border-green-500/50 ring-2 ring-green-500/30' : ''}`}
+                >
+                  {isPro && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                      Most Popular
+                    </div>
+                  )}
+
+                  {isCurrent && (
+                    <div className="absolute -top-4 right-4 bg-gradient-to-r from-green-500 to-teal-400 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                      Active
+                    </div>
+                  )}
+
+                  <div className="text-center mb-8">
+                    <h2 className="text-2xl font-bold text-white dark:text-white mb-4">
+                      {plan.name}
+                    </h2>
+                    <div className="mb-4">
+                      <span className="text-5xl font-extrabold text-white dark:text-white">
+                        ${plan.price}
+                      </span>
+                      <span className="text-gray-300 dark:text-gray-300 ml-2">
+                        /{plan.interval}
+                      </span>
+                    </div>
+                    <p className="text-gray-300 dark:text-gray-300">{plan.description}</p>
+                  </div>
+
+                  <ul className="space-y-4 mb-8">
+                    {featuresList.map((feature, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-green-400 dark:text-green-400 mr-3 text-xl flex-shrink-0">✓</span>
+                        <span className="text-gray-200 dark:text-gray-200">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {plan.trialDays && plan.trialDays > 0 && !isCurrent && (
+                    <div className="bg-blue-500/10 border border-blue-500/30 text-blue-300 dark:text-blue-300 rounded-lg p-3 mb-6 text-center text-sm font-medium backdrop-blur-sm">
+                      ⚡ {plan.trialDays} days free trial
+                    </div>
+                  )}
+
+                  <button
+                    className={`w-full py-3 px-6 rounded-full font-semibold transition-all duration-300 transform ${
+                      isCurrent
+                        ? 'bg-green-500/20 text-green-400 dark:bg-green-500/20 dark:text-green-400 cursor-not-allowed border border-green-500/30'
+                        : isPro
+                        ? 'bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white shadow-lg hover:shadow-xl hover:scale-105'
+                        : 'bg-white/10 hover:bg-white/20 border border-white/10 text-white dark:text-white hover:scale-105'
+                    }`}
+                    onClick={() => handleSelectPlan(plan.id)}
+                    disabled={isCurrent || isProcessing}
+                  >
+                    {isProcessing ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </span>
+                    ) : getButtonText(plan)}
+                  </button>
+                </div>
+              );
+            })}
+        </div>
+
+        <div className="text-center space-y-2">
+          <p className="text-gray-300 dark:text-gray-300">
+            All plans include 24/7 customer support and can be cancelled anytime.
+          </p>
+          <p className="text-gray-300 dark:text-gray-300">
+            Need help choosing? <a href="/contact" className="text-cyan-400 dark:text-cyan-400 hover:text-cyan-300 dark:hover:text-cyan-300 hover:underline font-semibold transition-colors duration-300">Contact our team</a>
+          </p>
+        </div>
+      </div>
+      </div>
+    </div>
+  );
+};
+
+export default SubscriptionPage;

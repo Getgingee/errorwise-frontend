@@ -1,0 +1,313 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Input, Modal } from '../components/UI';
+import { useAuthStore } from '../store/authStore';
+import { useErrorStore } from '../store/errorStore';
+import { toast } from '../store/uiStore';
+import { ErrorHistoryItem } from '../types';
+
+const DashboardPage: React.FC = () => {
+  const { user, logout } = useAuthStore();
+  const {
+    errorHistory,
+    isExplaining,
+    loadErrorHistory,
+    explainError,
+    deleteError
+  } = useErrorStore();
+
+  const [errorInput, setErrorInput] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedError, setSelectedError] = useState<ErrorHistoryItem | null>(null);
+
+  useEffect(() => {
+    loadErrorHistory();
+  }, [loadErrorHistory]);
+
+  const handleAnalyzeError = async () => {
+    if (!errorInput.trim()) return;
+
+    try {
+      const result = await explainError({
+        errorMessage: errorInput,
+        context: {
+          userLevel: 'intermediate'
+        }
+      });
+      setSelectedError({
+        id: result.id,
+        errorMessage: result.errorMessage,
+        explanation: result.explanation,
+        category: result.category,
+        severity: result.severity,
+        aiModel: result.aiModel,
+        responseTime: result.responseTime,
+        created_at: result.created_at
+      });
+      setShowModal(true);
+      setErrorInput('');
+      loadErrorHistory(); // Refresh history
+      toast.success('Analysis complete', 'Your error was analyzed successfully.');  
+    } catch (error: any) {
+      console.error('Error analysis failed:', error);
+      toast.error('Analysis failed', error?.message || 'Failed to analyze the error');
+    }
+  };
+
+  const handleClearHistory = async () => {
+    // Since there's no clearHistory method, we'll implement delete all
+    try {
+      for (const error of errorHistory) {
+        await deleteError(error.id);
+      }
+      loadErrorHistory(); // Refresh the list
+      toast.success('History cleared', 'All history items were deleted');
+    } catch (error) {
+      console.error('Failed to clear history:', error);
+      toast.error('Clear failed', (error as any)?.message || 'Failed to clear history');
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h1 className="ml-3 text-2xl font-bold text-gray-900">ErrorWise</h1>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-700">Welcome, {user?.name || user?.username}!</span>
+              <Link to="/subscription">
+                <Button variant="outline" className="text-blue-600 hover:text-blue-700">
+                  Subscription
+                </Button>
+              </Link>
+              <Button variant="outline" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {/* Main Content */}
+        <div className="px-4 py-6 sm:px-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* Error Input Section */}
+            <div className="lg:col-span-2">
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    Analyze Your Error
+                  </h3>
+
+                  <div className="space-y-4">
+                    <Input
+                      label="Paste your error message or stack trace"
+                      name="error"
+                      value={errorInput}
+                      onChange={(e) => setErrorInput(e.target.value)}
+                      placeholder="Paste your error message here..."
+                      variant="outlined"
+                      className="min-h-32"
+                    />
+
+                    <Button
+                      onClick={handleAnalyzeError}
+                      disabled={!errorInput.trim() || isExplaining}
+                      className="w-full"
+                    >
+                      {isExplaining ? 'Analyzing...' : 'Analyze Error'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Section */}
+            <div className="space-y-6">
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Total Analyses
+                        </dt>
+                        <dd className="text-lg font-medium text-gray-900">
+                          {errorHistory.length}
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          This Month
+                        </dt>
+                        <dd className="text-lg font-medium text-gray-900">
+                          {errorHistory.filter((item: ErrorHistoryItem) => {
+                            const date = new Date(item.created_at);
+                            const now = new Date();
+                            return date.getMonth() === now.getMonth() &&
+                                   date.getFullYear() === now.getFullYear();
+                          }).length}
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent History */}
+          <div className="mt-8">
+            <div className="bg-white shadow overflow-hidden sm:rounded-md">
+              <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    Recent Error Analyses
+                  </h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    Your recent error analysis history
+                  </p>
+                </div>
+                {errorHistory.length > 0 && (
+                  <Button
+                    variant="outline"
+                    onClick={handleClearHistory}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    Clear History
+                  </Button>
+                )}
+              </div>
+
+              {errorHistory.length === 0 ? (
+                <div className="text-center py-12">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No analyses yet</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Get started by analyzing your first error above.
+                  </p>
+                </div>
+              ) : (
+                <ul className="divide-y divide-gray-200">
+                  {errorHistory.slice(0, 10).map((item: ErrorHistoryItem) => (
+                    <li key={item.id}>
+                      <div className="px-4 py-4 flex items-center justify-between hover:bg-gray-50">
+                        <div className="flex items-center flex-1 min-w-0">
+                          <div className="flex-shrink-0">
+                            <div className={`h-2 w-2 rounded-full ${
+                              item.severity === 'high' || item.severity === 'critical' ? 'bg-red-400' :
+                              item.severity === 'medium' ? 'bg-yellow-400' : 'bg-green-400'
+                            }`} />
+                          </div>
+                          <div className="ml-4 flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {item.category}
+                            </p>
+                            <p className="text-sm text-gray-500 truncate">
+                              {item.errorMessage.substring(0, 100)}...
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <span className="text-sm text-gray-500">
+                            {new Date(item.created_at).toLocaleDateString()}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedError(item);
+                              setShowModal(true);
+                            }}
+                          >
+                            View
+                          </Button>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Error Details Modal */}
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title="Error Analysis"
+        size="lg"
+      >
+        {selectedError && (
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-900 mb-2">Category</h4>
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                selectedError.severity === 'high' || selectedError.severity === 'critical' ? 'bg-red-100 text-red-800' :
+                selectedError.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-green-100 text-green-800'
+              }}>
+                {selectedError.category}
+              </span>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-medium text-gray-900 mb-2">Original Error</h4>
+              <pre className="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto">
+                {selectedError.errorMessage}
+              </pre>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-medium text-gray-900 mb-2">Explanation</h4>
+              <p className="text-sm text-gray-700">
+                {selectedError.explanation}
+              </p>
+            </div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
+};
+
+export default DashboardPage;
