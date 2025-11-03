@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Package, Users, Briefcase, Mail, HelpCircle, MessageSquare, ThumbsUp, Activity, BookOpen } from 'lucide-react';
+import { supportService, type FeedbackData, type ContactData } from '../../services/support';
 
 interface InfoPagesModalProps {
   isOpen: boolean;
@@ -8,7 +9,71 @@ interface InfoPagesModalProps {
 }
 
 const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }) => {
+  const [feedbackForm, setFeedbackForm] = useState<{
+    feedback_type: FeedbackData['feedback_type'];
+    message: string;
+  }>({
+    feedback_type: 'general_feedback',
+    message: ''
+  });
+  const [contactForm, setContactForm] = useState<ContactData>({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    subject: '',
+    message: '',
+    message_type: 'general'
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
   if (!isOpen) return null;
+
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    const result = await supportService.submitFeedback(feedbackForm);
+    
+    setSubmitting(false);
+    if (result.success) {
+      setSubmitSuccess(true);
+      setFeedbackForm({ feedback_type: 'general_feedback', message: '' });
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    } else {
+      setSubmitError(result.error || 'Failed to submit feedback');
+    }
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    const result = await supportService.submitContact(contactForm);
+    
+    setSubmitting(false);
+    if (result.success) {
+      setSubmitSuccess(true);
+      setContactForm({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        subject: '',
+        message: '',
+        message_type: 'general'
+      });
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    } else {
+      setSubmitError(result.error || 'Failed to send message');
+    }
+  };
 
   const pageContent = {
     integrations: {
@@ -121,36 +186,53 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                 title: 'Introducing Multi-Model AI Analysis',
                 date: 'Oct 28, 2024',
                 excerpt: 'We\'re excited to announce our new multi-model approach that combines GPT-4, Claude, and Gemini for even better accuracy...',
-                category: 'Product Update'
+                category: 'Product Update',
+                link: '#'
               },
               {
                 title: '10 Common JavaScript Errors and How to Fix Them',
                 date: 'Oct 15, 2024',
                 excerpt: 'Learn about the most common JavaScript errors developers encounter and how to resolve them quickly...',
-                category: 'Tutorial'
+                category: 'Tutorial',
+                link: '#'
               },
               {
                 title: 'The Future of AI-Powered Debugging',
                 date: 'Oct 1, 2024',
                 excerpt: 'Exploring how artificial intelligence is revolutionizing the way developers debug their applications...',
-                category: 'Insights'
+                category: 'Insights',
+                link: '#'
               },
             ].map((post, idx) => (
-              <div key={idx} className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:border-blue-500/50 transition-all duration-300 hover:border-blue-600 dark:hover:border-blue-400 transition-colors cursor-pointer">
+              <a
+                key={idx}
+                href={post.link}
+                onClick={(e) => {
+                  e.preventDefault();
+                  alert('Blog feature coming soon! Full blog posts will be available in the next update.');
+                }}
+                className="block p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:border-blue-500/50 transition-all duration-300 hover:border-blue-600 dark:hover:border-blue-400 transition-colors cursor-pointer group"
+              >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 backdrop-blur-sm text-xs font-semibold rounded">
                     {post.category}
                   </span>
                   <span className="text-sm text-gray-300">{post.date}</span>
                 </div>
-                <h4 className="font-bold text-white mb-2">{post.title}</h4>
+                <h4 className="font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">{post.title}</h4>
                 <p className="text-sm text-gray-300">{post.excerpt}</p>
-              </div>
+                <div className="mt-3 text-cyan-400 text-sm font-medium flex items-center gap-1">
+                  Read more <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </a>
             ))}
           </div>
 
           <div className="text-center">
-            <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 transition-colors">
+            <button 
+              onClick={() => alert('Full blog feature coming soon! We\'re working on bringing you comprehensive articles, tutorials, and insights.')}
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
               View All Posts →
             </button>
           </div>
@@ -243,36 +325,73 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 
           <div className="p-6 bg-gray-50 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl">
             <h4 className="font-bold text-white mb-4">Send us a message</h4>
-            <form className="space-y-4">
+            
+            {submitSuccess && (
+              <div className="mb-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300 text-sm">
+                ✓ Message sent successfully! We'll get back to you soon.
+              </div>
+            )}
+            
+            {submitError && (
+              <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 text-sm">
+                {submitError}
+              </div>
+            )}
+            
+            <form className="space-y-4" onSubmit={handleContactSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-200 mb-1">Name</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  required
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="Your name"
+                  disabled={submitting}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-200 mb-1">Email</label>
                 <input
                   type="email"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  required
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="your@email.com"
+                  disabled={submitting}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-200 mb-1">Subject (Optional)</label>
+                <input
+                  type="text"
+                  value={contactForm.subject}
+                  onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  placeholder="What is this about?"
+                  disabled={submitting}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-200 mb-1">Message</label>
                 <textarea
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  required
+                  value={contactForm.message}
+                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="How can we help you?"
+                  disabled={submitting}
                 />
               </div>
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow"
+                disabled={submitting || !contactForm.name.trim() || !contactForm.email.trim() || !contactForm.message.trim()}
+                className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Message
+                {submitting ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </div>
@@ -381,19 +500,35 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 
           <div className="p-6 bg-gray-50 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl">
             <h4 className="font-bold text-white mb-4">Submit Feedback</h4>
-            <form className="space-y-4">
+            
+            {submitSuccess && (
+              <div className="mb-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300 text-sm">
+                ✓ Thank you for your feedback! We appreciate your input.
+              </div>
+            )}
+            
+            {submitError && (
+              <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 text-sm">
+                {submitError}
+              </div>
+            )}
+            
+            <form className="space-y-4" onSubmit={handleFeedbackSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-200 mb-1">
                   Feedback Type
                 </label>
                 <select 
+                  value={feedbackForm.feedback_type}
+                  onChange={(e) => setFeedbackForm({ ...feedbackForm, feedback_type: e.target.value as FeedbackData['feedback_type'] })}
                   aria-label="Feedback Type"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  disabled={submitting}
                 >
-                  <option>Feature Request</option>
-                  <option>Bug Report</option>
-                  <option>General Feedback</option>
-                  <option>Improvement Suggestion</option>
+                  <option value="feature_request">Feature Request</option>
+                  <option value="bug_report">Bug Report</option>
+                  <option value="general_feedback">General Feedback</option>
+                  <option value="improvement_suggestion">Improvement Suggestion</option>
                 </select>
               </div>
               <div>
@@ -401,16 +536,21 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                   Your Feedback
                 </label>
                 <textarea
+                  value={feedbackForm.message}
+                  onChange={(e) => setFeedbackForm({ ...feedbackForm, message: e.target.value })}
                   rows={6}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="Tell us what you think..."
+                  disabled={submitting}
                 />
               </div>
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow"
+                disabled={submitting || !feedbackForm.message.trim()}
+                className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit Feedback
+                {submitting ? 'Submitting...' : 'Submit Feedback'}
               </button>
             </form>
           </div>

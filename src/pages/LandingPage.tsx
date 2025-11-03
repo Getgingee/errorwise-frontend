@@ -517,30 +517,65 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="px-4 py-8 sm:py-12 lg:px-8 bg-white/5 backdrop-blur-md border-t border-white/10">
+      <footer className="px-4 py-8 sm:py-12 lg:px-8 bg-gradient-to-br from-blue-900/30 via-purple-900/20 to-cyan-900/30 backdrop-blur-xl border-t border-white/20 shadow-2xl">
         <div className="max-w-7xl mx-auto">
+          {/* Newsletter Section */}
+          <div className="mb-8 sm:mb-12 p-6 sm:p-8 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl">
+            <div className="text-center max-w-2xl mx-auto">
+              <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent mb-2">
+                Stay Updated
+              </h3>
+              <p className="text-gray-300 text-sm sm:text-base mb-4">
+                Get the latest debugging tips and product updates delivered to your inbox.
+              </p>
+              <form 
+                className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const email = (e.target as HTMLFormElement).email.value;
+                  // TODO: Integrate newsletter signup
+                  alert('Newsletter signup coming soon! Email: ' + email);
+                }}
+              >
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="your@email.com"
+                  className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:border-transparent focus:bg-white/15 transition-all"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white rounded-lg shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105 transition-all duration-300 font-semibold whitespace-nowrap"
+                >
+                  Subscribe →
+                </button>
+              </form>
+            </div>
+          </div>
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {/* Brand Section */}
             <div className="sm:col-span-2 space-y-3 sm:space-y-4">
               <div className="flex items-center space-x-2">
-                <div className="h-6 w-6 sm:h-7 sm:w-7 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg">
+                <div className="h-6 w-6 sm:h-7 sm:w-7 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/50">
                   <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <span className="text-lg sm:text-xl font-bold text-white dark:text-white">ErrorWise</span>
+                <span className="text-lg sm:text-xl font-bold text-white">ErrorWise</span>
               </div>
-              <p className="text-gray-400 dark:text-gray-400 text-sm sm:text-base max-w-md">
-                AI-powered debugging assistant for modern developers.
+              <p className="text-gray-300 text-sm sm:text-base max-w-md">
+                AI-powered debugging assistant for modern developers. Fix errors faster with intelligent analysis.
               </p>
               
-              {/* Social Icons - Simple with Glow */}
+              {/* Social Icons with Enhanced Glow */}
               <div className="flex items-center gap-4 pt-2">
                 <a 
                   href="https://github.com/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
+                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
                   aria-label="GitHub"
                 >
                   <Github size={22} />
@@ -549,7 +584,7 @@ const LandingPage: React.FC = () => {
                   href="https://x.com/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
+                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
                   aria-label="X (formerly Twitter)"
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -560,14 +595,14 @@ const LandingPage: React.FC = () => {
                   href="https://linkedin.com/company/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
+                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
                   aria-label="LinkedIn"
                 >
                   <Linkedin size={22} />
                 </a>
                 <a 
                   href="mailto:support@errorwise.com" 
-                  className="text-gray-400 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] transition-all duration-300"
+                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
                   aria-label="Email"
                 >
                   <Mail size={22} />
@@ -577,23 +612,23 @@ const LandingPage: React.FC = () => {
             
             {/* Company Section */}
             <div className="space-y-3 sm:space-y-4">
-              <h4 className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Company</h4>
+              <h4 className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Company</h4>
               <ul className="space-y-2 sm:space-y-2.5">
                 <li>
                   <button 
                     onClick={() => openInfoModal('about')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2 group"
                   >
-                    <Users size={16} />
+                    <Users size={16} className="group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
                     About
                   </button>
                 </li>
                 <li>
                   <button 
                     onClick={() => openInfoModal('blog')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2 group"
                   >
-                    <MessageCircle size={16} />
+                    <MessageCircle size={16} className="group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
                     Blog
                   </button>
                 </li>
@@ -602,33 +637,42 @@ const LandingPage: React.FC = () => {
             
             {/* Support Section */}
             <div className="space-y-3 sm:space-y-4">
-              <h4 className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Support</h4>
+              <h4 className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Support</h4>
               <ul className="space-y-2 sm:space-y-2.5">
                 <li>
                   <button 
                     onClick={() => openInfoModal('help')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2 group"
                   >
-                    <HelpCircle size={16} />
+                    <HelpCircle size={16} className="group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
                     Help Center
                   </button>
                 </li>
                 <li>
                   <button 
                     onClick={() => openInfoModal('community')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2 group"
                   >
-                    <Users size={16} />
+                    <Users size={16} className="group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
                     Community
                   </button>
                 </li>
                 <li>
                   <button 
                     onClick={() => openInfoModal('feedback')} 
-                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2"
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2 group"
                   >
-                    <Mail size={16} />
+                    <Mail size={16} className="group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
                     Feedback
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openInfoModal('contact')} 
+                    className="text-gray-300 hover:text-cyan-400 hover:scale-105 transform transition-all duration-300 text-sm sm:text-base text-left w-full hover:translate-x-1 flex items-center gap-2 group"
+                  >
+                    <MessageCircle size={16} className="group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+                    Contact Us
                   </button>
                 </li>
               </ul>
@@ -636,8 +680,14 @@ const LandingPage: React.FC = () => {
           </div>
           
           {/* Copyright */}
-          <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10 text-center">
-            <p className="text-xs sm:text-sm text-gray-400">&copy; 2025 ErrorWise. All rights reserved.</p>
+          <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/20 text-center">
+            <p className="text-xs sm:text-sm text-gray-400">
+              &copy; 2025 ErrorWise. All rights reserved. 
+              <span className="mx-2">•</span>
+              <button onClick={() => openInfoModal('about')} className="hover:text-cyan-400 transition-colors">Privacy</button>
+              <span className="mx-2">•</span>
+              <button onClick={() => openInfoModal('about')} className="hover:text-cyan-400 transition-colors">Terms</button>
+            </p>
           </div>
         </div>
       </footer>
