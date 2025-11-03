@@ -30,7 +30,10 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  // Early return if modal is not open
   if (!isOpen) return null;
+
+  console.log('🎨 InfoPagesModal rendering, page:', page, 'isOpen:', isOpen);
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1121,12 +1124,18 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
   };
 
   const currentPage = pageContent[page];
+  
+  // Safety check
+  if (!currentPage) {
+    console.error('❌ No page content found for:', page);
+    return null;
+  }
+  
   const Icon = currentPage.icon;
 
   return (
     <div 
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80"
       onClick={onClose}
     >
       <div 
