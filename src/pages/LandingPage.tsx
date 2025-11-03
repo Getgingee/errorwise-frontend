@@ -603,7 +603,7 @@ const LandingPage: React.FC = () => {
                   href="https://github.com/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
+                  className="text-gray-300 hover:text-cyan-400 hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 transform hover:scale-110"
                   aria-label="GitHub"
                 >
                   <Github size={22} />
@@ -612,7 +612,7 @@ const LandingPage: React.FC = () => {
                   href="https://x.com/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
+                  className="text-gray-300 hover:text-cyan-400 hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 transform hover:scale-110"
                   aria-label="X (formerly Twitter)"
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -623,14 +623,14 @@ const LandingPage: React.FC = () => {
                   href="https://linkedin.com/company/errorwise" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
+                  className="text-gray-300 hover:text-cyan-400 hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 transform hover:scale-110"
                   aria-label="LinkedIn"
                 >
                   <Linkedin size={22} />
                 </a>
                 <a 
                   href="mailto:support@errorwise.com" 
-                  className="p-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 backdrop-blur-sm border border-transparent hover:border-cyan-400/30"
+                  className="text-gray-300 hover:text-cyan-400 hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300 transform hover:scale-110"
                   aria-label="Email"
                 >
                   <Mail size={22} />

@@ -420,37 +420,142 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <input
               type="text"
               placeholder="Search for help..."
-              className="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white bg-white/5 backdrop-blur-sm border border-white/20 text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              className="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/5 backdrop-blur-sm border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             />
-            <HelpCircle className="absolute left-3 top-3.5 text-gray-200" size={20} />
+            <HelpCircle className="absolute left-3 top-3.5 text-gray-400" size={20} />
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-4">Popular Topics</h4>
-            <div className="grid md:grid-cols-2 gap-3">
+            <h4 className="font-bold text-white text-lg mb-4">📚 Getting Started</h4>
+            <div className="space-y-3">
               {[
-                'Getting Started',
-                'API Integration',
-                'Billing & Subscriptions',
-                'Troubleshooting',
-                'Security & Privacy',
-                'Account Management',
-              ].map((topic, idx) => (
-                <div key={idx} className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:border-blue-500/50 transition-all duration-300 hover:border-blue-600 dark:hover:border-blue-400 transition-colors cursor-pointer">
-                  <span className="text-white font-medium">{topic}</span>
-                </div>
+                {
+                  q: 'How do I analyze my first error?',
+                  a: 'Simply paste your error message or stack trace into the analysis box. Our AI will automatically detect the language, framework, and provide detailed solutions with code examples.'
+                },
+                {
+                  q: 'What programming languages are supported?',
+                  a: 'ErrorWise supports 50+ languages including JavaScript, Python, Java, C#, Go, Rust, PHP, Ruby, and more. Our AI adapts to your specific technology stack.'
+                },
+                {
+                  q: 'How does the free tier work?',
+                  a: 'The free tier includes 10 error analyses per month, basic AI models, and community support. Perfect for getting started and small projects.'
+                }
+              ].map((item, idx) => (
+                <details key={idx} className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:border-blue-500/50 transition-all duration-300 group cursor-pointer">
+                  <summary className="text-white font-medium list-none cursor-pointer flex items-center justify-between">
+                    <span>{item.q}</span>
+                    <span className="text-cyan-400 group-open:rotate-90 transition-transform">▶</span>
+                  </summary>
+                  <p className="text-gray-300 text-sm mt-3 pl-2 border-l-2 border-cyan-400">{item.a}</p>
+                </details>
               ))}
             </div>
           </div>
 
-          <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-            <h4 className="font-bold text-white mb-2">Can't find what you're looking for?</h4>
-            <p className="text-gray-200 mb-3">
-              Our support team is here to help. Contact us at support@errorwise.com
+          <div>
+            <h4 className="font-bold text-white text-lg mb-4">🔧 Troubleshooting</h4>
+            <div className="space-y-3">
+              {[
+                {
+                  q: 'Why is my analysis taking too long?',
+                  a: 'Large stack traces (>5000 characters) may take 10-15 seconds. Try breaking down your error into smaller chunks or ensure you have a stable internet connection.'
+                },
+                {
+                  q: 'The suggested fix didn\'t work. What should I do?',
+                  a: 'Try the alternative solutions provided below the main fix. You can also click "Regenerate" to get a fresh analysis with different AI models.'
+                },
+                {
+                  q: 'Can I save my analyses for later?',
+                  a: 'Yes! All analyses are automatically saved to your dashboard. You can access them anytime, add notes, and mark them as resolved.'
+                }
+              ].map((item, idx) => (
+                <details key={idx} className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:border-blue-500/50 transition-all duration-300 group cursor-pointer">
+                  <summary className="text-white font-medium list-none cursor-pointer flex items-center justify-between">
+                    <span>{item.q}</span>
+                    <span className="text-cyan-400 group-open:rotate-90 transition-transform">▶</span>
+                  </summary>
+                  <p className="text-gray-300 text-sm mt-3 pl-2 border-l-2 border-cyan-400">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-white text-lg mb-4">💳 Billing & Subscriptions</h4>
+            <div className="space-y-3">
+              {[
+                {
+                  q: 'Can I upgrade or downgrade my plan anytime?',
+                  a: 'Yes! You can change your plan at any time from your account settings. Upgrades are immediate, downgrades take effect at the end of your billing cycle.'
+                },
+                {
+                  q: 'What payment methods do you accept?',
+                  a: 'We accept all major credit cards (Visa, Mastercard, Amex), PayPal, and bank transfers for Enterprise plans. All payments are processed securely through Stripe.'
+                },
+                {
+                  q: 'Do you offer refunds?',
+                  a: 'We offer a 30-day money-back guarantee for annual plans. Monthly plans are non-refundable but you can cancel anytime to stop future charges.'
+                }
+              ].map((item, idx) => (
+                <details key={idx} className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:border-blue-500/50 transition-all duration-300 group cursor-pointer">
+                  <summary className="text-white font-medium list-none cursor-pointer flex items-center justify-between">
+                    <span>{item.q}</span>
+                    <span className="text-cyan-400 group-open:rotate-90 transition-transform">▶</span>
+                  </summary>
+                  <p className="text-gray-300 text-sm mt-3 pl-2 border-l-2 border-cyan-400">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-white text-lg mb-4">🔐 Security & Privacy</h4>
+            <div className="space-y-3">
+              {[
+                {
+                  q: 'Is my code secure?',
+                  a: 'Yes! All code is encrypted in transit (TLS/SSL) and at rest. We never store your source code permanently - only anonymized error patterns for AI training.'
+                },
+                {
+                  q: 'Do you share my data with third parties?',
+                  a: 'We only share error data with AI providers (OpenAI, Anthropic, Google) for analysis. Your data is never sold or shared for marketing purposes. See our Privacy Policy for details.'
+                },
+                {
+                  q: 'Can I delete my data?',
+                  a: 'Absolutely! You can delete individual analyses or your entire account anytime from Settings. Data deletion is permanent and GDPR/CCPA compliant.'
+                }
+              ].map((item, idx) => (
+                <details key={idx} className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:border-blue-500/50 transition-all duration-300 group cursor-pointer">
+                  <summary className="text-white font-medium list-none cursor-pointer flex items-center justify-between">
+                    <span>{item.q}</span>
+                    <span className="text-cyan-400 group-open:rotate-90 transition-transform">▶</span>
+                  </summary>
+                  <p className="text-gray-300 text-sm mt-3 pl-2 border-l-2 border-cyan-400">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-6 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm rounded-xl border border-blue-500/30">
+            <h4 className="font-bold text-white mb-2">Still need help?</h4>
+            <p className="text-gray-300 mb-4 text-sm">
+              Our support team is available 24/7 to assist you. Average response time: 2 hours.
             </p>
-            <button className="px-4 py-2 bg-cyan-400 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Contact Support
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button 
+                onClick={() => window.location.href = 'mailto:support@errorwise.com'}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+              >
+                📧 Email Support
+              </button>
+              <button 
+                onClick={() => alert('Live chat feature coming soon!')}
+                className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all font-medium"
+              >
+                💬 Live Chat
+              </button>
+            </div>
           </div>
         </div>
       ),
@@ -461,41 +566,136 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       icon: MessageSquare,
       content: (
         <div className="space-y-6">
-          <p className="text-gray-300">
-            Connect with other developers, share knowledge, and get help from the ErrorWise community.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {[
-              { name: 'Discord', members: '15K+ members', desc: 'Chat with developers in real-time', color: 'from-indigo-50 to-indigo-100 dark:from-indigo-900/20' },
-              { name: 'GitHub Discussions', members: '8K+ discussions', desc: 'Ask questions and share solutions', color: 'from-gray-50 to-gray-100 dark:from-gray-700' },
-              { name: 'Twitter', members: '25K+ followers', desc: 'Latest updates and tips', color: 'from-blue-50 to-blue-100 dark:from-blue-900/20' },
-              { name: 'Reddit', members: '5K+ members', desc: 'Community forum and discussions', color: 'from-orange-50 to-orange-100 dark:from-orange-900/20' },
-            ].map((platform, idx) => (
-              <div key={idx} className={`p-6 bg-gradient-to-br ${platform.color} rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-shadow cursor-pointer`}>
-                <h4 className="font-bold text-white mb-1">{platform.name}</h4>
-                <p className="text-sm font-medium text-gray-200 mb-2">{platform.members}</p>
-                <p className="text-sm text-gray-200 dark:text-gray-200">{platform.desc}</p>
-              </div>
-            ))}
+          <div className="p-6 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 backdrop-blur-sm rounded-xl border border-blue-500/30">
+            <h4 className="font-bold text-white text-xl mb-2">🌍 Join 50,000+ Developers Worldwide</h4>
+            <p className="text-gray-300 text-sm">
+              Connect with developers solving real-world problems. Share solutions, learn from experts, and stay updated with the latest debugging techniques.
+            </p>
           </div>
 
-          <div className="p-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-blue-500/30 rounded-xl border border-blue-200 dark:border-blue-800">
-            <h4 className="font-bold text-white mb-2">Community Guidelines</h4>
-            <ul className="space-y-2 text-sm text-gray-200">
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
-                Be respectful and professional
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
-                Help others and share knowledge
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg shadow-cyan-500/50 rounded-full mr-3 mt-2"></span>
-                No spam or self-promotion
-              </li>
-            </ul>
+          <div>
+            <h4 className="font-bold text-white text-lg mb-4">💬 Community Platforms</h4>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                { 
+                  name: '💙 Discord Server', 
+                  members: '15,000+ active members', 
+                  desc: 'Real-time chat, voice channels, and dedicated help channels for each programming language',
+                  link: 'https://discord.gg/errorwise',
+                  activity: '~500 messages/day'
+                },
+                { 
+                  name: '🐙 GitHub Discussions', 
+                  members: '8,000+ discussions', 
+                  desc: 'In-depth technical discussions, feature requests, and open-source contributions',
+                  link: 'https://github.com/errorwise/community',
+                  activity: 'Highly technical'
+                },
+                { 
+                  name: '🐦 Twitter Community', 
+                  members: '25,000+ followers', 
+                  desc: 'Latest updates, tips & tricks, debugging challenges, and AI announcements',
+                  link: 'https://twitter.com/errorwise',
+                  activity: 'Daily tips'
+                },
+                { 
+                  name: '🔴 Reddit Community', 
+                  members: '5,000+ members', 
+                  desc: 'Community forum for long-form discussions, success stories, and debugging guides',
+                  link: 'https://reddit.com/r/errorwise',
+                  activity: '~50 posts/week'
+                },
+              ].map((platform, idx) => (
+                <div 
+                  key={idx} 
+                  onClick={() => alert(`🔗 Visit ${platform.name} at: ${platform.link}\n\n(Links will be activated in production)`)}
+                  className="p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:border-cyan-400/50 hover:bg-white/15 transition-all duration-300 cursor-pointer group"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-bold text-white group-hover:text-cyan-400 transition-colors">{platform.name}</h4>
+                    <span className="text-xs px-2 py-1 bg-cyan-400/20 text-cyan-300 rounded-full">{platform.activity}</span>
+                  </div>
+                  <p className="text-sm font-medium text-gray-300 mb-2">{platform.members}</p>
+                  <p className="text-sm text-gray-400">{platform.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-white text-lg mb-4">🏆 Community Highlights</h4>
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                { emoji: '📊', stat: '1M+', label: 'Errors Solved Together' },
+                { emoji: '⭐', stat: '50K+', label: 'GitHub Stars' },
+                { emoji: '🌟', stat: '200+', label: 'Active Contributors' },
+              ].map((item, idx) => (
+                <div key={idx} className="p-4 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 backdrop-blur-sm rounded-lg border border-cyan-400/30 text-center">
+                  <div className="text-3xl mb-2">{item.emoji}</div>
+                  <div className="text-2xl font-bold text-white mb-1">{item.stat}</div>
+                  <div className="text-sm text-gray-300">{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-white text-lg mb-4">🎯 Popular Channels & Topics</h4>
+            <div className="grid md:grid-cols-2 gap-3">
+              {[
+                { channel: '#javascript-help', desc: 'React, Node.js, TypeScript troubleshooting' },
+                { channel: '#python-debugging', desc: 'Django, Flask, async/await issues' },
+                { channel: '#backend-warriors', desc: 'Database errors, API issues, performance' },
+                { channel: '#show-and-tell', desc: 'Share your solved errors and solutions' },
+                { channel: '#ai-discussions', desc: 'How AI analyzes your errors' },
+                { channel: '#feature-requests', desc: 'Suggest improvements and vote' },
+              ].map((item, idx) => (
+                <div key={idx} className="p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 hover:border-purple-400/30 transition-all">
+                  <div className="font-mono text-sm text-cyan-400 mb-1">{item.channel}</div>
+                  <div className="text-xs text-gray-400">{item.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-blue-500/30 rounded-xl">
+            <h4 className="font-bold text-white mb-3">📜 Community Guidelines</h4>
+            <div className="space-y-2 text-sm text-gray-200">
+              {[
+                { emoji: '🤝', text: 'Be respectful and professional - we\'re all here to learn' },
+                { emoji: '💡', text: 'Help others and share knowledge - today you, tomorrow me' },
+                { emoji: '🚫', text: 'No spam, self-promotion, or job postings without permission' },
+                { emoji: '🔍', text: 'Search before asking - your question may already be answered' },
+                { emoji: '💬', text: 'Provide context when asking for help (error messages, code snippets)' },
+                { emoji: '🎉', text: 'Celebrate wins and share success stories!' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-start">
+                  <span className="text-lg mr-3 mt-0.5">{item.emoji}</span>
+                  <span>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-5 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30">
+            <h4 className="font-bold text-white mb-2">🚀 Ready to join?</h4>
+            <p className="text-gray-300 text-sm mb-4">
+              Pick your favorite platform and introduce yourself! Our community managers and members are super friendly.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button 
+                onClick={() => alert('Discord link: https://discord.gg/errorwise\n(Will open in production)')}
+                className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+              >
+                💙 Join Discord
+              </button>
+              <button 
+                onClick={() => alert('GitHub link: https://github.com/errorwise/community\n(Will open in production)')}
+                className="px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+              >
+                🐙 GitHub Discussions
+              </button>
+            </div>
           </div>
         </div>
       ),
@@ -924,20 +1124,20 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
   const Icon = currentPage.icon;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 scrollbar-hide">
-      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 border border-white/20 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 border border-white/20 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white/10 backdrop-blur-md border-b border-white/10 text-white p-6 rounded-t-2xl flex justify-between items-center z-10">
           <div className="flex items-center gap-3">
-            <Icon size={32} />
+            <Icon size={32} className="text-white" />
             <div>
-              <h2 className="text-3xl font-bold">{currentPage.title}</h2>
+              <h2 className="text-3xl font-bold text-white">{currentPage.title}</h2>
               <p className="text-blue-100 mt-1">{currentPage.subtitle}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 backdrop-blur-sm rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 backdrop-blur-sm rounded-lg transition-colors text-white"
             aria-label={`Close ${currentPage.title} modal`}
           >
             <X size={24} />
@@ -945,7 +1145,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 text-gray-200">
           {currentPage.content}
         </div>
       </div>
