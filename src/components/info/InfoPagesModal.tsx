@@ -1124,20 +1124,27 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
   const Icon = currentPage.icon;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 border border-white/20 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div 
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
+      onClick={onClose}
+    >
+      <div 
+        className="relative bg-slate-800 border-2 border-cyan-400 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
-        <div className="sticky top-0 bg-white/10 backdrop-blur-md border-b border-white/10 text-white p-6 rounded-t-2xl flex justify-between items-center z-10">
+        <div className="sticky top-0 bg-slate-900/95 backdrop-blur-md border-b-2 border-cyan-400/50 p-6 rounded-t-2xl flex justify-between items-center z-10">
           <div className="flex items-center gap-3">
-            <Icon size={32} className="text-white" />
+            <Icon size={32} className="text-cyan-400" />
             <div>
               <h2 className="text-3xl font-bold text-white">{currentPage.title}</h2>
-              <p className="text-blue-100 mt-1">{currentPage.subtitle}</p>
+              <p className="text-cyan-300 mt-1">{currentPage.subtitle}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 backdrop-blur-sm rounded-lg transition-colors text-white"
+            className="p-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors text-white font-bold"
             aria-label={`Close ${currentPage.title} modal`}
           >
             <X size={24} />
@@ -1145,7 +1152,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
         </div>
 
         {/* Content */}
-        <div className="p-6 text-gray-200">
+        <div className="p-6 bg-slate-800 text-white">
           {currentPage.content}
         </div>
       </div>
