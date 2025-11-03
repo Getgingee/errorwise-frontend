@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { X, Package, Users, Briefcase, Mail, HelpCircle, MessageSquare, ThumbsUp, Activity, BookOpen } from 'lucide-react';
 import { supportService, type FeedbackData, type ContactData } from '../../services/support';
+import { trackFeedbackSubmit, trackContactSubmit, trackModalOpen } from '../../services/analytics';
 
 interface InfoPagesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  page: 'integrations' | 'about' | 'blog' | 'careers' | 'contact' | 'help' | 'community' | 'feedback' | 'status';
+  page: 'integrations' | 'about' | 'blog' | 'careers' | 'contact' | 'help' | 'community' | 'feedback' | 'status' | 'privacy' | 'terms';
 }
 
 const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }) => {
@@ -41,6 +42,8 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
     
     setSubmitting(false);
     if (result.success) {
+      // Track successful feedback submission
+      trackFeedbackSubmit(feedbackForm.feedback_type);
       setSubmitSuccess(true);
       setFeedbackForm({ feedback_type: 'general_feedback', message: '' });
       setTimeout(() => setSubmitSuccess(false), 5000);
@@ -59,6 +62,8 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
     
     setSubmitting(false);
     if (result.success) {
+      // Track successful contact submission
+      trackContactSubmit(contactForm.message_type);
       setSubmitSuccess(true);
       setContactForm({
         name: '',
@@ -74,6 +79,13 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       setSubmitError(result.error || 'Failed to send message');
     }
   };
+
+  // Track modal open
+  React.useEffect(() => {
+    if (isOpen) {
+      trackModalOpen(page);
+    }
+  }, [isOpen, page]);
 
   const pageContent = {
     integrations: {
@@ -629,6 +641,279 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
                 Subscribe
               </button>
             </div>
+          </div>
+        </div>
+      ),
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      subtitle: 'How we handle your data',
+      icon: HelpCircle,
+      content: (
+        <div className="space-y-6 text-gray-200">
+          <div className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30">
+            <p className="text-sm">
+              <strong>Last Updated:</strong> November 3, 2025
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">1. Information We Collect</h4>
+              <div className="space-y-2 text-sm">
+                <p>We collect information that you provide directly to us, including:</p>
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li><strong>Account Information:</strong> Name, email address, password</li>
+                  <li><strong>Error Data:</strong> Stack traces, error messages, code snippets you analyze</li>
+                  <li><strong>Usage Data:</strong> How you interact with our services</li>
+                  <li><strong>Payment Information:</strong> Processed securely through our payment providers</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">2. How We Use Your Information</h4>
+              <div className="space-y-2 text-sm">
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li>Provide, maintain, and improve our AI-powered debugging services</li>
+                  <li>Process and complete transactions</li>
+                  <li>Send you technical notices, updates, and support messages</li>
+                  <li>Train and improve our AI models (anonymized data only)</li>
+                  <li>Detect, prevent, and address technical issues and security threats</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">3. Data Security</h4>
+              <p className="text-sm">
+                We implement industry-standard security measures to protect your data:
+              </p>
+              <ul className="list-disc list-inside ml-4 space-y-1 text-sm mt-2">
+                <li>End-to-end encryption for data in transit (TLS/SSL)</li>
+                <li>Encrypted storage for sensitive data at rest</li>
+                <li>Regular security audits and penetration testing</li>
+                <li>Limited employee access with strict authentication</li>
+                <li>GDPR and CCPA compliant data handling</li>
+              </ul>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">4. Data Sharing</h4>
+              <p className="text-sm">
+                We do not sell your personal information. We may share your data only with:
+              </p>
+              <ul className="list-disc list-inside ml-4 space-y-1 text-sm mt-2">
+                <li><strong>Service Providers:</strong> Third parties who assist in providing our services</li>
+                <li><strong>AI Model Providers:</strong> OpenAI, Anthropic, Google (for error analysis only)</li>
+                <li><strong>Legal Requirements:</strong> When required by law or to protect our rights</li>
+              </ul>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">5. Your Rights</h4>
+              <div className="space-y-2 text-sm">
+                <p>You have the right to:</p>
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li>Access your personal data</li>
+                  <li>Correct inaccurate data</li>
+                  <li>Request deletion of your data</li>
+                  <li>Export your data</li>
+                  <li>Opt-out of marketing communications</li>
+                  <li>Withdraw consent at any time</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">6. Cookies and Tracking</h4>
+              <p className="text-sm">
+                We use cookies and similar technologies to enhance your experience, analyze usage patterns, 
+                and improve our services. You can control cookie preferences through your browser settings.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">7. Data Retention</h4>
+              <p className="text-sm">
+                We retain your data as long as your account is active or as needed to provide services. 
+                You can request deletion at any time by contacting us at{' '}
+                <a href="mailto:privacy@errorwise.com" className="text-cyan-400 hover:underline">
+                  privacy@errorwise.com
+                </a>
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">8. Children's Privacy</h4>
+              <p className="text-sm">
+                Our services are not intended for users under 13 years of age. We do not knowingly 
+                collect personal information from children.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">9. Contact Us</h4>
+              <p className="text-sm">
+                For privacy-related questions or to exercise your rights, contact us at:{' '}
+                <a href="mailto:privacy@errorwise.com" className="text-cyan-400 hover:underline">
+                  privacy@errorwise.com
+                </a>
+              </p>
+            </section>
+          </div>
+        </div>
+      ),
+    },
+    terms: {
+      title: 'Terms of Service',
+      subtitle: 'Terms and conditions for using ErrorWise',
+      icon: Briefcase,
+      content: (
+        <div className="space-y-6 text-gray-200">
+          <div className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30">
+            <p className="text-sm">
+              <strong>Last Updated:</strong> November 3, 2025
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">1. Acceptance of Terms</h4>
+              <p className="text-sm">
+                By accessing or using ErrorWise ("Service"), you agree to be bound by these Terms of Service. 
+                If you disagree with any part of the terms, you may not access the Service.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">2. Description of Service</h4>
+              <p className="text-sm mb-2">
+                ErrorWise provides AI-powered debugging and error analysis services, including:
+              </p>
+              <ul className="list-disc list-inside ml-4 space-y-1 text-sm">
+                <li>Automated error detection and analysis</li>
+                <li>AI-generated solutions and fixes</li>
+                <li>Code suggestions and improvements</li>
+                <li>Integration with development tools</li>
+                <li>Team collaboration features</li>
+              </ul>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">3. User Accounts</h4>
+              <div className="space-y-2 text-sm">
+                <p>When you create an account with us, you must:</p>
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li>Provide accurate and complete information</li>
+                  <li>Maintain the security of your password</li>
+                  <li>Be responsible for all activities under your account</li>
+                  <li>Notify us immediately of any unauthorized access</li>
+                  <li>Be at least 13 years of age</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">4. Acceptable Use</h4>
+              <p className="text-sm mb-2">You agree NOT to:</p>
+              <ul className="list-disc list-inside ml-4 space-y-1 text-sm">
+                <li>Violate any laws or regulations</li>
+                <li>Infringe on intellectual property rights</li>
+                <li>Upload malicious code or viruses</li>
+                <li>Attempt to gain unauthorized access to our systems</li>
+                <li>Reverse engineer or decompile our software</li>
+                <li>Use the service to harm, harass, or threaten others</li>
+                <li>Resell or redistribute our services without permission</li>
+              </ul>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">5. Subscription and Payment</h4>
+              <div className="space-y-2 text-sm">
+                <p><strong>Free Tier:</strong> Limited features with usage caps</p>
+                <p><strong>Paid Plans:</strong></p>
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li>Billed monthly or annually</li>
+                  <li>Automatic renewal unless cancelled</li>
+                  <li>No refunds for partial months</li>
+                  <li>Price changes with 30-day notice</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">6. Intellectual Property</h4>
+              <p className="text-sm">
+                The Service and its original content, features, and functionality are owned by ErrorWise 
+                and protected by international copyright, trademark, and other intellectual property laws.
+              </p>
+              <p className="text-sm mt-2">
+                <strong>Your Code:</strong> You retain all rights to code you submit. We only use it to 
+                provide our services and improve our AI models (anonymized).
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">7. AI-Generated Content</h4>
+              <p className="text-sm">
+                Our AI provides suggestions and solutions based on your errors. While we strive for accuracy:
+              </p>
+              <ul className="list-disc list-inside ml-4 space-y-1 text-sm mt-2">
+                <li>Solutions may not always be correct or optimal</li>
+                <li>You are responsible for reviewing and testing all code</li>
+                <li>We are not liable for bugs introduced by suggested fixes</li>
+                <li>AI responses should be verified before production use</li>
+              </ul>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">8. Limitation of Liability</h4>
+              <p className="text-sm">
+                ErrorWise shall not be liable for any indirect, incidental, special, consequential, or 
+                punitive damages resulting from your use or inability to use the service. Our total 
+                liability is limited to the amount you paid in the last 12 months.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">9. Service Availability</h4>
+              <p className="text-sm">
+                We strive for 99.9% uptime but do not guarantee uninterrupted access. We may:
+              </p>
+              <ul className="list-disc list-inside ml-4 space-y-1 text-sm mt-2">
+                <li>Perform scheduled maintenance with notice</li>
+                <li>Temporarily suspend service for updates</li>
+                <li>Modify or discontinue features with notice</li>
+              </ul>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">10. Termination</h4>
+              <p className="text-sm">
+                We may terminate or suspend your account immediately for violations of these Terms. 
+                You may cancel your subscription at any time through your account settings.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">11. Changes to Terms</h4>
+              <p className="text-sm">
+                We reserve the right to modify these terms at any time. We will notify users of 
+                significant changes via email or in-app notification. Continued use constitutes 
+                acceptance of new terms.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-bold text-white text-lg mb-3">12. Contact</h4>
+              <p className="text-sm">
+                For questions about these Terms, contact us at:{' '}
+                <a href="mailto:legal@errorwise.com" className="text-cyan-400 hover:underline">
+                  legal@errorwise.com
+                </a>
+              </p>
+            </section>
           </div>
         </div>
       ),

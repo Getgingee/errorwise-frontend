@@ -14,7 +14,7 @@ const LandingPage: React.FC = () => {
   const [pricingModalOpen, setPricingModalOpen] = React.useState(false);
   const [apiDocsModalOpen, setApiDocsModalOpen] = React.useState(false);
   const [infoModalOpen, setInfoModalOpen] = React.useState(false);
-  const [infoModalPage, setInfoModalPage] = React.useState<'integrations' | 'about' | 'blog' | 'careers' | 'contact' | 'help' | 'community' | 'feedback' | 'status'>('about');
+  const [infoModalPage, setInfoModalPage] = React.useState<'integrations' | 'about' | 'blog' | 'careers' | 'contact' | 'help' | 'community' | 'feedback' | 'status' | 'privacy' | 'terms'>('about');
 
   const openInfoModal = (page: typeof infoModalPage) => {
     setInfoModalPage(page);
@@ -530,11 +530,39 @@ const LandingPage: React.FC = () => {
               </p>
               <form 
                 className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  const email = (e.target as HTMLFormElement).email.value;
-                  // TODO: Integrate newsletter signup
-                  alert('Newsletter signup coming soon! Email: ' + email);
+                  const form = e.target as HTMLFormElement;
+                  const email = form.email.value;
+                  const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+                  const input = form.querySelector('input[type="email"]') as HTMLInputElement;
+                  
+                  // Disable form during submission
+                  button.disabled = true;
+                  input.disabled = true;
+                  button.textContent = 'Subscribing...';
+                  
+                  try {
+                    // Import support service dynamically
+                    const { supportService } = await import('../services/support');
+                    const { trackNewsletterSignup } = await import('../services/analytics');
+                    const result = await supportService.subscribeNewsletter({ email });
+                    
+                    if (result.success) {
+                      // Track successful signup
+                      trackNewsletterSignup(email, 'footer_newsletter');
+                      alert('✓ Successfully subscribed to newsletter! Check your email for confirmation.');
+                      form.reset();
+                    } else {
+                      alert('❌ ' + (result.error || 'Failed to subscribe. Please try again.'));
+                    }
+                  } catch (error) {
+                    alert('❌ Network error. Please try again later.');
+                  } finally {
+                    button.disabled = false;
+                    input.disabled = false;
+                    button.textContent = 'Subscribe →';
+                  }
                 }}
               >
                 <input
@@ -684,9 +712,9 @@ const LandingPage: React.FC = () => {
             <p className="text-xs sm:text-sm text-gray-400">
               &copy; 2025 ErrorWise. All rights reserved. 
               <span className="mx-2">•</span>
-              <button onClick={() => openInfoModal('about')} className="hover:text-cyan-400 transition-colors">Privacy</button>
+              <button onClick={() => openInfoModal('privacy')} className="hover:text-cyan-400 transition-colors">Privacy</button>
               <span className="mx-2">•</span>
-              <button onClick={() => openInfoModal('about')} className="hover:text-cyan-400 transition-colors">Terms</button>
+              <button onClick={() => openInfoModal('terms')} className="hover:text-cyan-400 transition-colors">Terms</button>
             </p>
           </div>
         </div>
