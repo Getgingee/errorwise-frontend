@@ -433,18 +433,17 @@ const DashboardPage: React.FC = () => {
     <>
       <Navigation showRecentAnalyses={recentAnalyses.length > 0} onRecentAnalysesClick={scrollToRecentAnalyses} />
 
-      {/* Subscription Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {!subscriptionLoading && subscription && (
-          <SubscriptionCard
-            subscription={subscription}
-            onCancel={handleCancelSubscription}
-            onUpgrade={handleUpgrade}
-          />
-        )}
-      </div>
-
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
+        {/* Subscription Section */}
+        {!subscriptionLoading && subscription && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-2">
+            <SubscriptionCard
+              subscription={subscription}
+              onCancel={handleCancelSubscription}
+              onUpgrade={handleUpgrade}
+            />
+          </div>
+        )}
         <style>{`
           @keyframes slideUp {
             from {
@@ -523,10 +522,10 @@ const DashboardPage: React.FC = () => {
         `}</style>
 
         {/* Main Content Container */}
-        <div className="flex flex-col min-h-screen pt-20 pb-8 px-4">
+        <div className={`flex flex-col min-h-screen pb-8 px-4 ${!subscriptionLoading && subscription ? 'pt-4' : 'pt-20'}`}>
           {/* Welcome Message - Only show when no analysis */}
           {!analysis && (
-            <div className="max-w-3xl mx-auto mb-auto text-center mt-20 fade-in">
+            <div className={`max-w-3xl mx-auto mb-auto text-center fade-in ${!subscriptionLoading && subscription ? 'mt-8' : 'mt-20'}`}>
               <div className="mb-6">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 mb-4 animate-pulse">
                   <Sparkles className="h-8 w-8 text-white" />

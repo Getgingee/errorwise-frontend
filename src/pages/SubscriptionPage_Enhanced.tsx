@@ -111,25 +111,12 @@ const SubscriptionPage: React.FC = () => {
   }, [navigate]);
 
   const fetchData = async () => {
-    console.log('🚀 fetchData started...');
     try {
       setLoading(true);
-      console.log('⏳ Loading set to TRUE');
 
       // Fetch plans
-      console.log('📡 Fetching plans from API...');
-      const plansResponse = await apiClient.get<{ plans: Plan[] }>('/subscriptions/plans');
-      console.log('✅ Plans API Response:', plansResponse);
-      
-      // apiClient.get() already returns response.data, so plansResponse IS the data
-      const responseData = plansResponse as any;
-      console.log('📦 Response data:', responseData);
-      console.log('📋 Plans array:', responseData.plans);
-      console.log('📊 Plans count:', responseData.plans?.length);
-      
-      const plansData = responseData.plans || [];
-      console.log('💾 Setting plans to state. Count:', plansData.length);
-      setPlans(plansData);
+      const plansResponse = await apiClient.get('/subscriptions/plans');
+      setPlans(Array.isArray(plansResponse.data) ? plansResponse.data : []);
 
       // Fetch current subscription
       try {
@@ -142,75 +129,58 @@ const SubscriptionPage: React.FC = () => {
 
       // Fetch billing info
       try {
-        const billingResponse = await apiClient.get<BillingInfo>('/subscriptions/billing');
-        setBillingInfo(billingResponse as any);
+        const billingResponse = await apiClient.get('/subscriptions/billing');
+        setBillingInfo(billingResponse.data as BillingInfo);
       } catch (billingError) {
         console.log('Could not fetch billing info');
       }
 
       // Fetch usage stats
       try {
-        const usageResponse = await apiClient.get<UsageStats>('/subscriptions/usage');
-        setUsageStats(usageResponse as any);
+        const usageResponse = await apiClient.get('/subscriptions/usage');
+        setUsageStats(usageResponse.data as UsageStats);
       } catch (usageError) {
         console.log('Could not fetch usage stats');
       }
 
       // Fetch history
       try {
-        const historyResponse = await apiClient.get<{ history: HistoryItem[] }>('/subscriptions/history');
-        const responseData = historyResponse as any;
-        setHistory(responseData.history || []);
+        const historyResponse = await apiClient.get('/subscriptions/history');
+        setHistory(Array.isArray(historyResponse.data) ? historyResponse.data : []);
       } catch (historyError) {
         console.log('Could not fetch subscription history');
       }
 
       setError(null);
-      console.log('✅ No errors - clearing error state');
     } catch (err: any) {
-      console.error('❌ Error fetching subscription data:', err);
-      console.error('❌ Error details:', err.response?.data);
+      console.error('Error fetching subscription data:', err);
       setError(err.response?.data?.error || 'Failed to load subscription data');
     } finally {
-      console.log('🏁 FINALLY block executing...');
       setLoading(false);
-      console.log('✅ Loading set to FALSE');
-      // Note: plans.length here shows OLD state due to closure
-      console.log('📊 Plans will render on next render cycle');
     }
   };
+
+  interface CheckoutResponse {
+    sessionUrl: string;
+    [key: string]: any;
+  }
 
   const handleSelectPlan = async (planId: string) => {
     try {
       setProcessingPlanId(planId);
       setError(null);
 
-      console.log('🚀 Creating checkout for plan:', planId);
-      
-      const response = await apiClient.post<{ success?: boolean; data?: { url?: string; sessionUrl?: string }; sessionUrl?: string }>('/subscriptions/checkout', {
+      const response = await apiClient.post<CheckoutResponse>('/subscriptions/checkout', {
         planId,
         successUrl: `${window.location.origin}/subscription?success=true`,
         cancelUrl: `${window.location.origin}/subscription?cancelled=true`
       });
 
-      console.log('📦 Checkout response:', response);
-
-      const responseData = response as any;
-      // Handle different response formats
-      const redirectUrl = responseData.data?.url || responseData.sessionUrl || responseData.data?.sessionUrl;
-      
-      if (redirectUrl) {
-        console.log('✅ Redirecting to:', redirectUrl);
-        window.location.href = redirectUrl;
-      } else {
-        console.log('✅ Dev mode - reloading to show upgrade');
-        // In dev mode, just reload to show the updated subscription
-        window.location.reload();
+      if (response.data?.sessionUrl) {
+        window.location.href = response.data.sessionUrl;
       }
     } catch (err: any) {
-      console.error('❌ Checkout error:', err);
-      console.error('❌ Error response:', err.response);
-      setError(err.response?.data?.error || err.response?.data?.message || 'Failed to create subscription');
+      setError(err.response?.data?.error || 'Failed to create subscription');
       setProcessingPlanId(null);
     }
   };
@@ -239,11 +209,9 @@ const SubscriptionPage: React.FC = () => {
         { text: 'Export to JSON/CSV', available: true },
         { text: 'URL scraping context', available: true },
         { text: 'Multi-language support', available: true },
-        { text: 'Email support', available: true }
+        { text: 'Email support', available: true },
+        { text: `${plan.trialDays}-day free trial`, available: true }
       );
-      if (plan.trialDays && plan.trialDays > 0) {
-        features.push({ text: `${plan.trialDays}-day free trial`, available: true });
-      }
     } else if (plan.id === 'team') {
       features.push(
         { text: 'Everything in Pro', available: true },
@@ -254,11 +222,9 @@ const SubscriptionPage: React.FC = () => {
         { text: 'Advanced debugging tools', available: true },
         { text: 'Priority support', available: true },
         { text: 'API access', available: true },
-        { text: 'Custom integrations', available: true }
+        { text: 'Custom integrations', available: true },
+        { text: `${plan.trialDays}-day free trial`, available: true }
       );
-      if (plan.trialDays && plan.trialDays > 0) {
-        features.push({ text: `${plan.trialDays}-day free trial`, available: true });
-      }
     }
 
     return features;
@@ -291,7 +257,6 @@ const SubscriptionPage: React.FC = () => {
   };
 
   if (loading) {
-    console.log('🔄 RENDERING: Loading state is TRUE - showing spinner');
     return (
       <>
         <Navigation />
@@ -299,14 +264,11 @@ const SubscriptionPage: React.FC = () => {
           <div className="flex flex-col items-center justify-center min-h-[70vh] gap-5">
             <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
             <p className="text-white text-lg">Loading subscription data...</p>
-            <p className="text-gray-400 text-sm">Check browser console for details (F12)</p>
           </div>
         </div>
       </>
     );
   }
-
-  console.log('✨ RENDERING: Loading FALSE - showing main content');
 
   return (
     <>
@@ -352,7 +314,12 @@ const SubscriptionPage: React.FC = () => {
               <X className="h-6 w-6 text-white" />
               <p className="text-white">{error}</p>
             </div>
-            <button onClick={() => setError(null)} className="text-white">
+            <button
+              onClick={() => setError(null)}
+              className="text-white"
+              title="Dismiss error"
+              aria-label="Dismiss error"
+            >
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -426,25 +393,7 @@ const SubscriptionPage: React.FC = () => {
 
         {/* Tab Content */}
         {activeTab === 'plans' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-5 mb-16">
-            {console.log('🎨 Rendering plans tab. Plans count:', plans.length, 'Plans:', plans)}
-            {plans.length === 0 && !loading && (
-              <div className="col-span-full text-center py-16">
-                <div className="glass-card border border-white/10 rounded-2xl p-12">
-                  <p className="text-white text-2xl mb-4 font-bold">⚠️ No plans available</p>
-                  <p className="text-gray-400 mb-6">The plans API returned empty data</p>
-                  <button
-                    onClick={() => {
-                      console.log('🔄 Manual refresh triggered');
-                      fetchData();
-                    }}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
-                  >
-                    🔄 Retry Loading Plans
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-5">
             {plans.map((plan) => {
               const isCurrentPlan = currentSubscription?.tier === plan.id;
               const isPopular = plan.id === 'pro';
@@ -485,10 +434,10 @@ const SubscriptionPage: React.FC = () => {
                       {plan.interval && <span className="text-xl text-gray-400">/{plan.interval}</span>}
                     </div>
 
-                    {plan.trialDays && plan.trialDays > 0 && !isCurrentPlan && (
+                    {plan.trialDays && !isCurrentPlan && (
                       <div className="inline-flex items-center gap-1.5 bg-purple-500/20 border border-purple-500/30 px-3 py-1.5 rounded-full text-sm text-purple-300">
                         <Clock className="h-3.5 w-3.5" />
-                        {plan.trialDays}-day free trial
+                        {plan.trialDays} days free trial
                       </div>
                     )}
                   </div>

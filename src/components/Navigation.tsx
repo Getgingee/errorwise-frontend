@@ -8,8 +8,6 @@ import {
   CreditCard,
   User,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
   FileText,
   Eye,
   Bot
@@ -24,8 +22,11 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onRecentAnalysesClick }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [selectedAI, setSelectedAI] = useState<'openai' | 'gemini' | 'anthropic'>('openai');
+  const [selectedAI, setSelectedAI] = useState<'gemini' | 'anthropic'>('gemini');
   const [showAIMenu, setShowAIMenu] = useState(false);
+  const [showAccessibilityMenu, setShowAccessibilityMenu] = useState(false);
+  const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
+  const [highContrast, setHighContrast] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
@@ -34,6 +35,27 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
     logout();
     navigate('/');
   };
+
+  // Apply accessibility settings
+  React.useEffect(() => {
+    const root = document.documentElement;
+    
+    // Font size adjustments
+    if (fontSize === 'large') {
+      root.style.fontSize = '18px';
+    } else if (fontSize === 'xlarge') {
+      root.style.fontSize = '20px';
+    } else {
+      root.style.fontSize = '16px';
+    }
+    
+    // High contrast mode
+    if (highContrast) {
+      root.style.filter = 'contrast(1.3)';
+    } else {
+      root.style.filter = 'contrast(1)';
+    }
+  }, [fontSize, highContrast]);
 
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
@@ -54,7 +76,7 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
   return (
     <>
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 to-blue-900 border-b border-white/10 backdrop-blur-sm transition-all duration-300">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-transparent border-b border-white/10 backdrop-blur-sm transition-all duration-300">
         <div className="flex items-center justify-between px-4 py-3">
           <Link to="/dashboard" className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105">
             <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg transition-all duration-300 hover:shadow-cyan-400/50">
@@ -76,7 +98,7 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
         <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
           isMobileOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}>
-          <div className="bg-slate-900/95 backdrop-blur-md border-t border-white/10">
+          <div className="bg-slate-900/90 backdrop-blur-md border-t border-white/10">
             <div className="px-4 py-4 space-y-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -120,7 +142,7 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
                 <div className="px-4 py-2">
                   <p className="text-xs text-gray-500 mb-2">AI Model</p>
                   <div className="flex gap-2">
-                    {(['openai', 'gemini', 'anthropic'] as const).map((model) => (
+                    {(['gemini', 'anthropic'] as const).map((model) => (
                       <button
                         key={model}
                         onClick={() => setSelectedAI(model)}
@@ -130,20 +152,56 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
                             : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
                         }`}
                       >
-                        {model === 'openai' ? 'OpenAI' : model === 'gemini' ? 'Gemini' : 'Claude'}
+                        {model === 'gemini' ? 'Gemini' : 'Claude'}
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Accessibility */}
-                <button
-                  onClick={() => setIsMobileOpen(false)}
-                  className="w-full flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 transform hover:translate-x-1"
-                >
-                  <Eye className="w-5 h-5 mr-3 transition-transform duration-300" />
-                  Accessibility
-                </button>
+                <div className="px-4 py-2">
+                  <p className="text-xs text-gray-500 mb-2">Accessibility</p>
+                  <div className="space-y-2">
+                    {/* Font Size */}
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Font Size</p>
+                      <div className="flex gap-2">
+                        {(['normal', 'large', 'xlarge'] as const).map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => setFontSize(size)}
+                            className={`flex-1 px-2 py-1.5 text-xs rounded-lg transition-all duration-200 ${
+                              fontSize === size
+                                ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
+                                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            {size === 'normal' ? 'Normal' : size === 'large' ? 'Large' : 'X-Large'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* High Contrast Toggle */}
+                    <button
+                      onClick={() => setHighContrast(!highContrast)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 ${
+                        highContrast
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
+                          : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      <span className="text-xs">High Contrast</span>
+                      <div className={`w-10 h-5 rounded-full relative transition-all duration-200 ${
+                        highContrast ? 'bg-white/30' : 'bg-white/10'
+                      }`}>
+                        <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all duration-200 ${
+                          highContrast ? 'left-5' : 'left-0.5'
+                        }`}></div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
 
               {/* Theme Toggle */}
               <div className="px-4 py-2">
@@ -168,7 +226,7 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
 
       {/* Desktop Sidebar */}
       <div
-        className={`hidden md:flex fixed left-0 top-0 h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900 border-r border-white/10 transition-all duration-500 ease-in-out z-40 shadow-2xl ${isCollapsed ? 'w-20' : 'w-80'}`}
+        className={`hidden md:flex fixed left-0 top-0 h-screen bg-slate-900/80 backdrop-blur-md border-r border-white/10 transition-all duration-500 ease-in-out z-40 shadow-2xl ${isCollapsed ? 'w-20' : 'w-80'}`}
       >
         <div className="flex flex-col w-full">
           {/* Logo */}
@@ -239,14 +297,14 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
                 <span className={`text-sm font-medium transition-all duration-500 overflow-hidden whitespace-nowrap ${
                   isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
                 }`}>
-                  {selectedAI === 'openai' ? 'OpenAI' : selectedAI === 'gemini' ? 'Gemini' : 'Anthropic'}
+                  {selectedAI === 'gemini' ? 'Gemini' : 'Claude'}
                 </span>
               </button>
               
               {/* AI Model Dropdown */}
               {showAIMenu && !isCollapsed && (
                 <div className="absolute bottom-full left-0 right-0 mb-2 bg-slate-800 border border-white/20 rounded-lg shadow-2xl overflow-hidden z-50">
-                  {(['openai', 'gemini', 'anthropic'] as const).map((model) => (
+                  {(['gemini', 'anthropic'] as const).map((model) => (
                     <button
                       key={model}
                       onClick={() => {
@@ -259,7 +317,7 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
                           : 'text-gray-300 hover:bg-white/10 hover:text-white'
                       }`}
                     >
-                      {model === 'openai' ? 'OpenAI (GPT)' : model === 'gemini' ? 'Google Gemini' : 'Anthropic (Claude)'}
+                      {model === 'gemini' ? 'Google Gemini' : 'Anthropic (Claude)'}
                     </button>
                   ))}
                 </div>
@@ -267,15 +325,77 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
             </div>
 
             {/* Accessibility */}
-            <button
-              className="w-full flex items-center px-3 py-2 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 group"
-              title={isCollapsed ? 'Accessibility' : ''}
-            >
-              <Eye className={`w-5 h-5 transition-all duration-300 group-hover:scale-110 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
-              <span className={`text-sm font-medium transition-all duration-500 overflow-hidden whitespace-nowrap ${
-                isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
-              }`}>Accessibility</span>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowAccessibilityMenu(!showAccessibilityMenu)}
+                className="w-full flex items-center px-3 py-2 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 group"
+                title={isCollapsed ? 'Accessibility' : ''}
+              >
+                <Eye className={`w-5 h-5 transition-all duration-300 group-hover:scale-110 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
+                <span className={`text-sm font-medium transition-all duration-500 overflow-hidden whitespace-nowrap ${
+                  isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
+                }`}>Accessibility</span>
+              </button>
+
+              {/* Accessibility Dropdown */}
+              {showAccessibilityMenu && !isCollapsed && (
+                <div className="absolute bottom-full left-0 right-0 mb-2 bg-slate-800 border border-white/20 rounded-lg shadow-2xl p-3 z-50 space-y-3">
+                  {/* Font Size */}
+                  <div>
+                    <p className="text-xs text-gray-400 mb-2">Font Size</p>
+                    <div className="flex gap-2">
+                      {(['normal', 'large', 'xlarge'] as const).map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setFontSize(size)}
+                          className={`flex-1 px-2 py-1 text-xs rounded transition-all duration-200 ${
+                            fontSize === size
+                              ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
+                              : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                          }`}
+                        >
+                          {size === 'normal' ? 'A' : size === 'large' ? 'A+' : 'A++'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* High Contrast Toggle */}
+                  <button
+                    onClick={() => setHighContrast(!highContrast)}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 ${
+                      highContrast
+                        ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
+                        : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-xs">High Contrast</span>
+                    <div className={`w-9 h-5 rounded-full relative transition-all duration-200 ${
+                      highContrast ? 'bg-white/30' : 'bg-white/20'
+                    }`}>
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all duration-200 ${
+                        highContrast ? 'left-4' : 'left-0.5'
+                      }`}></div>
+                    </div>
+                  </button>
+
+                  {/* Reduce Motion */}
+                  <button
+                    onClick={() => {
+                      const reducedMotion = window.matchMedia('(prefers-reduced-motion)').matches;
+                      if (!reducedMotion) {
+                        document.documentElement.style.setProperty('--animation-duration', '0.01ms');
+                      } else {
+                        document.documentElement.style.setProperty('--animation-duration', '');
+                      }
+                    }}
+                    className="w-full px-3 py-2 text-xs text-left bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white rounded-lg transition-all"
+                  >
+                    Toggle Animations
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* User Info & Logout */}
@@ -303,6 +423,7 @@ const Navigation: React.FC<NavigationProps> = ({ showRecentAnalyses = false, onR
 };
 
 export default Navigation;
+
 
 
 
