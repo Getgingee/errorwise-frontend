@@ -36,7 +36,7 @@ export class SubscriptionService {
    */
   async getPlans(): Promise<ApiResponse<Plan[]>> {
     try {
-      const response = await apiClient.get<Plan[]>('/subscription/plans');
+      const response = await apiClient.get<Plan[]>('/subscriptions/plans');
       return response;
     } catch (error) {
       console.error('Error fetching plans:', error);
@@ -53,7 +53,7 @@ export class SubscriptionService {
    */
   async getCurrentSubscription(): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.get('/subscription');
+      const response = await apiClient.get('/subscriptions/current');
       return response;
     } catch (error) {
       console.error('Error fetching current subscription:', error);
@@ -69,10 +69,10 @@ export class SubscriptionService {
    */
   async createCheckoutSession(planId: string): Promise<ApiResponse<CheckoutSession>> {
     try {
-      const response = await apiClient.post<CheckoutSession>('/subscription/checkout', {
+      const response = await apiClient.post<CheckoutSession>('/subscriptions/checkout', {
         planId,
         successUrl: `${window.location.origin}/dashboard?upgraded=true`,
-        cancelUrl: `${window.location.origin}/subscription`
+        cancelUrl: `${window.location.origin}/subscriptions`
       });
       return response;
     } catch (error) {
@@ -89,7 +89,7 @@ export class SubscriptionService {
    */
   async upgradePlan(planId: string): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.post('/subscription/upgrade', {
+      const response = await apiClient.post('/subscriptions/upgrade', {
         planId
       });
       return response;
@@ -107,7 +107,7 @@ export class SubscriptionService {
    */
   async cancelSubscription(): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.post('/subscription/cancel');
+      const response = await apiClient.post('/subscriptions/cancel');
       return response;
     } catch (error) {
       console.error('Error cancelling subscription:', error);
@@ -123,7 +123,7 @@ export class SubscriptionService {
    */
   async getBillingInfo(): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.get('/subscription/billing');
+      const response = await apiClient.get('/subscriptions/billing');
       return response;
     } catch (error) {
       console.error('Error fetching billing info:', error);
@@ -139,7 +139,7 @@ export class SubscriptionService {
    */
   async getUsageStats(): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.get('/subscription/usage');
+      const response = await apiClient.get('/subscriptions/usage');
       return response;
     } catch (error) {
       console.error('Error fetching usage stats:', error);
@@ -155,7 +155,7 @@ export class SubscriptionService {
    */
   async getSubscriptionHistory(): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.get('/subscription/history');
+      const response = await apiClient.get('/subscriptions/history');
       return response;
     } catch (error) {
       console.error('Error fetching subscription history:', error);
@@ -171,7 +171,7 @@ export class SubscriptionService {
    */
   async getUpgradeOptions(): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.get('/subscription/upgrade-options');
+      const response = await apiClient.get('/subscriptions/upgrade-options');
       return response;
     } catch (error) {
       console.error('Error fetching upgrade options:', error);

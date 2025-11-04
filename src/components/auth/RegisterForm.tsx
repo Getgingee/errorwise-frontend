@@ -64,7 +64,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
     setLoading(true);
 
     try {
-      const result = await resendVerification(registeredEmail);
+      const result = await resendVerification();
       setSuccess(result.message);
     } catch (err: any) {
       setError(err.message || 'Failed to resend verification email');

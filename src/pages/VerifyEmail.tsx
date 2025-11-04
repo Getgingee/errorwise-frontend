@@ -78,6 +78,14 @@ export const VerifyEmail: React.FC = () => {
         .pulse-animation {
           animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
+
+        .pulse-delay-200 {
+          animation-delay: 0.2s;
+        }
+
+        .pulse-delay-400 {
+          animation-delay: 0.4s;
+        }
       `}</style>
 
       <div className="w-full max-w-md">
@@ -95,11 +103,12 @@ export const VerifyEmail: React.FC = () => {
 
         {/* Status Card */}
         <div className="bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-2xl p-8">
-          
           {status === 'verifying' && (
             <div className="text-center">
               <div className="mb-6">
-                <Loader2 className="h-16 w-16 text-cyan-400 mx-auto animate-spin" />
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-500/20 border-4 border-blue-500/50 backdrop-blur-sm">
+                  <Loader2 className="h-10 w-10 text-blue-400 animate-spin" />
+                </div>
               </div>
               <h2 className="text-2xl font-bold text-white mb-3">Verifying Email...</h2>
               <p className="text-gray-300">Please wait while we verify your email address.</p>

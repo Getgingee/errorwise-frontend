@@ -26,11 +26,6 @@ export const LoginForm: React.FC = () => {
   const { loginStep1, loginStep2, otpSent, isLoading, error: storeError, resetOtpState } = useAuthStore();
   const navigate = useNavigate();
 
-  // Debug OTP changes
-  useEffect(() => {
-    console.log('🔢 OTP changed:', otp, 'Length:', otp.length, 'Button enabled:', otp.length === 6 && !isLoading && !isVerifying);
-  }, [otp, isLoading, isVerifying]);
-
   // Timer effect
   useEffect(() => {
     if (otpSent && otpTimer > 0) {
@@ -81,8 +76,8 @@ export const LoginForm: React.FC = () => {
   };
 
   // Step 2: Verify OTP - USE CALLBACK TO PREVENT STALE CLOSURES
-  const verifyOTP = useCallback(async (otpToVerify: string) => {
-    console.log('🔐 verifyOTP called with:', { otp: otpToVerify, isVerifying, otpLength: otpToVerify.length });
+  const handleStep2Submit = useCallback(async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     
     // Prevent multiple simultaneous verifications
     if (isVerifying) {
@@ -90,20 +85,17 @@ export const LoginForm: React.FC = () => {
       return;
     }
 
-    if (otpToVerify.length !== 6) {
-      console.log('❌ OTP length invalid:', otpToVerify.length);
+    if (otp.length !== 6) {
       setError('Please enter all 6 digits');
       return;
     }
 
-    console.log('🔐 Verifying OTP:', otpToVerify);
+    console.log('🔐 Verifying OTP:', otp);
     setIsVerifying(true);
     setError('');
 
     try {
-      console.log('📞 Calling loginStep2 with OTP:', otpToVerify);
-      const result = await loginStep2(otpToVerify);
-      console.log('📦 loginStep2 result:', result);
+      const result = await loginStep2(otp);
       
       if (result.success) {
         console.log('✅ OTP verified! Redirecting to dashboard...');
@@ -118,13 +110,15 @@ export const LoginForm: React.FC = () => {
     } finally {
       setIsVerifying(false);
     }
-  }, [loginStep2, navigate, isVerifying]);
+  }, [otp, loginStep2, navigate, isVerifying]);
 
-  // Wrapper for form submit
-  const handleStep2Submit = useCallback(async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    await verifyOTP(otp);
-  }, [otp, verifyOTP]);
+  // AUTO-VERIFY: Fixed with proper dependencies
+  useEffect(() => {
+    if (otp.length === 6 && otpSent && !isVerifying) {
+      console.log('🚀 Auto-verifying OTP...');
+      handleStep2Submit();
+    }
+  }, [otp, otpSent, isVerifying, handleStep2Submit]);
 
   // Resend verification email
   const handleResendVerification = async () => {
@@ -147,7 +141,7 @@ export const LoginForm: React.FC = () => {
     try {
       setError('');
       console.log('📧 Resending OTP...');
-      await resendLoginOTP(email);
+      await resendLoginOTP();
       setOtpTimer(600);
       setCanResendOtp(false);
       setError('');
@@ -166,18 +160,20 @@ export const LoginForm: React.FC = () => {
   // Show email verification required screen
   if (requiresVerification) {
     return (
-      <>
-        <div className="text-center mb-6">
-          <div className="bg-yellow-500/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
-            <svg className="h-10 w-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Email Verification Required</h2>
-          <p className="text-gray-300">Please verify your email address to continue</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-2xl p-8">
+            <div className="text-center mb-6">
+              <div className="bg-yellow-500/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
+                <svg className="h-10 w-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2">Email Verification Required</h2>
+              <p className="text-gray-300">Please verify your email address to continue</p>
+            </div>
 
-        {verificationMessage && (
+            {verificationMessage && (
               <div className="mb-4 p-4 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300 text-sm">
                 {verificationMessage}
               </div>
@@ -197,13 +193,15 @@ export const LoginForm: React.FC = () => {
                 Click the link in the email to verify your account, then return here to login.
               </p>
               
-                <button
-                  onClick={handleResendVerification}
-                  disabled={resendingVerification}
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-semibold py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {resendingVerification ? 'Sending...' : 'Resend Verification Email'}
-                </button>              <button
+              <button
+                onClick={handleResendVerification}
+                disabled={resendingVerification}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50"
+              >
+                {resendingVerification ? 'Sending...' : 'Resend Verification Email'}
+              </button>
+
+              <button
                 onClick={() => {
                   setRequiresVerification(false);
                   setEmail('');
@@ -212,29 +210,35 @@ export const LoginForm: React.FC = () => {
                 }}
                 className="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-4 rounded-lg transition duration-200"
               >
-            Back to Login
-          </button>
+                Back to Login
+              </button>
+            </div>
+          </div>
         </div>
-      </>
+      </div>
     );
-  }  // Show OTP input screen
+  }
+
+  // Show OTP input screen
   if (otpSent) {
     return (
-      <>
-        <div className="text-center mb-8">
-          <div className="bg-cyan-500/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
-            <svg className="h-10 w-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Check Your Email</h2>
-          <p className="text-gray-300 text-sm">
-            We've sent a 6-digit OTP to<br />
-            <span className="font-semibold text-white">{email}</span>
-          </p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-2xl p-8">
+            <div className="text-center mb-8">
+              <div className="bg-blue-500/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
+                <svg className="h-10 w-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2">Check Your Email</h2>
+              <p className="text-gray-300 text-sm">
+                We've sent a 6-digit OTP to<br />
+                <span className="font-semibold text-white">{email}</span>
+              </p>
+            </div>
 
-        {error && (
+            {error && (
               <div className="mb-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 text-sm">
                 {error}
               </div>
@@ -246,21 +250,23 @@ export const LoginForm: React.FC = () => {
                   Enter OTP
                 </label>
                 <OTPInput
-                  length={6}
-                  onComplete={(completedOtp) => {
-                    console.log('🎯 OTP Complete callback received:', completedOtp);
-                    setOtp(completedOtp);
-                    // No auto-verify - user must click button
-                  }}
+                  value={otp}
+                  onChange={setOtp}
+                  numInputs={6}
+                  isDisabled={isLoading || isVerifying}
                 />
               </div>
 
-              
+              <div className="text-center">
+                <p className="text-sm text-gray-400 mb-4">
+                  Time remaining: <span className="font-semibold text-white">{formatTime(otpTimer)}</span>
+                </p>
+              </div>
 
               <button
                 type="submit"
                 disabled={otp.length !== 6 || isLoading || isVerifying}
-                className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-semibold py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isVerifying ? (
                   <span className="flex items-center justify-center">
@@ -292,7 +298,7 @@ export const LoginForm: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleResendOTP}
-                    className="text-cyan-400 hover:text-cyan-300 transition font-medium"
+                    className="text-blue-400 hover:text-blue-300 transition font-medium"
                   >
                     Resend OTP
                   </button>
@@ -304,20 +310,31 @@ export const LoginForm: React.FC = () => {
               </div>
             </form>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-400">
-                  Don't have an account?{' '}
-                  <Link to="/register" className="text-cyan-400 hover:text-cyan-300 font-medium">
-                    Sign up
-          </Link>
-        </p>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-400">
+                Don't have an account?{' '}
+                <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium">
+                  Sign up
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </>
     );
-  }  // Show login form (Step 1)
+  }
+
+  // Show login form (Step 1)
   return (
-    <>
-      {error && (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-2xl p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-white mb-2">Welcome back</h2>
+            <p className="text-gray-300">Sign in to your account</p>
+          </div>
+
+          {error && (
             <div className="mb-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 text-sm">
               {error}
             </div>
@@ -335,7 +352,7 @@ export const LoginForm: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent disabled:opacity-50"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                 placeholder="your@email.com"
               />
             </div>
@@ -351,13 +368,13 @@ export const LoginForm: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent disabled:opacity-50"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                 placeholder="••••••••"
               />
             </div>
 
             <div className="flex items-center justify-between">
-              <Link to="/forgot-password" className="text-sm text-cyan-400 hover:text-cyan-300">
+              <Link to="/forgot-password" className="text-sm text-blue-400 hover:text-blue-300">
                 Forgot password?
               </Link>
             </div>
@@ -365,7 +382,7 @@ export const LoginForm: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-semibold py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50"
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
@@ -374,11 +391,13 @@ export const LoginForm: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-400">
               Don't have an account?{' '}
-              <Link to="/register" className="text-cyan-400 hover:text-cyan-300 font-medium">
+              <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium">
                 Sign up
-        </Link>
-      </p>
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-  </>
   );
 };

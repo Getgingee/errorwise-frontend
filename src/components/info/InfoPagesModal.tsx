@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Package, Users, Briefcase, Mail, HelpCircle, MessageSquare, ThumbsUp, Activity, BookOpen } from 'lucide-react';
-import { supportService, type FeedbackData, type ContactData } from '../../services/support';
+import { supportService, type FeedbackData, type ContactMessageData } from '../../services/supportService';
+import { newsletterService } from '../../services/newsletterService';
 import { trackFeedbackSubmit, trackContactSubmit, trackModalOpen } from '../../services/analytics';
+import { contentService } from '../../services/contentService';
+import type { PrivacyPolicyContent, TermsOfServiceContent, AboutContent, CommunityContent } from '../../services/contentService';
 
 interface InfoPagesModalProps {
   isOpen: boolean;
@@ -10,14 +13,13 @@ interface InfoPagesModalProps {
 }
 
 const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }) => {
-  const [feedbackForm, setFeedbackForm] = useState<{
-    feedback_type: FeedbackData['feedback_type'];
-    message: string;
-  }>({
+  const [feedbackForm, setFeedbackForm] = useState<FeedbackData>({
     feedback_type: 'general_feedback',
-    message: ''
+    message: '',
+    email: '',
+    name: ''
   });
-  const [contactForm, setContactForm] = useState<ContactData>({
+  const [contactForm, setContactForm] = useState<ContactMessageData>({
     name: '',
     email: '',
     phone: '',
@@ -26,9 +28,44 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
     message: '',
     message_type: 'general'
   });
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterName, setNewsletterName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  
+  // Dynamic content from backend
+  const [dynamicContent, setDynamicContent] = useState<any>(null);
+  const [loadingContent, setLoadingContent] = useState(false);
+  const [contentError, setContentError] = useState<string | null>(null);
+
+  // Fetch dynamic content from backend when modal opens
+  useEffect(() => {
+    const loadDynamicContent = async () => {
+      // Only fetch for pages that use backend API
+      if (!isOpen || !['privacy', 'terms', 'about', 'community'].includes(page)) {
+        return;
+      }
+
+      setLoadingContent(true);
+      setContentError(null);
+
+      try {
+        console.log('🔄 Fetching', page, 'content from backend...');
+        const data = await contentService.getPageContent(page as any);
+        console.log('✅ Loaded', page, 'content:', data);
+        setDynamicContent(data);
+      } catch (error) {
+        console.error('❌ Failed to load', page, 'content:', error);
+        setContentError('Failed to load content. Using cached version.');
+        // Keep using hardcoded fallback content
+      } finally {
+        setLoadingContent(false);
+      }
+    };
+
+    loadDynamicContent();
+  }, [isOpen, page]);
 
   // Early return if modal is not open
   if (!isOpen) return null;
@@ -41,17 +78,25 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
     setSubmitError('');
     setSubmitSuccess(false);
 
-    const result = await supportService.submitFeedback(feedbackForm);
-    
-    setSubmitting(false);
-    if (result.success) {
+    try {
+      const result = await supportService.submitFeedback(feedbackForm);
+      console.log('✅ Feedback submitted:', result);
+      
       // Track successful feedback submission
       trackFeedbackSubmit(feedbackForm.feedback_type);
       setSubmitSuccess(true);
-      setFeedbackForm({ feedback_type: 'general_feedback', message: '' });
+      setFeedbackForm({ 
+        feedback_type: 'general_feedback', 
+        message: '',
+        email: '',
+        name: ''
+      });
       setTimeout(() => setSubmitSuccess(false), 5000);
-    } else {
-      setSubmitError(result.error || 'Failed to submit feedback');
+    } catch (error) {
+      console.error('❌ Feedback submission error:', error);
+      setSubmitError(error instanceof Error ? error.message : 'Failed to submit feedback');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -61,10 +106,10 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
     setSubmitError('');
     setSubmitSuccess(false);
 
-    const result = await supportService.submitContact(contactForm);
-    
-    setSubmitting(false);
-    if (result.success) {
+    try {
+      const result = await supportService.submitContactMessage(contactForm);
+      console.log('✅ Contact message submitted:', result);
+      
       // Track successful contact submission
       trackContactSubmit(contactForm.message_type);
       setSubmitSuccess(true);
@@ -78,8 +123,38 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
         message_type: 'general'
       });
       setTimeout(() => setSubmitSuccess(false), 5000);
-    } else {
-      setSubmitError(result.error || 'Failed to send message');
+    } catch (error) {
+      console.error('❌ Contact submission error:', error);
+      setSubmitError(error instanceof Error ? error.message : 'Failed to send message');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    try {
+      const result = await newsletterService.subscribe({
+        email: newsletterEmail,
+        name: newsletterName || undefined,
+        subscription_type: 'all',
+        source: 'modal'
+      });
+      console.log('✅ Newsletter subscription:', result);
+      
+      setSubmitSuccess(true);
+      setNewsletterEmail('');
+      setNewsletterName('');
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    } catch (error) {
+      console.error('❌ Newsletter subscription error:', error);
+      setSubmitError(error instanceof Error ? error.message : 'Failed to subscribe');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -89,6 +164,142 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
       trackModalOpen(page);
     }
   }, [isOpen, page]);
+
+  // Helper function to render dynamic privacy policy from backend
+  const renderDynamicPrivacy = (data: PrivacyPolicyContent) => {
+    return (
+      <div className="space-y-6 text-gray-200">
+        <div className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30">
+          <p className="text-sm">
+            <strong>Last Updated:</strong> {data.lastUpdated}
+          </p>
+        </div>
+        <div className="space-y-4">
+          {data.sections.map((section, index) => (
+            <section key={index}>
+              <h4 className="font-bold text-white text-lg mb-3">{section.heading}</h4>
+              <div className="text-sm whitespace-pre-line">{section.content}</div>
+            </section>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Helper function to render dynamic terms of service from backend
+  const renderDynamicTerms = (data: TermsOfServiceContent) => {
+    return (
+      <div className="space-y-6 text-gray-200">
+        <div className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30">
+          <p className="text-sm">
+            <strong>Last Updated:</strong> {data.lastUpdated}
+          </p>
+        </div>
+        <div className="space-y-4">
+          {data.sections.map((section, index) => (
+            <section key={index}>
+              <h4 className="font-bold text-white text-lg mb-3">{section.heading}</h4>
+              <div className="text-sm whitespace-pre-line">{section.content}</div>
+            </section>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Helper function to render dynamic about content from backend
+  const renderDynamicAbout = (data: AboutContent) => {
+    return (
+      <div className="space-y-6 text-gray-200">
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
+          <p className="text-sm leading-relaxed">{data.mission}</p>
+        </div>
+
+        <div>
+          <h3 className="text-2xl font-bold text-white mb-4">By the Numbers</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {data.stats.map((stat, index) => (
+              <div key={index} className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30">
+                <div className="text-3xl font-bold text-cyan-400 mb-1">{stat.value}</div>
+                <div className="text-sm text-gray-300">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-2xl font-bold text-white mb-4">Our Values</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {data.values.map((value, index) => (
+              <div key={index} className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30">
+                <h4 className="font-bold text-white mb-2">{value.title}</h4>
+                <p className="text-sm text-gray-300">{value.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Helper function to render dynamic community content from backend
+  const renderDynamicCommunity = (data: CommunityContent) => {
+    return (
+      <div className="space-y-6 text-gray-200">
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold text-white mb-4">Join Our Community</h3>
+          <p className="text-sm">Connect with developers worldwide who use ErrorWise</p>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-bold text-white mb-4">Our Platforms</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.platforms.map((platform, index) => (
+              <div key={index} className="p-4 bg-blue-500/10 backdrop-blur-sm rounded-lg border border-blue-500/30">
+                <h4 className="font-bold text-white text-lg mb-2">{platform.name}</h4>
+                <p className="text-sm text-gray-300 mb-2">{platform.description}</p>
+                <div className="flex justify-between text-xs text-gray-400 mt-3">
+                  <span>👥 {platform.members}</span>
+                  <span>📊 {platform.activity}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-bold text-white mb-4">Community Channels</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.channels.map((channel, index) => (
+              <div key={index} className="p-3 bg-blue-500/5 backdrop-blur-sm rounded-lg border border-blue-500/20">
+                <h4 className="font-bold text-cyan-400 text-sm mb-1">{channel.name}</h4>
+                <p className="text-xs text-gray-400">{channel.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-4 bg-cyan-500/10 backdrop-blur-sm rounded-lg border border-cyan-500/30">
+          <h3 className="text-lg font-bold text-white mb-3">Community Stats</h3>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold text-cyan-400">{data.stats.totalMembers}</div>
+              <div className="text-xs text-gray-400">Total Members</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-cyan-400">{data.stats.activeContributors}</div>
+              <div className="text-xs text-gray-400">Active Contributors</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-cyan-400">{data.stats.monthlyMessages}</div>
+              <div className="text-xs text-gray-400">Monthly Messages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const pageContent = {
     integrations: {
@@ -1133,6 +1344,38 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
   
   const Icon = currentPage.icon;
 
+  // Determine what content to render
+  const renderContent = () => {
+    // Show loading state for dynamic content pages
+    if (loadingContent && ['privacy', 'terms', 'about', 'community'].includes(page)) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
+          <span className="ml-4 text-gray-300">Loading {page} content...</span>
+        </div>
+      );
+    }
+
+    // Use dynamic content if available (fetched from backend)
+    if (dynamicContent) {
+      if (page === 'privacy') {
+        return renderDynamicPrivacy(dynamicContent);
+      }
+      if (page === 'terms') {
+        return renderDynamicTerms(dynamicContent);
+      }
+      if (page === 'about') {
+        return renderDynamicAbout(dynamicContent);
+      }
+      if (page === 'community') {
+        return renderDynamicCommunity(dynamicContent);
+      }
+    }
+
+    // Fall back to hardcoded content if API fails or for other pages
+    return currentPage.content;
+  };
+
   return (
     <div 
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80"
@@ -1149,6 +1392,9 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <div>
               <h2 className="text-3xl font-bold text-white">{currentPage.title}</h2>
               <p className="text-cyan-300 mt-1">{currentPage.subtitle}</p>
+              {contentError && (
+                <p className="text-yellow-400 text-xs mt-1">⚠️ {contentError}</p>
+              )}
             </div>
           </div>
           <button
@@ -1162,7 +1408,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 
         {/* Content */}
         <div className="p-6 bg-slate-800 text-white">
-          {currentPage.content}
+          {renderContent()}
         </div>
       </div>
     </div>

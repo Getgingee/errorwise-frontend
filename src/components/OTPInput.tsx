@@ -33,9 +33,14 @@ export const OTPInput: React.FC<OTPInputProps> = ({
 
     // Call onComplete when all filled
     const otpString = newOtp.join('');
-    if (otpString.length === length && !otpString.includes('')) {
+    const allFilled = newOtp.every(digit => digit !== '');
+    console.log('🔍 Checking completion:', { otpString, length: otpString.length, allFilled, expectedLength: length });
+    
+    if (otpString.length === length && allFilled) {
       console.log('✅ OTP Complete! Calling onComplete with:', otpString);
       onComplete(otpString);
+    } else {
+      console.log('⏳ Not complete yet:', { filled: otpString.length, needed: length });
     }
   };  const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
@@ -95,13 +100,6 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             className="otp-input"
             autoFocus={index === 0}
             aria-label={`OTP digit ${index + 1} of ${length}`}
-            style={{
-              fontSize: '32px',
-              fontWeight: '700',
-              color: '#0f172a',
-              backgroundColor: '#ffffff',
-              textAlign: 'center'
-            }}
           />
         ))}
       </div>

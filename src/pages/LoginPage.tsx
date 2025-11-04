@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { LoginForm } from '../components/auth/LoginForm';
 
@@ -23,22 +23,12 @@ const LoginPage: React.FC = () => {
         {/* Login Card */}
         <div className="bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-2xl p-8">
           <LoginForm />
-
-          {/* Register Link */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-300 dark:text-gray-300">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-cyan-400 dark:text-cyan-400 hover:text-cyan-300 dark:hover:text-cyan-300 font-semibold transition-colors duration-300">
-                Sign up
-              </Link>
-            </p>
-          </div>
         </div>
 
         {/* Back to Home */}
         <div className="mt-6 text-center">
           <Link to="/" className="text-sm text-gray-400 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors duration-300">
-            ← Back to home
+          ← Back to home
           </Link>
         </div>
       </div>
