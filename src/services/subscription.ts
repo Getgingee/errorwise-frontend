@@ -1,9 +1,37 @@
-﻿export type { Plan, ApiResponse, CheckoutSession };
-export interface SubscriptionData { id: string; user_id: string; plan_id: string; status: string; current_period_start: string; current_period_end: string; created_at: string; updated_at: string; }
-export interface Usage { daily_queries_used: number; daily_queries_limit: number; period_start: string; period_end: string; }
+﻿import { apiClient } from './api';
+
+export interface Plan {
+  id: string;
+  name: string;
+  price: number;
+  features: string[];
+  limits: {
+    daily_queries: number;
+    explanation_type: string;
+    solutions_provided: boolean;
+    team_features: boolean;
+    video_chat: boolean;
+    video_session_duration?: number;
+    max_team_members?: number;
+    min_team_members?: number;
+  };
+  popular?: boolean;
+}
+
+export interface ApiResponse<T> {  plans?: T;
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
+export interface CheckoutSession {
+  url: string;
+  sessionId: string;
+}
 
 
-
+// Additional interfaces
 export interface SubscriptionData {
   id: string;
   user_id: string;
@@ -13,6 +41,11 @@ export interface SubscriptionData {
   current_period_end: string;
   created_at: string;
   updated_at: string;
+  subscription?: any;
+  plan?: any;
+  usage?: Usage;
+  canUpgrade?: boolean;
+  canDowngrade?: boolean;
 }
 
 export interface Usage {
@@ -20,8 +53,46 @@ export interface Usage {
   daily_queries_limit: number;
   period_start: string;
   period_end: string;
+  queriesUsed: number;
+  dailyLimit: number;
+  queriesRemaining: number;
+  resetTime?: string;
+  limitReached?: boolean;
 }
 export class SubscriptionService {
+
+  /**
+   * Get subscription details
+   */
+  async getSubscription(): Promise<ApiResponse<SubscriptionData>> {
+    try {
+      const response = await apiClient.get<SubscriptionData>('/subscriptions');
+      return response;
+    } catch (error) {
+      console.error('Error fetching subscription:', error);
+      return { success: false, error: 'Failed to fetch subscription' };
+    }
+  }
+
+  /**
+   * Create subscription/checkout
+   */
+  async createSubscription(planId: string): Promise<ApiResponse<CheckoutSession>> {
+    return this.createCheckoutSession(planId);
+  }
+
+  /**
+   * Verify payment after checkout
+   */
+  async verifyPayment(sessionId: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await apiClient.post('/subscriptions/verify-payment', { sessionId });
+      return response;
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      return { success: false, error: 'Failed to verify payment' };
+    }
+  }
   /**
    * Get all available subscription plans
    */
@@ -191,38 +262,6 @@ export class SubscriptionService {
   }
 
   /**
-   * Get subscription details
-   */
-  async getSubscription(): Promise<ApiResponse<SubscriptionData>> {
-    try {
-      const response = await apiClient.get<SubscriptionData>('/subscriptions');
-      return response;
-    } catch (error) {
-      console.error('Error fetching subscription:', error);
-      return { success: false, error: 'Failed to fetch subscription' };
-    }
-  }
-
-  /**
-   * Create subscription/checkout
-   */
-  async createSubscription(planId: string): Promise<ApiResponse<CheckoutSession>> {
-    return this.createCheckoutSession(planId);
-  }
-
-  /**
-   * Verify payment after checkout
-   */
-  async verifyPayment(sessionId: string): Promise<ApiResponse<any>> {
-    try {
-      const response = await apiClient.post('/subscriptions/verify-payment', { sessionId });
-      return response;
-    } catch (error) {
-      console.error('Error verifying payment:', error);
-      return { success: false, error: 'Failed to verify payment' };
-    }
-  }
-  /**
    * Get plan display name
    */
   getPlanDisplayName(planId: string): string {
@@ -237,6 +276,7 @@ export class SubscriptionService {
 
 export const subscriptionService = new SubscriptionService();
 export default subscriptionService;
+
 
 
 
