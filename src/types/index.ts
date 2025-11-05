@@ -5,7 +5,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  subscription_tier?: string;
+  subscription_tier: string;
   plan?: string;
   created_at?: string;
   isEmailVerified?: boolean;
@@ -224,3 +224,4 @@ export interface DodoPaymentMethod {
 }
 
 export default {};
+

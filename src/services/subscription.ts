@@ -1,6 +1,7 @@
-import { apiClient } from './api';
+﻿import { apiClient } from './api';
 
-interface Plan {
+// Export all interfaces
+export interface Plan {
   id: string;
   name: string;
   price: number;
@@ -18,16 +19,35 @@ interface Plan {
   popular?: boolean;
 }
 
-interface ApiResponse<T> {
+export interface ApiResponse<T> {
   success: boolean;
   data?: T;
+  plans?: T; // Add plans property for backward compatibility
   message?: string;
   error?: string;
 }
 
-interface CheckoutSession {
+export interface CheckoutSession {
   url: string;
   sessionId: string;
+}
+
+export interface SubscriptionData {
+  id: string;
+  user_id: string;
+  plan_id: string;
+  status: string;
+  current_period_start: string;
+  current_period_end: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Usage {
+  daily_queries_used: number;
+  daily_queries_limit: number;
+  period_start: string;
+  period_end: string;
 }
 
 export class SubscriptionService {
@@ -40,8 +60,8 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error fetching plans:', error);
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: 'Failed to fetch subscription plans',
         data: []
       };
@@ -57,9 +77,63 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error fetching current subscription:', error);
-      return { 
-        success: false, 
-        error: 'Failed to fetch subscription' 
+      return {
+        success: false,
+        error: 'Failed to fetch subscription'
+      };
+    }
+  }
+
+  /**
+   * Get subscription by ID
+   */
+  async getSubscription(): Promise<ApiResponse<SubscriptionData>> {
+    try {
+      const response = await apiClient.get<SubscriptionData>('/subscriptions');
+      return response;
+    } catch (error) {
+      console.error('Error fetching subscription:', error);
+      return {
+        success: false,
+        error: 'Failed to fetch subscription'
+      };
+    }
+  }
+
+  /**
+   * Create subscription
+   */
+  async createSubscription(planId: string): Promise<ApiResponse<CheckoutSession>> {
+    try {
+      const response = await apiClient.post<CheckoutSession>('/subscriptions/checkout', {
+        planId,
+        successUrl: \\/dashboard?upgraded=true\,
+        cancelUrl: \\/subscriptions\
+      });
+      return response;
+    } catch (error) {
+      console.error('Error creating subscription:', error);
+      return {
+        success: false,
+        error: 'Failed to create subscription'
+      };
+    }
+  }
+
+  /**
+   * Verify payment after checkout
+   */
+  async verifyPayment(sessionId: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await apiClient.post('/subscriptions/verify-payment', {
+        sessionId
+      });
+      return response;
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      return {
+        success: false,
+        error: 'Failed to verify payment'
       };
     }
   }
@@ -69,17 +143,17 @@ export class SubscriptionService {
    */
   async createCheckoutSession(planId: string): Promise<ApiResponse<CheckoutSession>> {
     try {
-      const response = await apiClient.post<CheckoutSession>('/subscriptions/checkout', {
+      const response = await apiClient.post<CheckoutSession>('/subscriptions/checkout', {   
         planId,
-        successUrl: `${window.location.origin}/dashboard?upgraded=true`,
-        cancelUrl: `${window.location.origin}/subscriptions`
+        successUrl: \\/dashboard?upgraded=true\,
+        cancelUrl: \\/subscriptions\
       });
       return response;
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      return { 
-        success: false, 
-        error: 'Failed to create checkout session' 
+      return {
+        success: false,
+        error: 'Failed to create checkout session'
       };
     }
   }
@@ -95,9 +169,9 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error upgrading plan:', error);
-      return { 
-        success: false, 
-        error: 'Failed to upgrade plan' 
+      return {
+        success: false,
+        error: 'Failed to upgrade plan'
       };
     }
   }
@@ -111,9 +185,9 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error cancelling subscription:', error);
-      return { 
-        success: false, 
-        error: 'Failed to cancel subscription' 
+      return {
+        success: false,
+        error: 'Failed to cancel subscription'
       };
     }
   }
@@ -127,9 +201,9 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error fetching billing info:', error);
-      return { 
-        success: false, 
-        error: 'Failed to fetch billing information' 
+      return {
+        success: false,
+        error: 'Failed to fetch billing information'
       };
     }
   }
@@ -143,9 +217,9 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error fetching usage stats:', error);
-      return { 
-        success: false, 
-        error: 'Failed to fetch usage statistics' 
+      return {
+        success: false,
+        error: 'Failed to fetch usage statistics'
       };
     }
   }
@@ -159,9 +233,9 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error fetching subscription history:', error);
-      return { 
-        success: false, 
-        error: 'Failed to fetch subscription history' 
+      return {
+        success: false,
+        error: 'Failed to fetch subscription history'
       };
     }
   }
@@ -175,9 +249,9 @@ export class SubscriptionService {
       return response;
     } catch (error) {
       console.error('Error fetching upgrade options:', error);
-      return { 
-        success: false, 
-        error: 'Failed to fetch upgrade options' 
+      return {
+        success: false,
+        error: 'Failed to fetch upgrade options'
       };
     }
   }
