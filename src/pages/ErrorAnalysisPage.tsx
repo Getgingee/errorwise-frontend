@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from '../config/api';
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { 
@@ -33,7 +34,7 @@ const ErrorAnalysisPage: React.FC = () => {
 
   const fetchRecentAnalyses = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/errors/recent', {
+      const response = await fetch(API_ENDPOINTS.errors.recent, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -58,7 +59,7 @@ const ErrorAnalysisPage: React.FC = () => {
 
     setIsAnalyzing(true);
     try {
-      const response = await fetch('http://localhost:3001/api/errors/analyze', {
+      const response = await fetch(API_ENDPOINTS.errors.analyze, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -312,3 +313,5 @@ ${analysis.solution}
 };
 
 export default ErrorAnalysisPage;
+
+

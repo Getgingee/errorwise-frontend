@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
@@ -48,7 +49,7 @@ const ProfilePage: React.FC = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/users/profile', {
+      const response = await fetch(API_ENDPOINTS.auth.profile, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -78,7 +79,7 @@ const ProfilePage: React.FC = () => {
   const handleUpdateProfile = async () => {
     setSaving(true);
     try {
-      const response = await fetch('http://localhost:3001/api/users/profile', {
+      const response = await fetch(API_ENDPOINTS.auth.profile, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -122,7 +123,7 @@ const ProfilePage: React.FC = () => {
 
     setIsChangingPassword(true);
     try {
-      const response = await fetch('http://localhost:3001/api/users/password', {
+      const response = await fetch('https://errorwise-backend-production.up.railway.app/api/users/password', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -160,7 +161,7 @@ const ProfilePage: React.FC = () => {
 
     setIsDeleting(true);
     try {
-      const response = await fetch('http://localhost:3001/api/users/account', {
+      const response = await fetch('https://errorwise-backend-production.up.railway.app/api/users/account', {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -467,3 +468,6 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
+
+

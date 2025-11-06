@@ -1,3 +1,4 @@
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -255,7 +256,7 @@ const DashboardPage: React.FC = () => {
 
   const fetchRecentAnalyses = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/errors/history?limit=5', {
+      const response = await fetch(`${API_ENDPOINTS.errors.history}?limit=5`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -327,7 +328,7 @@ const DashboardPage: React.FC = () => {
     setAnalysis(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/errors/analyze', {
+      const response = await fetch(API_ENDPOINTS.errors.analyze, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -983,6 +984,9 @@ const DashboardPage: React.FC = () => {
   };
 
 export default DashboardPage;
+
+
+
 
 
 

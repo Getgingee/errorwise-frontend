@@ -1,4 +1,5 @@
 import React from 'react';
+import { API_ENDPOINTS } from '../../config/api';
 import { X, Check, Zap, Star, Crown, Loader } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,7 +57,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
         setLoading(true);
         setError(null);
         
-        const response = await fetch('http://localhost:3001/api/subscriptions/plans');
+        const response = await fetch(API_ENDPOINTS.subscriptions.plans);
         
         if (!response.ok) {
           throw new Error('Failed to fetch pricing plans');
@@ -342,3 +343,6 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
 };
 
 export default PricingInfoModal;
+
+
+

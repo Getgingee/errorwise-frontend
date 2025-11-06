@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from '../config/api';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -25,7 +26,7 @@ const MockPaymentPage: React.FC = () => {
     try {
       if (success) {
         // Simulate successful payment - update subscription
-        const response = await fetch('http://localhost:3001/api/subscriptions', {
+        const response = await fetch(API_ENDPOINTS.subscriptions.upgrade, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -145,3 +146,6 @@ const MockPaymentPage: React.FC = () => {
 };
 
 export default MockPaymentPage;
+
+
+

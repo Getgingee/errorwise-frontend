@@ -148,7 +148,7 @@ class AnalyticsService {
       // Only send in production or if explicitly enabled
       if (!this.isProduction) return;
 
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://errorwise-backend-production.up.railway.app/api';
       
       await fetch(`${API_BASE_URL}/analytics/track`, {
         method: 'POST',
@@ -199,3 +199,4 @@ export const trackModalOpen = (modalName: string) =>
 
 export const trackButtonClick = (buttonName: string, location: string) => 
   analytics.trackButtonClick(buttonName, location);
+

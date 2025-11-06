@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://errorwise-backend-production.up.railway.app/api';
 
 export interface FeedbackData {
   feedback_type: 'feature_request' | 'bug_report' | 'general_feedback' | 'improvement_suggestion';
@@ -91,3 +91,4 @@ class SupportService {
 }
 
 export const supportService = new SupportService();
+

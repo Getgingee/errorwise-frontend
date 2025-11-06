@@ -1,8 +1,9 @@
+import { API_BASE_URL } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { X, Sparkles, ArrowRight, Loader2, AlertCircle, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+
 
 interface DemoResult {
   explanation: string;
@@ -103,7 +104,7 @@ const LiveDemoModal: React.FC<LiveDemoModalProps> = ({ isOpen, onClose }) => {
     } catch (err: any) {
       console.error('Analysis error:', err);
       if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-        setError('Cannot connect to the backend server. Please ensure the backend is running on http://localhost:3001');
+        setError('Cannot connect to the backend server. Please ensure the backend is running on API_BASE_URL');
       } else {
         setError(err.message || 'Something went wrong. Please try again.');
       }
@@ -289,5 +290,7 @@ const LiveDemoModal: React.FC<LiveDemoModalProps> = ({ isOpen, onClose }) => {
 };
 
 export default LiveDemoModal;
+
+
 
 
