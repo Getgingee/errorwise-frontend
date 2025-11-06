@@ -468,6 +468,7 @@ const LandingPage: React.FC = () => {
             
             </div>
           
+{/* TODO: Temporarily disabled - Re-enable in future
           {/* Trust Indicators */}
           <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-700/50 dark:border-gray-700/70 px-4">
             <p className="text-gray-400 dark:text-gray-400 mb-6 sm:mb-8 text-base sm:text-lg">Trusted by developers at</p>
@@ -486,6 +487,7 @@ const LandingPage: React.FC = () => {
                 <span className="text-gray-300 dark:text-gray-300 font-semibold text-sm sm:text-base">CodeLabs</span>
               </div>
             </div>
+*/}
           </div>
           
           {/* Additional Trust Elements */}
@@ -597,6 +599,7 @@ const LandingPage: React.FC = () => {
                 AI-powered debugging assistant for modern developers. Fix errors faster with intelligent analysis.
               </p>
               
+{/* TODO: Temporarily disabled - Re-enable in future
               {/* Social Icons with Enhanced Glow */}
               <div className="flex items-center gap-4 pt-2">
                 <a 
@@ -637,6 +640,7 @@ const LandingPage: React.FC = () => {
                 </a>
               </div>
             </div>
+*/}
             
             {/* Company Section */}
             <div className="space-y-3 sm:space-y-4">
@@ -663,6 +667,7 @@ const LandingPage: React.FC = () => {
               </ul>
             </div>
             
+{/* TODO: Temporarily disabled - Re-enable in future
             {/* Support Section */}
             <div className="space-y-3 sm:space-y-4">
               <h4 className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Support</h4>
@@ -706,6 +711,7 @@ const LandingPage: React.FC = () => {
               </ul>
             </div>
           </div>
+*/}
           
           {/* Copyright */}
           <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/20 text-center">
