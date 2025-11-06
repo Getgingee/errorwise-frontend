@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://errorwise-backend-production.up.railway.app/api';
 
@@ -53,7 +53,7 @@ export interface ResetPasswordData {
 
 export const register = async (data: RegisterData): Promise<AuthResponse> => {
   try {
-    const response = await api.post('/api/auth/register/enhanced', data);
+    const response = await api.post('/auth/register/enhanced', data);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Registration failed');
@@ -62,7 +62,7 @@ export const register = async (data: RegisterData): Promise<AuthResponse> => {
 
 export const verifyEmail = async (token: string): Promise<AuthResponse> => {
   try {
-    const response = await api.get(`/api/auth/verify-email?token=${token}`);
+    const response = await api.get(`/auth/verify-email?token=${token}`);
     if (response.data.accessToken) {
       localStorage.setItem('accessToken', response.data.accessToken);
     }
@@ -79,12 +79,12 @@ export const resendVerification = async (): Promise<AuthResponse> => {
   try {
     // Get verification token from session
     const verificationToken = sessionStorage.getItem('verificationToken');
-    
+
     if (!verificationToken) {
       throw new Error('No verification session found. Please try logging in again.');
     }
 
-    const response = await api.post('/api/auth/resend-verification', {
+    const response = await api.post('/auth/resend-verification', {
       verificationToken
     });
 
@@ -97,15 +97,15 @@ export const resendVerification = async (): Promise<AuthResponse> => {
         `Too many attempts. Please try again in ${Math.ceil(retryAfter / 60)} minutes.`
       );
     }
-    
+
     // Handle expired token
     if (error.response?.status === 401) {
       sessionStorage.removeItem('verificationToken');
       throw new Error('Verification session expired. Please try logging in again.');
     }
-    
+
     throw new Error(
-      error.response?.data?.error || 
+      error.response?.data?.error ||
       'Failed to resend verification email'
     );
   }
@@ -113,7 +113,7 @@ export const resendVerification = async (): Promise<AuthResponse> => {
 
 export const loginStep1 = async (data: LoginStep1Data): Promise<AuthResponse> => {
   try {
-    const response = await api.post('/api/auth/login/enhanced', data);
+    const response = await api.post('/auth/login/enhanced', data);
     return response.data;
   } catch (error: any) {
     // Check for email verification error
@@ -123,7 +123,7 @@ export const loginStep1 = async (data: LoginStep1Data): Promise<AuthResponse> =>
       if (verificationToken) {
         sessionStorage.setItem('verificationToken', verificationToken);
       }
-      
+
       // Throw error with all necessary data
       const verificationError = new Error(
         error.response?.data?.error || error.response?.data?.message || 'Email not verified'
@@ -133,14 +133,14 @@ export const loginStep1 = async (data: LoginStep1Data): Promise<AuthResponse> =>
       (verificationError as any).verificationToken = verificationToken;
       throw verificationError;
     }
-    
+
     throw new Error(error.response?.data?.error || error.response?.data?.message || 'Login failed');
   }
 };
 
 export const loginStep2 = async (data: LoginStep2Data): Promise<AuthResponse> => {
   try {
-    const response = await api.post('/api/auth/login/verify-otp', data);
+    const response = await api.post('/auth/login/verify-otp', data);
     if (response.data.accessToken) {
       localStorage.setItem('accessToken', response.data.accessToken);
     }
@@ -155,7 +155,7 @@ export const loginStep2 = async (data: LoginStep2Data): Promise<AuthResponse> =>
 
 export const resendLoginOTP = async (email: string): Promise<AuthResponse> => {
   try {
-    const response = await api.post('/api/auth/resend-login-otp', { email });
+    const response = await api.post('/auth/resend-login-otp', { email });
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Failed to resend OTP');
@@ -164,7 +164,7 @@ export const resendLoginOTP = async (email: string): Promise<AuthResponse> => {
 
 export const forgotPassword = async (data: ForgotPasswordData): Promise<AuthResponse> => {
   try {
-    const response = await api.post('/api/auth/forgot-password', data);
+    const response = await api.post('/auth/forgot-password', data);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Failed to send reset email');
@@ -173,7 +173,7 @@ export const forgotPassword = async (data: ForgotPasswordData): Promise<AuthResp
 
 export const resetPassword = async (data: ResetPasswordData): Promise<AuthResponse> => {
   try {
-    const response = await api.post('/api/auth/reset-password', data);
+    const response = await api.post('/auth/reset-password', data);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Password reset failed');
@@ -182,7 +182,7 @@ export const resetPassword = async (data: ResetPasswordData): Promise<AuthRespon
 
 export const logout = async (): Promise<void> => {
   try {
-    await api.post('/api/auth/logout');
+    await api.post('/auth/logout');
   } catch (error) {
     console.error('Logout error:', error);
   } finally {
@@ -260,4 +260,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
