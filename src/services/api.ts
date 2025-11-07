@@ -23,7 +23,7 @@ class ApiClient {
     // Request interceptor to add auth token
     this.client.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -52,15 +52,15 @@ class ApiClient {
               });
 
               const { token } = response.data.data;
-              localStorage.setItem('token', token);
-              
+              localStorage.setItem('accessToken', token);
+
               // Retry the original request with new token
               originalRequest.headers.Authorization = `Bearer ${token}`;
               return this.client(originalRequest);
             }
           } catch (refreshError) {
             // Refresh failed, redirect to login
-            localStorage.removeItem('token');
+            localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             window.location.href = '/auth/login';
           }
@@ -119,12 +119,12 @@ class ApiClient {
 
   // Set auth token
   setAuthToken(token: string) {
-    localStorage.setItem('token', token);
+    localStorage.setItem('accessToken', token);
   }
 
   // Clear auth token
   clearAuthToken() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
   }
 }
