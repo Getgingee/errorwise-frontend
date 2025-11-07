@@ -1,12 +1,12 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+﻿import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { ApiResponse, ApiError } from '../types';
-
+import { API_BASE_URL } from '../config/api';
 class ApiClient {
   private client: AxiosInstance;
   private baseURL: string;
 
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_BASE_URL || 'https://errorwise-backend-production.up.railway.app/api';
+    this.baseURL = API_BASE_URL;
     
     this.client = axios.create({
       baseURL: this.baseURL,
