@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -85,7 +85,7 @@ const DashboardPage: React.FC = () => {
       toast.loading('Verifying payment...');
       await subscriptionService.verifyPayment(sessionId);
       toast.dismiss();
-      toast.success('Subscription activated! 🎉');
+      toast.success('Subscription activated! ≡ƒÄë');
       await loadSubscription();
     } catch (error) {
       toast.dismiss();
@@ -294,7 +294,7 @@ const DashboardPage: React.FC = () => {
         const newPath = window.location.pathname;
         if (authRoutes.includes(newPath)) {
           window.history.forward();
-          toast('Cannot navigate back to login pages', { icon: 'ℹ️' });
+          toast('Cannot navigate back to login pages', { icon: 'Γä╣∩╕Å' });
         }
       }, 100);
     }
