@@ -13,7 +13,21 @@ export function SubscriptionCard({ subscription, onCancel, onUpgrade }: Subscrip
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
-  const { subscription: sub, plan, usage, canUpgrade, canDowngrade } = subscription;
+  // Defensive access: subscription payload may be undefined if API returned an error/unauthorized
+  const sub = subscription?.subscription as any | undefined;
+  const planObj = subscription?.plan as any | undefined;
+  const usage = subscription?.usage as any | undefined;
+  const canUpgrade = subscription?.canUpgrade ?? false;
+  const canDowngrade = subscription?.canDowngrade ?? false;
+
+  if (!sub || !planObj) {
+    return (
+      <div className="glass-card rounded-lg p-8 text-center">
+        <p className="text-gray-500">No active subscription found.</p>
+        <p className="text-sm text-gray-400 mt-2">Please login or check your subscription status.</p>
+      </div>
+    );
+  }
 
   const statusColors = {
     active: 'bg-green-100 text-green-800',
@@ -47,9 +61,9 @@ export function SubscriptionCard({ subscription, onCancel, onUpgrade }: Subscrip
       <div className="bg-gradient-to-r from-blue-500 to-cyan-400 p-6 text-white">
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-bold mb-1">{plan.name} Plan</h2>
+            <h2 className="text-2xl font-bold mb-1">{planObj.name} Plan</h2>
             <p className="text-blue-100">
-              {sub.isTrial ? `${plan.trialDays}-day trial` : 'Active subscription'}
+              {sub.isTrial ? `${planObj.trialDays}-day trial` : 'Active subscription'}
             </p>
           </div>
           <span
@@ -72,8 +86,8 @@ export function SubscriptionCard({ subscription, onCancel, onUpgrade }: Subscrip
             <div>
               <p className="text-sm text-gray-600">Current Tier</p>
               <p className="font-semibold text-gray-900">{sub.tier.toUpperCase()}</p>
-              {plan.price > 0 && (
-                <p className="text-sm text-gray-600">${plan.price}/{plan.interval}</p>
+              {planObj.price > 0 && (
+                <p className="text-sm text-gray-600">${planObj.price}/{planObj.interval}</p>
               )}
             </div>
           </div>
@@ -99,7 +113,7 @@ export function SubscriptionCard({ subscription, onCancel, onUpgrade }: Subscrip
 
         {/* Usage Display */}
         <div>
-          <h3 className="font-semibold text-gray-900 mb-3">Query Usage</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">Query Usage</h3>
           <UsageDisplay usage={usage} />
         </div>
 

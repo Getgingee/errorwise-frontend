@@ -48,10 +48,17 @@ interface ConversationMessage {
 const DashboardPage: React.FC = () => {
   // Load subscription data
   async function loadSubscription() {
-    try {
-      setSubscriptionLoading(true);
-      const data = await subscriptionService.getSubscription();
-      setSubscription(data);
+      try {
+        setSubscriptionLoading(true);
+        const res = await subscriptionService.getSubscription();
+        // res should be an ApiResponse<SubscriptionData>
+        if (res && (res as any).success) {
+          setSubscription((res as any).data as SubscriptionData);
+        } else {
+          // no subscription or unauthorized - keep null to avoid crashing SubscriptionCard
+          setSubscription(null);
+          console.warn('No subscription data returned', res);
+        }
     } catch (error) {
       console.error('Failed to load subscription:', error);
     } finally {
