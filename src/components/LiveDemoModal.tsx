@@ -231,9 +231,13 @@ const LiveDemoModal: React.FC<LiveDemoModalProps> = ({ isOpen, onClose, onFeedba
                 {result.remainingDemos === 0 && (
                   <Link 
                     to="/register"
-                    className="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-xs font-medium rounded transition-colors"
+                    className="px-3 py-1 bg-purple-500 hover:bg-blue-600 text-white text-xs font-medium rounded transition-colors"
                   >
-                    Sign Up
+                    <MessageCircle className="h-3 w-3" />
+                    Give Feedback 
+                    <button onClick={onFeedbackClick} className="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-xs font-medium rounded transition-colors">
+                      Sign Up
+                    </button>
                   </Link>
                 )}
               </div>
