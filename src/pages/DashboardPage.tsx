@@ -51,16 +51,22 @@ const DashboardPage: React.FC = () => {
       try {
         setSubscriptionLoading(true);
         const res = await subscriptionService.getSubscription();
-        // res should be an ApiResponse<SubscriptionData>
-        if (res && (res as any).success) {
+        // Backend returns data directly, not wrapped in success/data
+        if (res && (res as any).user) {
+          // Backend response has user, subscription, plan, usage fields directly
+          setSubscription(res as any as SubscriptionData);
+        } else if (res && (res as any).success && (res as any).data) {
+          // Fallback for wrapped response
           setSubscription((res as any).data as SubscriptionData);
         } else {
-          // no subscription or unauthorized - keep null to avoid crashing SubscriptionCard
+          // No subscription - set null to show default free tier
           setSubscription(null);
           console.warn('No subscription data returned', res);
         }
     } catch (error) {
       console.error('Failed to load subscription:', error);
+      // On error, set null so UI doesn't crash
+      setSubscription(null);
     } finally {
       setSubscriptionLoading(false);
     }
@@ -436,14 +442,6 @@ const DashboardPage: React.FC = () => {
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
     return `${Math.floor(seconds / 86400)}d ago`;
   };
-
-  // Check current state
-  console.log('accessToken:', localStorage.getItem('accessToken'));
-  console.log('old token:', localStorage.getItem('token'));
-
-  // Clear everything and force fresh login
-  localStorage.clear();
-  window.location.href = '/login';
 
   return (
     <>

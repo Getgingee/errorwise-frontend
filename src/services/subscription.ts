@@ -64,14 +64,15 @@ export class SubscriptionService {
   /**
    * Get subscription details
    */
-  async getSubscription(): Promise<ApiResponse<SubscriptionData>> {
+  async getSubscription(): Promise<any> {
     try {
-      const response = await apiClient.get<SubscriptionData>('/subscriptions');
-      // Normalize: return the server payload (not the raw axios response)
-      return { success: true, data: response.data };
+      const response = await apiClient.get<any>('/subscriptions');
+      // Backend returns data directly (user, subscription, plan, usage)
+      // NOT wrapped in {success, data}
+      return response;
     } catch (error) {
       console.error('Error fetching subscription:', error);
-      return { success: false, error: 'Failed to fetch subscription' };
+      return null;
     }
   }
 
@@ -100,7 +101,7 @@ export class SubscriptionService {
   async getPlans(): Promise<ApiResponse<Plan[]>> {
     try {
       const response = await apiClient.get<Plan[]>('/subscriptions/plans');
-  return response as unknown as ApiResponse<Plan[]>;
+  return response.data as unknown as ApiResponse<Plan[]>;
     } catch (error) {
       console.error('Error fetching plans:', error);
       return { 
@@ -117,7 +118,7 @@ export class SubscriptionService {
   async getCurrentSubscription(): Promise<ApiResponse<any>> {
     try {
       const response = await apiClient.get('/subscriptions/current');
-  return response.data as ApiResponse<any>;
+  return response.data as unknown as ApiResponse<any>;
     } catch (error) {
       console.error('Error fetching current subscription:', error);
       return { 
