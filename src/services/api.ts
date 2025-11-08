@@ -31,13 +31,11 @@ class ApiClient {
           hasHeaders: !!config.headers
         });
         
-        if (token) {
-          // Axios headers can be set directly
-          if (config.headers) {
-            config.headers['Authorization'] = `Bearer ${token}`;
-            console.log('✅ Authorization header added');
-          }
-        } else {
+        if (token && config.headers) {
+          // Use Axios 1.x compatible header setting
+          config.headers.set('Authorization', `Bearer ${token}`);
+          console.log('✅ Authorization header set');
+        } else if (!token) {
           console.warn('❌ No token in localStorage');
         }
         return config;
