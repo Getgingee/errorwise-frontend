@@ -1,15 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
-import { ThemeToggle } from '../components/ThemeToggle';
 import { Menu, X, Github, Twitter, Linkedin, Mail, MessageCircle, HelpCircle, Users } from 'lucide-react';
 import LiveDemoModal from '../components/LiveDemoModal';
+import FeedbackModal from '../components/FeedbackModal';
 import { FeaturesModal, PricingInfoModal, APIDocsModal, InfoPagesModal } from '../components/info';
 
 const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   
   const [demoModalOpen, setDemoModalOpen] = React.useState(false);
+  const [feedbackModalOpen, setFeedbackModalOpen] = React.useState(false);
   const [featuresModalOpen, setFeaturesModalOpen] = React.useState(false);
   const [pricingModalOpen, setPricingModalOpen] = React.useState(false);
   const [apiDocsModalOpen, setApiDocsModalOpen] = React.useState(false);
@@ -35,9 +36,9 @@ const LandingPage: React.FC = () => {
             <span className="text-xl md:text-2xl font-bold text-white dark:text-white">ErrorWise</span>
           </div>
           
-          <div className="hidden lg:flex items-center space-x-6"><button onClick={() => setFeaturesModalOpen(true)} className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-300">Features</button><button onClick={() => setPricingModalOpen(true)} className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-300">Pricing</button><button onClick={() => setDemoModalOpen(true)} className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-300">How It Works</button><ThemeToggle /><Link to="/login">
+          <div className="hidden lg:flex items-center space-x-6"><button onClick={() => setFeaturesModalOpen(true)} className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-300">Features</button><button onClick={() => setPricingModalOpen(true)} className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-300">Pricing</button><button onClick={() => setDemoModalOpen(true)} className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-300">How It Works</button><Link to="/login">
               <Button className="bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-                Get Started
+                Sign In
               </Button>
             </Link>
           </div>
@@ -83,7 +84,7 @@ const LandingPage: React.FC = () => {
               </button>
               <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white px-6 py-3 rounded-full shadow-lg">
-                  Get Started Free
+                  Sign In
                 </Button>
               </Link>
             </div>
@@ -468,11 +469,10 @@ const LandingPage: React.FC = () => {
             
             </div>
           
-          {/* Trust Indicators */}
-          <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-700/50 dark:border-gray-700/70 px-4">
+          {/* Trust Indicators - Hidden for deployment */}
+          {/* <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-700/50 dark:border-gray-700/70 px-4">
             <p className="text-gray-400 dark:text-gray-400 mb-6 sm:mb-8 text-base sm:text-lg">Trusted by developers at</p>
             <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 lg:gap-8 opacity-60">
-              {/* Company placeholders - enhance with real logos when available */}
               <div className="bg-gray-800/50 dark:bg-gray-800/70 px-4 sm:px-6 py-2 sm:py-3 rounded-lg border border-gray-700/30 dark:border-gray-700/40 hover:border-gray-600/50 dark:hover:border-gray-600/70 transition-colors duration-300">
                 <span className="text-gray-300 dark:text-gray-300 font-semibold text-sm sm:text-base">TechCorp</span>
               </div>
@@ -486,10 +486,10 @@ const LandingPage: React.FC = () => {
                 <span className="text-gray-300 dark:text-gray-300 font-semibold text-sm sm:text-base">CodeLabs</span>
               </div>
             </div>
-          </div>
+          </div> */}
           
-          {/* Additional Trust Elements */}
-          <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto px-4">
+          {/* Additional Trust Elements - Hidden for deployment */}
+          {/* <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto px-4">
             <div className="flex items-center justify-center space-x-2 text-gray-400 dark:text-gray-400 text-sm sm:text-base">
               <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -512,7 +512,7 @@ const LandingPage: React.FC = () => {
           
           <div className="mt-8 sm:mt-12 text-xs sm:text-sm text-gray-400 dark:text-gray-400 px-4">
             <p>Have questions? Reach out to us at <a href="mailto:support@errorwise.com" className="text-blue-400 dark:text-blue-400 hover:text-blue-300 dark:hover:text-blue-300 transition-colors duration-300">support@errorwise.com</a></p>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -596,9 +596,9 @@ const LandingPage: React.FC = () => {
               <p className="text-gray-300 text-sm sm:text-base max-w-md">
                 AI-powered debugging assistant for modern developers. Fix errors faster with intelligent analysis.
               </p>
-              
-              {/* Social Icons with Enhanced Glow */}
-              <div className="flex items-center gap-4 pt-2">
+
+              {/* Social Icons with Enhanced Glow - Hidden for deployment */}
+              {/* <div className="flex items-center gap-4 pt-2">
                 <a 
                   href="https://github.com/errorwise" 
                   target="_blank" 
@@ -635,11 +635,11 @@ const LandingPage: React.FC = () => {
                 >
                   <Mail size={22} />
                 </a>
-              </div>
+              </div> */}
             </div>
             
-            {/* Company Section */}
-            <div className="space-y-3 sm:space-y-4">
+            {/* Company Section - Hidden for deployment */}
+            {/* <div className="space-y-3 sm:space-y-4">
               <h4 className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Company</h4>
               <ul className="space-y-2 sm:space-y-2.5">
                 <li>
@@ -661,10 +661,10 @@ const LandingPage: React.FC = () => {
                   </button>
                 </li>
               </ul>
-            </div>
+            </div> */}
             
-            {/* Support Section */}
-            <div className="space-y-3 sm:space-y-4">
+            {/* Support Section - Hidden for deployment */}
+            {/* <div className="space-y-3 sm:space-y-4">
               <h4 className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent font-semibold text-sm sm:text-base">Support</h4>
               <ul className="space-y-2 sm:space-y-2.5">
                 <li>
@@ -704,7 +704,7 @@ const LandingPage: React.FC = () => {
                   </button>
                 </li>
               </ul>
-            </div>
+            </div> */}
           </div>
           
           {/* Copyright */}
@@ -722,7 +722,21 @@ const LandingPage: React.FC = () => {
 
 
       {/* Live Demo Modal */}
-      <LiveDemoModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
+      <LiveDemoModal 
+        isOpen={demoModalOpen} 
+        onClose={() => setDemoModalOpen(false)}
+        onFeedbackClick={() => {
+          setDemoModalOpen(false);
+          setFeedbackModalOpen(true);
+        }}
+      />
+      
+      {/* Feedback Modal */}
+      <FeedbackModal 
+        isOpen={feedbackModalOpen} 
+        onClose={() => setFeedbackModalOpen(false)}
+        source="demo_limit"
+      />
       
       {/* Info Modals */}
       <FeaturesModal isOpen={featuresModalOpen} onClose={() => setFeaturesModalOpen(false)} />
