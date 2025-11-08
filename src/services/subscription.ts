@@ -68,7 +68,7 @@ export class SubscriptionService {
     try {
       const response = await apiClient.get<SubscriptionData>('/subscriptions');
       // Normalize: return the server payload (not the raw axios response)
-  return response.data as ApiResponse<SubscriptionData>;
+      return { success: true, data: response.data };
     } catch (error) {
       console.error('Error fetching subscription:', error);
       return { success: false, error: 'Failed to fetch subscription' };
@@ -100,7 +100,7 @@ export class SubscriptionService {
   async getPlans(): Promise<ApiResponse<Plan[]>> {
     try {
       const response = await apiClient.get<Plan[]>('/subscriptions/plans');
-  return response.data as ApiResponse<Plan[]>;
+  return response as unknown as ApiResponse<Plan[]>;
     } catch (error) {
       console.error('Error fetching plans:', error);
       return { 

@@ -6,11 +6,11 @@
     }
   ],
   "env": {
-    "VITE_API_BASE_URL": "https://api.errorwise.tech/api"
+    "VITE_API_BASE_URL": "https://errorwise-backend-production.up.railway.app/api"
   },
   "build": {
     "env": {
-      "VITE_API_BASE_URL": "https://api.errorwise.tech/api"
+      "VITE_API_BASE_URL": "https://errorwise-backend-production.up.railway.app/api"
     }
   }
 }

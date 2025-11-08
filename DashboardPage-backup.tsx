@@ -48,17 +48,10 @@ interface ConversationMessage {
 const DashboardPage: React.FC = () => {
   // Load subscription data
   async function loadSubscription() {
-      try {
-        setSubscriptionLoading(true);
-        const res = await subscriptionService.getSubscription();
-        // res should be an ApiResponse<SubscriptionData>
-        if (res && (res as any).success) {
-          setSubscription((res as any).data as SubscriptionData);
-        } else {
-          // no subscription or unauthorized - keep null to avoid crashing SubscriptionCard
-          setSubscription(null);
-          console.warn('No subscription data returned', res);
-        }
+    try {
+      setSubscriptionLoading(true);
+      const data = await subscriptionService.getSubscription();
+      setSubscription(data);
     } catch (error) {
       console.error('Failed to load subscription:', error);
     } finally {
@@ -92,7 +85,7 @@ const DashboardPage: React.FC = () => {
       toast.loading('Verifying payment...');
       await subscriptionService.verifyPayment(sessionId);
       toast.dismiss();
-      toast.success('Subscription activated! ≡ƒÄë');
+      toast.success('Subscription activated! ðŸŽ‰');
       await loadSubscription();
     } catch (error) {
       toast.dismiss();
@@ -301,7 +294,7 @@ const DashboardPage: React.FC = () => {
         const newPath = window.location.pathname;
         if (authRoutes.includes(newPath)) {
           window.history.forward();
-          toast('Cannot navigate back to login pages', { icon: 'Γä╣∩╕Å' });
+          toast('Cannot navigate back to login pages', { icon: 'â„¹ï¸' });
         }
       }, 100);
     }
@@ -436,14 +429,6 @@ const DashboardPage: React.FC = () => {
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
     return `${Math.floor(seconds / 86400)}d ago`;
   };
-
-  // Check current state
-  console.log('accessToken:', localStorage.getItem('accessToken'));
-  console.log('old token:', localStorage.getItem('token'));
-
-  // Clear everything and force fresh login
-  localStorage.clear();
-  window.location.href = '/login';
 
   return (
     <>
@@ -999,6 +984,7 @@ const DashboardPage: React.FC = () => {
   };
 
 export default DashboardPage;
+
 
 
 
