@@ -27,14 +27,13 @@ class ApiClient {
         console.log('🔐 API Client Interceptor:', {
           url: config.url,
           hasToken: !!token,
-          tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
-          hasHeaders: !!config.headers
+          tokenPreview: token ? token.substring(0, 20) + '...' : 'none'
         });
         
         if (token && config.headers) {
-          // Use Axios 1.x compatible header setting
-          config.headers.set('Authorization', `Bearer ${token}`);
-          console.log('✅ Authorization header set');
+          // Use Axios AxiosHeaders.setAuthorization() method
+          config.headers.setAuthorization(`Bearer ${token}`);
+          console.log('✅ Authorization header set via setAuthorization()');
         } else if (!token) {
           console.warn('❌ No token in localStorage');
         }
