@@ -28,17 +28,22 @@ class ApiClient {
           url: config.url,
           hasToken: !!token,
           tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
-          headers: config.headers
+          hasHeaders: !!config.headers
         });
+        
         if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-          console.log('✅ Authorization header added');
+          // Axios headers can be set directly
+          if (config.headers) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+            console.log('✅ Authorization header added');
+          }
         } else {
           console.warn('❌ No token in localStorage');
         }
         return config;
       },
       (error) => {
+        console.error('❌ Request interceptor error:', error);
         return Promise.reject(error);
       }
     );
