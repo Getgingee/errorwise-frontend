@@ -25,7 +25,7 @@ import {
 import { toast } from 'react-hot-toast';
 
 import { subscriptionService, SubscriptionData } from '../services/subscription';
-import { SubscriptionCard } from '../components/subscription/SubscriptionCard';
+// import { EdgePanelSubscription } from '../components/subscription/EdgePanelSubscription'; // Future feature - not yet deployed
 
 interface ErrorAnalysis {
   id: string;
@@ -448,16 +448,14 @@ const DashboardPage: React.FC = () => {
       <Navigation showRecentAnalyses={recentAnalyses.length > 0} onRecentAnalysesClick={scrollToRecentAnalyses} />
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
-        {/* Subscription Section */}
-        {!subscriptionLoading && subscription && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-2">
-            <SubscriptionCard
-              subscription={subscription}
-              onCancel={handleCancelSubscription}
-              onUpgrade={handleUpgrade}
-            />
-          </div>
-        )}
+        {/* Subscription Section - Temporarily hidden for deployment */}
+        {/* {!subscriptionLoading && subscription && (
+          <EdgePanelSubscription
+            subscription={subscription}
+            onCancel={handleCancelSubscription}
+            onUpgrade={handleUpgrade}
+          />
+        )} */}
         <style>{`
           @keyframes slideUp {
             from {
@@ -536,10 +534,10 @@ const DashboardPage: React.FC = () => {
         `}</style>
 
         {/* Main Content Container */}
-        <div className={`flex flex-col min-h-screen pb-8 px-4 ${!subscriptionLoading && subscription ? 'pt-4' : 'pt-20'}`}>
+        <div className="flex flex-col min-h-screen pb-8 px-4 pt-20">
           {/* Welcome Message - Only show when no analysis */}
           {!analysis && (
-            <div className={`max-w-3xl mx-auto mb-auto text-center fade-in ${!subscriptionLoading && subscription ? 'mt-8' : 'mt-20'}`}>
+            <div className="max-w-3xl mx-auto mb-auto text-center fade-in mt-20">
               <div className="mb-6">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 mb-4 animate-pulse">
                   <Sparkles className="h-8 w-8 text-white" />
@@ -553,13 +551,7 @@ const DashboardPage: React.FC = () => {
               </p>
               
               {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
-                <div className="glass-card rounded-lg p-4">
-                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                    {user?.subscription_tier?.toUpperCase() || 'FREE'}
-                  </div>
-                  <div className="text-xs text-gray-400 mt-1">Current Plan</div>
-                </div>
+              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
                 <div className="glass-card rounded-lg p-4">
                   <div className="text-2xl font-bold text-green-400">
                     <Sparkles className="h-6 w-6 inline" />
@@ -877,8 +869,7 @@ const DashboardPage: React.FC = () => {
                     <div className="flex items-center gap-3">
                       <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
                         <div 
-                          className="confidence-bar h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500"
-                          style={{ width: `${analysis.confidence}%` }}
+                          className={`confidence-bar h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500 w-[${analysis.confidence}%]`}
                         ></div>
                       </div>
                       <span className="text-sm font-semibold text-gray-300">
