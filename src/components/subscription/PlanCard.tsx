@@ -1,4 +1,4 @@
-import { Plan } from '../../services/subscription';
+﻿import { Plan } from '../../services/subscription';
 import { Check, Star, Loader2 } from 'lucide-react';
 
 interface PlanCardProps {
@@ -10,7 +10,7 @@ interface PlanCardProps {
 
 export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps) {
   const isFree = plan.id === 'free';
-  
+
   return (
     <div
       className={`relative bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-blue-500/30 hover:shadow-blue-500/20 ${
@@ -28,11 +28,6 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
       <div className="p-8">
         {/* Plan Name */}
         <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-        
-        {/* Description */}
-        {plan.description && (
-          <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
-        )}
 
         {/* Price */}
         <div className="mb-6">
@@ -40,13 +35,8 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
             <span className="text-5xl font-bold text-gray-900">
               ${plan.price}
             </span>
-            <span className="text-gray-600">/{plan.interval}</span>
+            <span className="text-gray-600">/month</span>
           </div>
-          {plan.trialDays > 0 && (
-            <p className="text-sm text-blue-600 mt-2">
-              {plan.trialDays}-day free trial
-            </p>
-          )}
         </div>
 
         {/* CTA Button */}
@@ -82,49 +72,42 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
             {/* Queries */}
             <FeatureItem
               text={
-                plan.features.dailyQueries === -1
+                plan.limits.daily_queries === -1
                   ? 'Unlimited queries'
-                  : `${plan.features.monthlyQueries || 0} queries/month`
+                  : `${plan.limits.daily_queries} queries/day`
               }
             />
-            
-            {/* Error Explanation */}
-            {plan.features.errorExplanation && (
-              <FeatureItem text="AI-powered error explanation" />
+
+            {/* Explanation Type */}
+            <FeatureItem text={`${plan.limits.explanation_type} AI explanations`} />
+
+            {/* Solutions */}
+            {plan.limits.solutions_provided && (
+              <FeatureItem text="Fix suggestions & code examples" />
             )}
-            
-            {/* Fix Suggestions */}
-            {plan.features.fixSuggestions && (
-              <FeatureItem text="Fix suggestions" />
-            )}
-            
-            {/* Code Examples */}
-            {plan.features.codeExamples && (
-              <FeatureItem text="Code examples" />
-            )}
-            
-            {/* Advanced Analysis */}
-            {plan.features.advancedAnalysis && (
-              <FeatureItem text="Advanced analysis" />
-            )}
-            
-            {/* Error History */}
-            <FeatureItem text={`${plan.features.errorHistory} error history`} />
-            
-            {/* AI Provider */}
-            <FeatureItem text={`${plan.features.aiProvider} AI`} />
-            
+
             {/* Team Features */}
-            {plan.features.teamFeatures && (
+            {plan.limits.team_features && (
               <>
                 <FeatureItem text="Team collaboration" />
-                <FeatureItem text="Shared history" />
-                <FeatureItem text="Team dashboard" />
+                <FeatureItem text="Shared error history" />
+                {plan.limits.max_team_members && (
+                  <FeatureItem text={`Up to ${plan.limits.max_team_members} team members`} />
+                )}
               </>
             )}
-            
-            {/* Support */}
-            <FeatureItem text={`${plan.features.supportLevel} support`} />
+
+            {/* Video Chat */}
+            {plan.limits.video_chat && (
+              <FeatureItem 
+                text={`Video support sessions${plan.limits.video_session_duration ? ` (${plan.limits.video_session_duration} min)` : ''}`} 
+              />
+            )}
+
+            {/* String features from the features array */}
+            {plan.features.map((feature, index) => (
+              <FeatureItem key={index} text={feature} />
+            ))}
           </ul>
         </div>
       </div>

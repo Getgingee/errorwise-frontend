@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { subscriptionService, Plan } from '../services/subscription';
 import { PlanCard } from '../components/subscription/PlanCard';
@@ -44,14 +44,14 @@ export function PricingPage() {
         return;
       }
 
-      const { sessionUrl } = await subscriptionService.createSubscription({
-        planId: planId as 'pro' | 'team',
-        successUrl: `${window.location.origin}/dashboard?payment=success`,
-        cancelUrl: `${window.location.origin}/pricing?payment=cancelled`
-      });
-
-      // Redirect to Dodo checkout
-      window.location.href = sessionUrl;
+      const response = await subscriptionService.createSubscription(planId as 'pro' | 'team');
+      
+      if (response.success && response.data?.url) {
+        // Redirect to Dodo checkout
+        window.location.href = response.data.url;
+      } else {
+        throw new Error(response.error || 'Failed to create checkout session');
+      }
     } catch (err) {
       console.error('Upgrade failed:', err);
       alert(err instanceof Error ? err.message : 'Failed to start upgrade process');
@@ -252,7 +252,7 @@ function FeatureCell({ value }: { value: boolean | string }) {
     return value ? (
       <Check className="w-5 h-5 text-green-600 mx-auto" />
     ) : (
-      <span className="text-gray-400">—</span>
+      <span className="text-gray-400">â€”</span>
     );
   }
   return <span className="text-sm text-gray-700">{value}</span>;

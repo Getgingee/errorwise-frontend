@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import Button from '../components/UI/Button';
@@ -10,13 +10,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState('');
 
-  const { login, isLoading, error, isAuthenticated, clearError } = useAuthStore();
+  const { loginStep1, isLoading, error, isAuthenticated, clearError } = useAuthStore();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      console.log('🔄 User is authenticated, redirecting to dashboard...');
+      console.log('ðŸ”„ User is authenticated, redirecting to dashboard...');
       navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
@@ -41,15 +41,15 @@ export default function LoginPage() {
       return;
     }
 
-    console.log('🔄 Attempting login with:', { email });
+    console.log('ðŸ”„ Attempting login with:', { email });
 
     const result = await login({ email, password });
     
     if (result.success) {
-      console.log('✅ Login successful, redirecting...');
+      console.log('âœ… Login successful, redirecting...');
       navigate('/dashboard', { replace: true });
     } else {
-      console.log('❌ Login failed:', result.error);
+      console.log('âŒ Login failed:', result.error);
       setLocalError(result.error || 'Login failed');
     }
   };
