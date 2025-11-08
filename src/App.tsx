@@ -13,6 +13,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { AccountSettings } from './pages/AccountSettings';
+import MockPaymentPage from './pages/MockPaymentPage';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
 import { PricingPage } from './pages/PricingPage';
@@ -61,6 +62,9 @@ function App() {
           
           {/* Email Verification Route - Public */}
           <Route path="/verify-email" element={<VerifyEmail />} />
+
+          {/* Mock Payment Route - Public (for development) */}
+          <Route path="/subscription/mock-payment" element={<MockPaymentPage />} />
 
           {/* Protected Routes */}
           <Route path="/dashboard" element={
