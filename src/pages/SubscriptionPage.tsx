@@ -182,6 +182,8 @@ const SubscriptionPage: React.FC = () => {
     }
   };
 
+  const handleSelectPlan = async (planId: string) => {
+    try {
       setProcessingPlanId(planId);
       setError(null);
 
