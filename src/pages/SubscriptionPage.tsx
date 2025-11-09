@@ -182,7 +182,59 @@ const SubscriptionPage: React.FC = () => {
     }
   };
 
-  const handleSelectPlan = async (planId: string) => {
+    const handleCancelSubscription = async () => {
+    if (!window.confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await apiClient.post('/subscriptions/cancel');
+      
+      if (response) {
+        setSuccess(true);
+        // Refresh subscription data
+        await fetchData();
+      }
+    } catch (err: any) {
+      console.error('Cancel subscription error:', err);
+      setError(err.response?.data?.error || 'Failed to cancel subscription');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
+
+  const handleCancelSubscription = async () => {
+    if (!window.confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      console.log(' Cancelling subscription...');
+
+      await apiClient.delete('/subscriptions');
+
+      console.log(' Subscription cancelled successfully');
+
+      // Refresh data to show updated status
+      await fetchData();
+
+      alert('Your subscription has been cancelled. You will retain access until the end of your billing period.');
+    } catch (err: any) {
+      console.error(' Cancel error:', err);
+      setError(err.response?.data?.error || 'Failed to cancel subscription');
+    } finally {
+      setLoading(false);
+    }
+  };
+
     try {
       setProcessingPlanId(planId);
       setError(null);
@@ -267,6 +319,10 @@ const SubscriptionPage: React.FC = () => {
     }
 
     if (currentSubscription.tier === plan.id) {
+      // Show Cancel button for current active subscription (except free)
+      if (plan.id !== 'free' && currentSubscription.status === 'active') {
+        return 'Cancel Subscription';
+      }
       return currentSubscription.status === 'trial' ? 'Current (Trial)' : 'Current Plan';
     }
 
@@ -283,6 +339,10 @@ const SubscriptionPage: React.FC = () => {
   const isButtonDisabled = (plan: Plan): boolean => {
     if (processingPlanId === plan.id) return true;
     if (!currentSubscription) return plan.id === 'free';
+    // Don't disable current plan if it's active paid subscription (allow cancel)
+    if (currentSubscription.tier === plan.id && plan.id !== 'free' && currentSubscription.status === 'active') {
+      return false; // Allow clicking to cancel
+    }
     return currentSubscription.tier === plan.id;
   };
 
@@ -534,9 +594,18 @@ const SubscriptionPage: React.FC = () => {
                   </ul>
 
                   <button
-                    onClick={() => !isDisabled && handleSelectPlan(plan.id)}
+                    onClick={() => {
+                      if (isDisabled) return;
+                      // Check if this is current plan with cancel button
+                      if (currentSubscription?.tier === plan.id && buttonText === 'Cancel Subscription') {
+                        handleCancelSubscription();
+                      } else {
+                        handleSelectPlan(plan.id);
+                      }
+                    }}
                     disabled={isDisabled}
                     className={`w-full py-4 px-6 rounded-xl font-bold transition-all ${
+                      buttonText === 'Cancel Subscription' ? 'bg-red-600 hover:bg-red-700 text-white shadow-lg' :
                       isCurrentPlan ? 'bg-green-500 text-white cursor-default' :
                       isDisabled ? 'bg-gray-700 text-gray-400 cursor-not-allowed' :
                       'bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white shadow-lg'
@@ -740,6 +809,12 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
+
+
+
+
+
 
 
 
