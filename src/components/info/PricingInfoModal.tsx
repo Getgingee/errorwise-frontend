@@ -186,7 +186,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
     
     // Pro plan with trial
     if (plan.trialDays) {
-      return `Start ${plan.trialDays}-day Free Trial`;
+      return 'Upgrade';
     }
     
     // Pro plan without trial
@@ -328,7 +328,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">Is there a free trial?</p>
-                <p className="text-gray-300">Pro plan includes a 7-day free trial, no credit card required.</p>
+                <p className="text-gray-300">You can upgrade anytime and start using premium features immediately.</p>
               </div>
               <div>
                 <p className="font-semibold text-white dark:text-white">What payment methods do you accept?</p>
@@ -343,6 +343,10 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
 };
 
 export default PricingInfoModal;
+
+
+
+
 
 
 
