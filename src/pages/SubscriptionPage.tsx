@@ -469,15 +469,51 @@ const SubscriptionPage: React.FC = () => {
                     </div>
                   )}
 
-                  <div className="mb-6">
-                    <h2 className="text-3xl font-bold text-white mb-2">{plan.name}</h2>
-                    <p className="text-gray-400 text-sm mb-5">{plan.description}</p>
-                    
-                    <div className="flex items-baseline gap-1 mb-4">
-                      <span className="text-2xl font-bold text-white">$</span>
-                      <span className="text-5xl font-bold text-white">{plan.price}</span>
-                      {plan.interval && <span className="text-xl text-gray-400">/{plan.interval}</span>}
+                  <div className="text-center mb-6">
+
+
+                    <h3 className="text-2xl font-bold text-white mb-2">
+
+
+                      {plan.name}
+
+
+                    </h3>
+
+
+                    <div className="mb-2">
+
+
+                      <span className="text-4xl font-bold bg-gradient-to-r from-blue-200 to-cyan-200 bg-clip-text text-transparent">
+
+
+                        ${plan.price}
+
+
+                      </span>
+
+
+                      <span className="text-gray-300 ml-2">
+
+
+                        {plan.price === 0 ? 'forever' : plan.interval ? `per ${plan.interval}` : ''}
+
+
+                      </span>
+
+
                     </div>
+
+
+                    <p className="text-gray-200 text-sm">
+
+
+                      {plan.description}
+
+
+                    </p>
+
+
                   </div>
 
                   <ul className="space-y-3 mb-8 flex-1">
@@ -702,6 +738,9 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
+
+
 
 
 
