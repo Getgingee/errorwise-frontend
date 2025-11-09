@@ -182,60 +182,6 @@ const SubscriptionPage: React.FC = () => {
     }
   };
 
-    const handleCancelSubscription = async () => {
-    if (!window.confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await apiClient.post('/subscriptions/cancel');
-      
-      if (response) {
-        setSuccess(true);
-        // Refresh subscription data
-        await fetchData();
-      }
-    } catch (err: any) {
-      console.error('Cancel subscription error:', err);
-      setError(err.response?.data?.error || 'Failed to cancel subscription');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
-
-  const handleCancelSubscription = async () => {
-    if (!window.confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      console.log(' Cancelling subscription...');
-
-      await apiClient.delete('/subscriptions');
-
-      console.log(' Subscription cancelled successfully');
-
-      // Refresh data to show updated status
-      await fetchData();
-
-      alert('Your subscription has been cancelled. You will retain access until the end of your billing period.');
-    } catch (err: any) {
-      console.error(' Cancel error:', err);
-      setError(err.response?.data?.error || 'Failed to cancel subscription');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-    try {
       setProcessingPlanId(planId);
       setError(null);
 
@@ -809,6 +755,8 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
+
 
 
 
