@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '../../store/authStore';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { OTPInput } from '../OTPInput';
 import { resendLoginOTP, resendVerification } from '../../services/auth';
 
@@ -25,6 +25,9 @@ export const LoginForm: React.FC = () => {
 
   const { loginStep1, loginStep2, otpSent, isLoading, error: storeError, resetOtpState } = useAuthStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirectTo');
+  const selectedPlan = searchParams.get('plan');
 
   // Debug OTP changes
   useEffect(() => {
@@ -382,3 +385,5 @@ export const LoginForm: React.FC = () => {
   </>
   );
 };
+
+

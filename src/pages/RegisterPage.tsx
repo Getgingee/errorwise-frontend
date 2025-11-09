@@ -1,8 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import RegisterForm from '../components/auth/RegisterForm';
 
 const RegisterPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const selectedPlan = searchParams.get('plan');
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
@@ -22,7 +24,7 @@ const RegisterPage: React.FC = () => {
 
         {/* Register Card */}
         <div className="bg-white/5 dark:bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-2xl p-8">
-          <RegisterForm />
+          <RegisterForm selectedPlan={selectedPlan} />
 
           {/* Login Link */}
           <div className="mt-6 text-center">
@@ -47,3 +49,5 @@ const RegisterPage: React.FC = () => {
 };
 
 export default RegisterPage;
+
+

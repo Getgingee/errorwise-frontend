@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiClient } from '../services/api';
 import Navigation from '../components/Navigation';
 import { CheckCircle, X, TrendingUp, Users, Zap, Shield, Clock, Star, Loader2, Calendar, CreditCard, History as HistoryIcon, BarChart3 } from 'lucide-react';
@@ -87,6 +87,8 @@ type TabType = 'plans' | 'billing' | 'usage' | 'history';
 
 const SubscriptionPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedPlan = searchParams.get('selectedPlan');
   const [activeTab, setActiveTab] = useState<TabType>('plans');
   const [plans, setPlans] = useState<Plan[]>([]);
   const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>(null);
@@ -738,6 +740,9 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
+
+
 
 
 

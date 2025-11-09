@@ -3,9 +3,10 @@ import { register, resendVerification } from '../../services/auth';
 
 interface RegisterFormProps {
   onSuccess?: () => void;
+  selectedPlan?: string | null;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, selectedPlan }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -286,3 +287,4 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
 };
 
 export default RegisterForm;
+

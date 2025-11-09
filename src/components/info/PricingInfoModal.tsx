@@ -37,11 +37,11 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
       // Free plan - redirect to registration
       navigate('/register');
     } else if (planNameLower.includes('pro')) {
-      // Pro plan - redirect to registration with plan preselected
-      navigate('/register?plan=pro');
+      // Pro plan - redirect to login with plan parameter for post-auth flow
+      navigate('/login?plan=pro');
     } else if (planNameLower.includes('team')) {
-      // Team plan - redirect to registration
-      navigate('/register?plan=team');
+      // Team plan - redirect to login with plan parameter
+      navigate('/login?plan=team');
     } else {
       // Default - redirect to registration
       navigate('/register');
@@ -343,6 +343,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
 };
 
 export default PricingInfoModal;
+
 
 
 
