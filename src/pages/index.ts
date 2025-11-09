@@ -8,4 +8,4 @@ export { default as ProfilePage } from './ProfilePage';
 export { default as ErrorAnalysisPage } from './ErrorAnalysisPage';
 
 export { default as ForgotPasswordPage } from './ForgotPasswordPage';
-export { default as ResetPasswordPage } from './ResetPasswordPage';
+export { default as ResetPasswordPage } from './ResetPasswordPage';export { default as TeamsPage } from './TeamsPage';

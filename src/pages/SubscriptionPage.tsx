@@ -42,20 +42,25 @@ interface Subscription {
 interface BillingInfo {
   currentPlan: {
     name: string;
+    tier: string;
     price: number;
     interval: string;
-  };
-  nextBillingDate: string | null;
-  paymentMethod: {
-    type: string;
-    last4: string;
-  } | null;
-  billingHistory: Array<{
-    date: string;
-    amount: number;
     status: string;
-    invoiceUrl?: string;
-  }>;
+  };
+  billing: {
+    nextBillingDate: string | null;
+    amount: number;
+    currency: string;
+    interval: string;
+    paymentMethod: string;
+    lastPaymentDate: string | null;
+  };
+  subscription: {
+    startDate: string | null;
+    endDate: string | null;
+    trialEndsAt: string | null;
+    cancelAtPeriodEnd: boolean;
+  };
 }
 
 interface UsageStats {
@@ -145,7 +150,8 @@ const SubscriptionPage: React.FC = () => {
       // Fetch billing info
       try {
         const billingResponse = await apiClient.get<BillingInfo>('/subscriptions/billing');
-        setBillingInfo(billingResponse as any);
+        const billingData = (billingResponse as any).data || billingResponse;
+        setBillingInfo(billingData as any);
       } catch (billingError) {
         console.log('Could not fetch billing info');
       }
@@ -586,13 +592,14 @@ const SubscriptionPage: React.FC = () => {
                     <p className="text-white text-xl font-bold">
                       {billingInfo.currentPlan.name} - ${billingInfo.currentPlan.price}/{billingInfo.currentPlan.interval}
                     </p>
+                    <p className="text-gray-400 text-sm mt-1">Status: {billingInfo.currentPlan.status}</p>
                   </div>
 
-                  {billingInfo.nextBillingDate && (
+                  {billingInfo.billing.nextBillingDate && (
                     <div>
                       <p className="text-gray-400 text-sm mb-2">Next Billing Date</p>
                       <p className="text-white text-lg">
-                        {new Date(billingInfo.nextBillingDate).toLocaleDateString('en-US', {
+                        {new Date(billingInfo.billing.nextBillingDate).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
@@ -601,31 +608,38 @@ const SubscriptionPage: React.FC = () => {
                     </div>
                   )}
 
-                  {billingInfo.paymentMethod && (
+                  <div>
+                    <p className="text-gray-400 text-sm mb-2">Payment Method</p>
+                    <p className="text-white text-lg">
+                      {billingInfo.billing.paymentMethod || 'Not set'}
+                    </p>
+                  </div>
+
+                  {billingInfo.billing.lastPaymentDate && (
                     <div>
-                      <p className="text-gray-400 text-sm mb-2">Payment Method</p>
+                      <p className="text-gray-400 text-sm mb-2">Last Payment Date</p>
                       <p className="text-white text-lg">
-                        {billingInfo.paymentMethod.type} ending in {billingInfo.paymentMethod.last4}
+                        {new Date(billingInfo.billing.lastPaymentDate).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
                       </p>
                     </div>
                   )}
 
-                  {billingInfo.billingHistory.length > 0 && (
-                    <div>
-                      <p className="text-gray-400 text-sm mb-4">Billing History</p>
-                      <div className="space-y-2">
-                        {billingInfo.billingHistory.map((item, index) => (
-                          <div key={index} className="flex justify-between items-center p-4 bg-white/5 rounded-lg">
-                            <div>
-                              <p className="text-white">
-                                {new Date(item.date).toLocaleDateString()}
-                              </p>
-                              <p className="text-gray-400 text-sm">{item.status}</p>
-                            </div>
-                            <p className="text-white font-bold">${item.amount}</p>
-                          </div>
-                        ))}
-                      </div>
+                  <div>
+                    <p className="text-gray-400 text-sm mb-2">Billing Amount</p>
+                    <p className="text-white text-lg">
+                      ${billingInfo.billing.amount} {billingInfo.billing.currency} / {billingInfo.billing.interval}
+                    </p>
+                  </div>
+
+                  {billingInfo.subscription.cancelAtPeriodEnd && (
+                    <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                      <p className="text-yellow-400">
+                        ⚠️ Your subscription will be cancelled at the end of the current billing period
+                      </p>
                     </div>
                   )}
                 </div>
