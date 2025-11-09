@@ -135,7 +135,7 @@ export class SubscriptionService {
     try {
       const response = await apiClient.post<CheckoutSession>('/subscriptions/checkout', {
         planId,
-        successUrl: `${window.location.origin}/dashboard?upgraded=true`,
+        successUrl: `${window.location.origin}/dashboard?payment=success`,
         cancelUrl: `${window.location.origin}/subscriptions`
       });
       return response;
@@ -278,6 +278,7 @@ export class SubscriptionService {
 
 export const subscriptionService = new SubscriptionService();
 export default subscriptionService;
+
 
 
 
