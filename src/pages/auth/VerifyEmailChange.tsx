@@ -1,9 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthEdgeCases } from '../../hooks/useAuthEdgeCases';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Alert, AlertDescription } from '../../components/ui/alert';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/UI/card';
+import { Button } from '../../components/UI/button';
+import { Alert, AlertDescription } from '../../components/UI/alert';
 import { Loader2, CheckCircle, XCircle, Mail } from 'lucide-react';
 
 export const VerifyEmailChange: React.FC = () => {
