@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAuthEdgeCases } from '../../hooks/useAuthEdgeCases';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../UI/card';
 import { Button } from '../UI/button';
