@@ -14,6 +14,10 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { AccountSettings } from './pages/AccountSettings';
 import MockPaymentPage from './pages/MockPaymentPage';
+import TeamVideoChat from './pages/team/TeamVideoChat';
+import TeamDashboard from './pages/team/TeamDashboard';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
 import { PricingPage } from './pages/PricingPage';
@@ -98,6 +102,24 @@ function App() {
               <PricingPage />
             </ProtectedRoute>
           } />
+
+          {/* Team Dashboard Route */}
+          <Route path="/teams" element={
+            <ProtectedRoute>
+              <TeamDashboard />
+            </ProtectedRoute>
+          } />
+
+          {/* Team Video Chat Route */}
+          <Route path="/team/:teamId/video/:sessionId" element={
+            <ProtectedRoute>
+              <TeamVideoChat />
+            </ProtectedRoute>
+          } />
+
+          {/* Legal Pages - Public */}
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
 
           {/* Catch all - redirect to landing page */}
           <Route path="*" element={<Navigate to="/" replace />} />
