@@ -86,7 +86,7 @@ export const SessionManagement: React.FC<SessionManagementProps> = ({ onSessionR
             {sessions.map((session) => (
               <div
                 key={session.id}
-                className={lex items-center justify-between p-4 rounded-lg border }
+                className="flex items-center justify-between p-4 rounded-lg border"
               >
                 <div className="flex items-center gap-3">
                   {getDeviceIcon(session.userAgent)}
