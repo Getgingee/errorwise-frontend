@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
+import ErrorAnalysisCard from '../components/ErrorAnalysisCard';
 import {
   Upload,
   Loader2,
@@ -573,117 +574,15 @@ const DashboardPage: React.FC = () => {
                     {/* Right: Selected Analysis Details */}
                     <div>
                       {selectedRecentAnalysis ? (
-                        <div className="glass-card rounded-lg p-6 space-y-6">
-                          {/* Header */}
-                          <div className="border-b border-white/10 pb-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="text-lg font-bold text-white">Analysis Details</h3>
-                              <button
-                                onClick={() => {
-                                  setErrorInput(selectedRecentAnalysis.errorMessage);
-                                  setAnalysis(selectedRecentAnalysis);
-                                  setSelectedRecentAnalysis(null);
-                                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                                className="flex items-center gap-2 px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white rounded-lg transition-all shadow-lg hover:shadow-xl"
-                              >
-                                <ArrowRight className="h-4 w-4" />
-                                Load in Editor
-                              </button>
-                            </div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded text-cyan-400">
-                                {selectedRecentAnalysis.category}
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                {formatTimeAgo(selectedRecentAnalysis.createdAt)}
-                              </span>
-                              <span className="text-xs text-gray-400 flex items-center gap-1">
-                                <TrendingUp className="h-3 w-3" />
-                                {selectedRecentAnalysis.confidence}% confidence
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Error Message */}
-                          <div>
-                            <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2 mb-3">
-                              <AlertCircle className="h-4 w-4" />
-                              Error Message
-                            </h4>
-                            <p className="text-sm text-gray-300 leading-relaxed font-mono bg-black/30 p-4 rounded-lg">
-                              {selectedRecentAnalysis.errorMessage}
-                            </p>
-                          </div>
-
-                          {/* Explanation */}
-                          <div>
-                            <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2 mb-3">
-                              <Lightbulb className="h-4 w-4" />
-                              Explanation
-                            </h4>
-                            <p className="text-base text-gray-300 leading-relaxed">
-                              {selectedRecentAnalysis.explanation}
-                            </p>
-                          </div>
-
-                          {/* Solution */}
-                          <div>
-                            <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2 mb-3">
-                              <Code className="h-4 w-4" />
-                              Solution
-                            </h4>
-                            <p className="text-base text-gray-300 leading-relaxed">
-                              {selectedRecentAnalysis.solution}
-                            </p>
-                          </div>
-
-                          {/* Code Example */}
-                          {selectedRecentAnalysis.codeExample && (
-                            <div>
-                              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2 mb-3">
-                                <Sparkles className="h-4 w-4" />
-                                Code Example
-                              </h4>
-                              <pre className="text-sm text-gray-300 bg-black/50 p-4 rounded-lg">
-                                <code>{selectedRecentAnalysis.codeExample}</code>
-                              </pre>
-                            </div>
-                          )}
-
-                          {/* Share and Download Buttons */}
-                          <div className="flex items-center gap-2 mb-2">
-                            <button
-                              onClick={() => {
-                                // Share logic: copy details to clipboard
-                                const text = `Error: ${selectedRecentAnalysis.errorMessage}\n\nExplanation: ${selectedRecentAnalysis.explanation}\n\nSolution: ${selectedRecentAnalysis.solution}`;
-                                navigator.clipboard.writeText(text);
-                                toast.success('Analysis copied to clipboard!');
-                              }}
-                              className="flex items-center gap-1 px-3 py-1 text-xs bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300 hover:bg-blue-500/30 hover:text-white transition-all"
-                              title="Share Analysis"
-                            >
-                              <Share2 className="h-4 w-4" /> Share
-                            </button>
-                            <button
-                              onClick={() => {
-                                // Download logic: save details as .txt file
-                                const text = `Error: ${selectedRecentAnalysis.errorMessage}\n\nExplanation: ${selectedRecentAnalysis.explanation}\n\nSolution: ${selectedRecentAnalysis.solution}`;
-                                const blob = new Blob([text], { type: 'text/plain' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = 'analysis.txt';
-                                a.click();
-                                URL.revokeObjectURL(url);
-                              }}
-                              className="flex items-center gap-1 px-3 py-1 text-xs bg-cyan-500/20 border border-cyan-500/30 rounded-lg text-cyan-300 hover:bg-cyan-500/30 hover:text-white transition-all"
-                              title="Download Analysis"
-                            >
-                              <Download className="h-4 w-4" /> Download
-                            </button>
-                          </div>
-                        </div>
+                        <ErrorAnalysisCard
+                          explanation={selectedRecentAnalysis.explanation}
+                          solution={selectedRecentAnalysis.solution}
+                          category={selectedRecentAnalysis.category}
+                          confidence={selectedRecentAnalysis.confidence}
+                          codeExample={selectedRecentAnalysis.codeExample}
+                          onCopy={copyToClipboard}
+                          copiedSection={copiedSection}
+                        />
                       ) : (
                         <div className="glass-card rounded-lg p-16 text-center">
                           <FileText className="h-20 w-20 text-gray-600 mx-auto mb-4 opacity-50" />
@@ -739,146 +638,15 @@ const DashboardPage: React.FC = () => {
           {/* Analysis Results - Shows above input when available */}
           {analysis && (
             <div className="max-w-4xl mx-auto w-full mb-6 result-card">
-              <div className="glass-card rounded-2xl shadow-2xl overflow-hidden">
-                {/* Result Header */}
-                <div className="px-6 py-4 border-b border-white/10 bg-gradient-to-r from-blue-500/10 to-cyan-500/10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-                        <Sparkles className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">Analysis Result</h3>
-                        <p className="text-sm text-gray-400">
-                          {analysis.category}  {analysis.confidence}% confident
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setAnalysis(null)}
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                      title="Clear result"
-                    >
-                      <AlertCircle className="h-5 w-5 text-gray-400" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Result Content */}
-                <div className="px-6 py-6 space-y-6 max-h-[60vh] overflow-y-auto">
-                  {/* Original Error */}
-                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4" />
-                        Your Error
-                      </h4>
-                      <button
-                        onClick={() => copyToClipboard(analysis.errorMessage, 'error')}
-                        className="p-1.5 hover:bg-white/10 rounded transition-colors"
-                        title="Copy error"
-                      >
-                        {copiedSection === 'error' ? (
-                          <Check className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <Copy className="h-4 w-4 text-gray-400" />
-                        )}
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-300 leading-relaxed font-mono">
-                      {analysis.errorMessage}
-                    </p>
-                  </div>
-
-                  {/* Explanation */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2">
-                        <Lightbulb className="h-4 w-4" />
-                        Explanation
-                      </h4>
-                      <button
-                        onClick={() => copyToClipboard(analysis.explanation, 'explanation')}
-                        className="p-1.5 hover:bg-white/10 rounded transition-colors"
-                        title="Copy explanation"
-                      >
-                        {copiedSection === 'explanation' ? (
-                          <Check className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <Copy className="h-4 w-4 text-gray-400" />
-                        )}
-                      </button>
-                    </div>
-                    <p className="text-base text-gray-300 leading-relaxed">
-                      {analysis.explanation}
-                    </p>
-                  </div>
-
-                  {/* Solution */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2">
-                        <Check className="h-4 w-4" />
-                        Solution
-                      </h4>
-                      <button
-                        onClick={() => copyToClipboard(analysis.solution, 'solution')}
-                        className="p-1.5 hover:bg-white/10 rounded transition-colors"
-                        title="Copy solution"
-                      >
-                        {copiedSection === 'solution' ? (
-                          <Check className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <Copy className="h-4 w-4 text-gray-400" />
-                        )}
-                      </button>
-                    </div>
-                    <p className="text-base text-gray-300 leading-relaxed whitespace-pre-line">
-                      {analysis.solution}
-                    </p>
-                  </div>
-
-                  {/* Code Example */}
-                  {analysis.codeExample && (
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2">
-                          <Code className="h-4 w-4" />
-                          Code Example
-                        </h4>
-                        <button
-                          onClick={() => copyToClipboard(analysis.codeExample!, 'code')}
-                          className="p-1.5 hover:bg-white/10 rounded transition-colors"
-                          title="Copy code"
-                        >
-                          {copiedSection === 'code' ? (
-                            <Check className="h-4 w-4 text-green-400" />
-                          ) : (
-                            <Copy className="h-4 w-4 text-gray-400" />
-                          )}
-                        </button>
-                      </div>
-                      <pre className="bg-slate-950 text-gray-100 rounded-lg p-4 overflow-x-auto text-sm font-mono border border-white/10">
-                        <code>{analysis.codeExample}</code>
-                      </pre>
-                    </div>
-                  )}
-
-                  {/* Confidence Bar */}
-                  <div className="pt-4 border-t border-white/10">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                        <div 
-                          className={`confidence-bar h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500 w-[${analysis.confidence}%]`}
-                        ></div>
-                      </div>
-                      <span className="text-sm font-semibold text-gray-300">
-                        {analysis.confidence}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ErrorAnalysisCard
+                explanation={analysis.explanation}
+                solution={analysis.solution}
+                category={analysis.category}
+                confidence={analysis.confidence}
+                codeExample={analysis.codeExample}
+                onCopy={copyToClipboard}
+                copiedSection={copiedSection}
+              />
             </div>
           )}
 
