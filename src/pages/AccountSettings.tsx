@@ -1,10 +1,10 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../services/auth';
 import Navigation from '../components/Navigation';
-import { EmailChangeDialog } from '../components/auth/EmailChangeDialog';
-import { SessionManagement } from '../components/auth/SessionManagement';
-import { AccountDeletionDialog } from '../components/auth/AccountDeletionDialog';
+// import { EmailChangeDialog } from '../components/auth/EmailChangeDialog';
+// import { SessionManagement } from '../components/auth/SessionManagement';
+// import { AccountDeletionDialog } from '../components/auth/AccountDeletionDialog';
 
 export const AccountSettings: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export const AccountSettings: React.FC = () => {
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-2xl p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-white">Account Information</h2>
-              <EmailChangeDialog currentEmail={user?.email || ''} />
+              {/* <EmailChangeDialog currentEmail={user?.email || ''} /> */}
             </div>
             <div className="space-y-3">
               <div>
@@ -61,7 +61,7 @@ export const AccountSettings: React.FC = () => {
           </div>
 
           {/* Session Management */}
-          <SessionManagement onSessionRevoked={() => console.log('Session revoked')} />
+          {/* <SessionManagement onSessionRevoked={() => console.log('Session revoked')} /> */}
 
           {/* Danger Zone */}
           <div className="bg-red-500/10 backdrop-blur-sm border border-red-500/30 rounded-2xl shadow-2xl p-6">
@@ -74,15 +74,17 @@ export const AccountSettings: React.FC = () => {
               </p>
             </div>
 
-            <AccountDeletionDialog 
+            {/* <AccountDeletionDialog 
               onDeleted={() => {
                 console.log('Account deleted');
                 navigate('/login');
               }} 
-            />
+            /> */}
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+
