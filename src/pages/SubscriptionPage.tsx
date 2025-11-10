@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiClient } from '../services/api';
 import Navigation from '../components/Navigation';
 import { CheckCircle, X, TrendingUp, Users, Zap, Shield, Clock, Star, Loader2, Calendar, CreditCard, History as HistoryIcon, BarChart3 } from 'lucide-react';
+import { ProrationPreview } from '../components/subscription/ProrationPreview';
+import { SubscriptionManagement } from '../components/subscription/SubscriptionManagement';
 
 interface Plan {
   id: string;
@@ -118,24 +120,24 @@ const SubscriptionPage: React.FC = () => {
   }, [navigate]);
 
   const fetchData = async () => {
-    console.log('🚀 fetchData started...');
+    console.log('ðŸš€ fetchData started...');
     try {
       setLoading(true);
-      console.log('⏳ Loading set to TRUE');
+      console.log('â³ Loading set to TRUE');
 
       // Fetch plans
-      console.log('📡 Fetching plans from API...');
+      console.log('ðŸ“¡ Fetching plans from API...');
       const plansResponse = await apiClient.get<{ plans: Plan[] }>('/subscriptions/plans');
-      console.log('✅ Plans API Response:', plansResponse);
+      console.log('âœ… Plans API Response:', plansResponse);
       
       // apiClient.get() already returns response.data, so plansResponse IS the data
       const responseData = plansResponse as any;
-      console.log('📦 Response data:', responseData);
-      console.log('📋 Plans array:', responseData.plans);
-      console.log('📊 Plans count:', responseData.plans?.length);
+      console.log('ðŸ“¦ Response data:', responseData);
+      console.log('ðŸ“‹ Plans array:', responseData.plans);
+      console.log('ðŸ“Š Plans count:', responseData.plans?.length);
       
       const plansData = responseData.plans || [];
-      console.log('💾 Setting plans to state. Count:', plansData.length);
+      console.log('ðŸ’¾ Setting plans to state. Count:', plansData.length);
       setPlans(plansData);
 
       // Fetch current subscription
@@ -174,17 +176,17 @@ const SubscriptionPage: React.FC = () => {
       }
 
       setError(null);
-      console.log('✅ No errors - clearing error state');
+      console.log('âœ… No errors - clearing error state');
     } catch (err: any) {
-      console.error('❌ Error fetching subscription data:', err);
-      console.error('❌ Error details:', err.response?.data);
+      console.error('âŒ Error fetching subscription data:', err);
+      console.error('âŒ Error details:', err.response?.data);
       setError(err.response?.data?.error || 'Failed to load subscription data');
     } finally {
-      console.log('🏁 FINALLY block executing...');
+      console.log('ðŸ FINALLY block executing...');
       setLoading(false);
-      console.log('✅ Loading set to FALSE');
+      console.log('âœ… Loading set to FALSE');
       // Note: plans.length here shows OLD state due to closure
-      console.log('📊 Plans will render on next render cycle');
+      console.log('ðŸ“Š Plans will render on next render cycle');
     }
   };
 
@@ -193,7 +195,7 @@ const SubscriptionPage: React.FC = () => {
       setProcessingPlanId(planId);
       setError(null);
 
-      console.log('🚀 Creating checkout for plan:', planId);
+      console.log('ðŸš€ Creating checkout for plan:', planId);
       
       const response = await apiClient.post<{ success?: boolean; data?: { url?: string; sessionUrl?: string }; sessionUrl?: string }>('/subscriptions/checkout', {
         planId,
@@ -201,23 +203,23 @@ const SubscriptionPage: React.FC = () => {
         cancelUrl: `${window.location.origin}/subscription?cancelled=true`
       });
 
-      console.log('📦 Checkout response:', response);
+      console.log('ðŸ“¦ Checkout response:', response);
 
       const responseData = response as any;
       // Handle different response formats
       const redirectUrl = responseData.data?.url || responseData.sessionUrl || responseData.data?.sessionUrl;
       
       if (redirectUrl) {
-        console.log('✅ Redirecting to:', redirectUrl);
+        console.log('âœ… Redirecting to:', redirectUrl);
         window.location.href = redirectUrl;
       } else {
-        console.log('✅ Dev mode - reloading to show upgrade');
+        console.log('âœ… Dev mode - reloading to show upgrade');
         // In dev mode, just reload to show the updated subscription
         window.location.reload();
       }
     } catch (err: any) {
-      console.error('❌ Checkout error:', err);
-      console.error('❌ Error response:', err.response);
+      console.error('âŒ Checkout error:', err);
+      console.error('âŒ Error response:', err.response);
       setError(err.response?.data?.error || err.response?.data?.message || 'Failed to create subscription');
       setProcessingPlanId(null);
     }
@@ -301,7 +303,7 @@ const SubscriptionPage: React.FC = () => {
   };
 
   if (loading) {
-    console.log('🔄 RENDERING: Loading state is TRUE - showing spinner');
+    console.log('ðŸ”„ RENDERING: Loading state is TRUE - showing spinner');
     return (
       <>
         <Navigation />
@@ -316,7 +318,7 @@ const SubscriptionPage: React.FC = () => {
     );
   }
 
-  console.log('✨ RENDERING: Loading FALSE - showing main content');
+  console.log('âœ¨ RENDERING: Loading FALSE - showing main content');
 
   return (
     <>
@@ -437,20 +439,20 @@ const SubscriptionPage: React.FC = () => {
         {/* Tab Content */}
         {activeTab === 'plans' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-5 mb-16">
-            {console.log('🎨 Rendering plans tab. Plans count:', plans.length, 'Plans:', plans)}
+            {console.log('ðŸŽ¨ Rendering plans tab. Plans count:', plans.length, 'Plans:', plans)}
             {plans.length === 0 && !loading && (
               <div className="col-span-full text-center py-16">
                 <div className="glass-card border border-white/10 rounded-2xl p-12">
-                  <p className="text-white text-2xl mb-4 font-bold">⚠️ No plans available</p>
+                  <p className="text-white text-2xl mb-4 font-bold">âš ï¸ No plans available</p>
                   <p className="text-gray-400 mb-6">The plans API returned empty data</p>
                   <button
                     onClick={() => {
-                      console.log('🔄 Manual refresh triggered');
+                      console.log('ðŸ”„ Manual refresh triggered');
                       fetchData();
                     }}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
                   >
-                    🔄 Retry Loading Plans
+                    ðŸ”„ Retry Loading Plans
                   </button>
                 </div>
               </div>
@@ -638,7 +640,7 @@ const SubscriptionPage: React.FC = () => {
                   {billingInfo.subscription.cancelAtPeriodEnd && (
                     <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                       <p className="text-yellow-400">
-                        ⚠️ Your subscription will be cancelled at the end of the current billing period
+                        âš ï¸ Your subscription will be cancelled at the end of the current billing period
                       </p>
                     </div>
                   )}
@@ -740,7 +742,7 @@ const SubscriptionPage: React.FC = () => {
                         <div>
                           <p className="text-white font-semibold capitalize">{item.type}</p>
                           <p className="text-gray-400 text-sm">
-                            {item.fromPlan} → {item.toPlan}
+                            {item.fromPlan} â†’ {item.toPlan}
                           </p>
                           <p className="text-gray-500 text-xs mt-1">
                             {new Date(item.date).toLocaleDateString('en-US', {
@@ -771,6 +773,7 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
 
 
 
