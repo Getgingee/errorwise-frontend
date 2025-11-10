@@ -580,8 +580,12 @@ const DashboardPage: React.FC = () => {
                           category={selectedRecentAnalysis.category}
                           confidence={selectedRecentAnalysis.confidence}
                           codeExample={selectedRecentAnalysis.codeExample}
+                          errorMessage={selectedRecentAnalysis.errorMessage}
+                          createdAt={selectedRecentAnalysis.createdAt}
                           onCopy={copyToClipboard}
                           copiedSection={copiedSection}
+                          showActions={true}
+                          showTimestamp={true}
                         />
                       ) : (
                         <div className="glass-card rounded-lg p-16 text-center">
@@ -644,8 +648,12 @@ const DashboardPage: React.FC = () => {
                 category={analysis.category}
                 confidence={analysis.confidence}
                 codeExample={analysis.codeExample}
+                errorMessage={analysis.errorMessage}
+                createdAt={analysis.createdAt}
                 onCopy={copyToClipboard}
                 copiedSection={copiedSection}
+                showActions={true}
+                showTimestamp={true}
               />
             </div>
           )}
