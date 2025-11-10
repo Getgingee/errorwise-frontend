@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
+import Button from '../components/UI/button';
+import Input from '../components/UI/input';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 
 export default function LoginPage() {

@@ -1,9 +1,9 @@
 // UI Component exports
 export { default as Button } from './button';
 export { default as Input } from './input';
-export { default as Modal } from './Modal';
-export { default as Toast, ToastContainer } from './Toast';
-export { default as LoadingSpinner } from './LoadingSpinner';
+export { default as Modal } from './modal';
+export { default as Toast, ToastContainer } from './toast';
+export { default as LoadingSpinner } from './loadingspinner';
 
 // Re-export types for convenience
-export type { ToastProps } from './Toast';
+export type { ToastProps } from './toast';
