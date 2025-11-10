@@ -51,6 +51,13 @@ export const TeamDashboard = () => {
   const handleCreateTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // TODO: Add Team subscription check when ready
+    // if (!hasTeamSubscription(user)) {
+    //   toast.error('Team subscription required to create teams');
+    //   navigate('/pricing?upgrade=team');
+    //   return;
+    // }
+    
     if (!newTeamName.trim()) {
       toast.error('Team name is required');
       return;

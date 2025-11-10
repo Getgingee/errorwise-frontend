@@ -105,6 +105,8 @@ function App() {
           } />
 
           {/* Team Dashboard Route */}
+          {/* TODO: Add Team subscription check when ready */}
+          {/* Only users with Team plan OR invited team members should access */}
           <Route path="/teams" element={
             <ProtectedRoute>
               <TeamDashboard />
@@ -112,6 +114,8 @@ function App() {
           } />
 
           {/* Team Analyses Route */}
+          {/* TODO: Add Team subscription check when ready */}
+          {/* Only users with Team plan OR invited team members should access */}
           <Route path="/team/analyses" element={
             <ProtectedRoute>
               <TeamAnalyses />
@@ -119,6 +123,8 @@ function App() {
           } />
 
           {/* Team Video Chat Route */}
+          {/* TODO: Add Team subscription check when ready */}
+          {/* Only users with Team plan OR invited team members should access */}
           <Route path="/team/:teamId/video/:sessionId" element={
             <ProtectedRoute>
               <TeamVideoChat />
