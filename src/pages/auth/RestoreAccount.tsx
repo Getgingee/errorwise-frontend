@@ -1,11 +1,11 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthEdgeCases } from '../../hooks/useAuthEdgeCases';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/UI/card';
-import { Button } from '../../components/UI/button';
-import { Input } from '../../components/UI/input';
-import { Label } from '../../components/UI/label';
-import { Alert, AlertDescription } from '../../components/UI/alert';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from \'../../components/ui/card';
+import { Button } from \'../../components/ui/button';
+import { Input } from \'../../components/ui/input';
+import { Label } from \'../../components/ui/label';
+import { Alert, AlertDescription } from \'../../components/ui/alert';
 import { Loader2, RefreshCw, AlertCircle } from 'lucide-react';
 
 export const RestoreAccount: React.FC = () => {
