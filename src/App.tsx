@@ -12,8 +12,6 @@ import {
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import { VerifyEmail } from './pages/VerifyEmail';
-import { VerifyEmailChange } from './pages/auth/VerifyEmailChange';
-import { RestoreAccount } from './pages/auth/RestoreAccount';
 import { AccountSettings } from './pages/AccountSettings';
 import MockPaymentPage from './pages/MockPaymentPage';
 import { useAuthStore } from './store/authStore';
@@ -64,10 +62,6 @@ function App() {
           
           {/* Email Verification Routes - Public */}
           <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/verify-email-change" element={<VerifyEmailChange />} />
-          
-          {/* Account Restore - Public */}
-          <Route path="/restore-account" element={<RestoreAccount />} />
 
           {/* Mock Payment Route - Public (for development) */}
           <Route path="/subscription/mock-payment" element={<MockPaymentPage />} />
