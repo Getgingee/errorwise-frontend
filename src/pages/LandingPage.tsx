@@ -712,9 +712,9 @@ const LandingPage: React.FC = () => {
             <p className="text-xs sm:text-sm text-gray-400">
               &copy; 2025 ErrorWise. All rights reserved. 
               <span className="mx-2">•</span>
-              <button onClick={() => openInfoModal('privacy')} className="hover:text-cyan-400 transition-colors">Privacy</button>
+              <Link to="/privacy" className="hover:text-cyan-400 transition-colors">Privacy</Link>
               <span className="mx-2">•</span>
-              <button onClick={() => openInfoModal('terms')} className="hover:text-cyan-400 transition-colors">Terms</button>
+              <Link to="/terms" className="hover:text-cyan-400 transition-colors">Terms</Link>
             </p>
           </div>
         </div>
@@ -748,6 +748,7 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
 
 
 
