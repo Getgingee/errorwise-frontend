@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { History, Video, Users as UsersIcon } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -121,12 +122,21 @@ export const TeamDashboard = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-3xl font-bold text-gray-900">Team Collaboration</h1>
-            <button
-              onClick={() => setShowCreateForm(!showCreateForm)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              {showCreateForm ? 'Cancel' : '+ Create Team'}
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => navigate('/team/analyses')}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white rounded-lg transition-all shadow-lg hover:shadow-xl"
+              >
+                <History className="h-4 w-4" />
+                Team Analyses
+              </button>
+              <button
+                onClick={() => setShowCreateForm(!showCreateForm)}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                {showCreateForm ? 'Cancel' : '+ Create Team'}
+              </button>
+            </div>
           </div>
           <p className="text-gray-600">
             Collaborate with your team using video chat and shared error analysis

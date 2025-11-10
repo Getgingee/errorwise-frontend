@@ -16,6 +16,7 @@ import { AccountSettings } from './pages/AccountSettings';
 import MockPaymentPage from './pages/MockPaymentPage';
 import TeamVideoChat from './pages/team/TeamVideoChat';
 import TeamDashboard from './pages/team/TeamDashboard';
+import TeamAnalyses from './pages/team/TeamAnalyses';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { useAuthStore } from './store/authStore';
@@ -107,6 +108,13 @@ function App() {
           <Route path="/teams" element={
             <ProtectedRoute>
               <TeamDashboard />
+            </ProtectedRoute>
+          } />
+
+          {/* Team Analyses Route */}
+          <Route path="/team/analyses" element={
+            <ProtectedRoute>
+              <TeamAnalyses />
             </ProtectedRoute>
           } />
 
