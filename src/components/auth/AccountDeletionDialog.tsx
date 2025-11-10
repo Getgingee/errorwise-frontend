@@ -44,31 +44,31 @@ export const AccountDeletionDialog: React.FC<AccountDeletionDialogProps> = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant=\"destructive\">
-            <Trash2 className=\"w-4 h-4 mr-2\" />
+          <Button variant="destructive">
+            <Trash2 className="w-4 h-4 mr-2" />
             Delete Account
           </Button>
         )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className=\"text-red-600\">Delete Account</DialogTitle>
+          <DialogTitle className="text-red-600">Delete Account</DialogTitle>
           <DialogDescription>
             This action cannot be easily undone. Your account will be scheduled for permanent deletion.
           </DialogDescription>
         </DialogHeader>
 
         {error && (
-          <Alert variant=\"destructive\">
+          <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
-        <Alert variant=\"destructive\" className=\"bg-red-50 border-red-200\">
-          <AlertTriangle className=\"w-4 h-4 text-red-600\" />
-          <AlertDescription className=\"text-red-800\">
+        <Alert variant="destructive" className="bg-red-50 border-red-200">
+          <AlertTriangle className="w-4 h-4 text-red-600" />
+          <AlertDescription className="text-red-800">
             <strong>Warning:</strong> Account deletion will:
-            <ul className=\"list-disc ml-5 mt-2 space-y-1\">
+            <ul className="list-disc ml-5 mt-2 space-y-1">
               <li>Cancel your subscription immediately</li>
               <li>Disable account access</li>
               <li>Schedule permanent data deletion in 30 days</li>
@@ -78,26 +78,26 @@ export const AccountDeletionDialog: React.FC<AccountDeletionDialogProps> = ({
         </Alert>
 
         {!showFinalStep ? (
-          <div className=\"space-y-4\">
+          <div className="space-y-4">
             <div>
-              <Label htmlFor=\"confirmation-text\">
+              <Label htmlFor="confirmation-text">
                 Type <strong>DELETE MY ACCOUNT</strong> to confirm
               </Label>
               <Input
-                id=\"confirmation-text\"
+                id="confirmation-text"
                 value={confirmation}
                 onChange={(e) => setConfirmation(e.target.value)}
-                placeholder=\"DELETE MY ACCOUNT\"
-                className=\"font-mono\"
+                placeholder="DELETE MY ACCOUNT"
+                className="font-mono"
               />
             </div>
 
             <DialogFooter>
-              <Button variant=\"outline\" onClick={handleClose}>
+              <Button variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
               <Button
-                variant=\"destructive\"
+                variant="destructive"
                 onClick={() => setShowFinalStep(true)}
                 disabled={!isConfirmationValid}
               >
@@ -106,30 +106,30 @@ export const AccountDeletionDialog: React.FC<AccountDeletionDialogProps> = ({
             </DialogFooter>
           </div>
         ) : (
-          <div className=\"space-y-4\">
+          <div className="space-y-4">
             <div>
-              <Label htmlFor=\"password\">Confirm Your Password</Label>
+              <Label htmlFor="password">Confirm Your Password</Label>
               <Input
-                id=\"password\"
-                type=\"password\"
+                id="password"
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder=\"Enter your password\"
+                placeholder="Enter your password"
               />
             </div>
 
             <DialogFooter>
-              <Button variant=\"outline\" onClick={() => setShowFinalStep(false)}>
+              <Button variant="outline" onClick={() => setShowFinalStep(false)}>
                 Back
               </Button>
               <Button
-                variant=\"destructive\"
+                variant="destructive"
                 onClick={handleDelete}
                 disabled={loading || !password}
               >
                 {loading ? (
                   <>
-                    <Loader2 className=\"w-4 h-4 mr-2 animate-spin\" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Deleting...
                   </>
                 ) : (

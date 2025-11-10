@@ -44,8 +44,8 @@ export const EmailChangeDialog: React.FC<EmailChangeDialogProps> = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant=\"outline\">
-            <Mail className=\"w-4 h-4 mr-2\" />
+          <Button variant="outline">
+            <Mail className="w-4 h-4 mr-2" />
             Change Email
           </Button>
         )}
@@ -59,65 +59,65 @@ export const EmailChangeDialog: React.FC<EmailChangeDialogProps> = ({
         </DialogHeader>
 
         {success ? (
-          <Alert className=\"bg-green-50 border-green-200\">
-            <CheckCircle className=\"w-4 h-4 text-green-600\" />
-            <AlertDescription className=\"text-green-800\">
+          <Alert className="bg-green-50 border-green-200">
+            <CheckCircle className="w-4 h-4 text-green-600" />
+            <AlertDescription className="text-green-800">
               Verification emails sent! Please check your inbox at both addresses.
             </AlertDescription>
           </Alert>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className=\"space-y-4\">
+            <div className="space-y-4">
               {error && (
-                <Alert variant=\"destructive\">
+                <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               <div>
-                <Label htmlFor=\"current-email\">Current Email</Label>
+                <Label htmlFor="current-email">Current Email</Label>
                 <Input
-                  id=\"current-email\"
-                  type=\"email\"
+                  id="current-email"
+                  type="email"
                   value={currentEmail}
                   disabled
-                  className=\"bg-gray-50\"
+                  className="bg-gray-50"
                 />
               </div>
 
               <div>
-                <Label htmlFor=\"new-email\">New Email</Label>
+                <Label htmlFor="new-email">New Email</Label>
                 <Input
-                  id=\"new-email\"
-                  type=\"email\"
+                  id="new-email"
+                  type="email"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  placeholder=\"new@example.com\"
+                  placeholder="new@example.com"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor=\"password\">Confirm Password</Label>
+                <Label htmlFor="password">Confirm Password</Label>
                 <Input
-                  id=\"password\"
-                  type=\"password\"
+                  id="password"
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder=\"Enter your password\"
+                  placeholder="Enter your password"
                   required
                 />
               </div>
             </div>
 
-            <DialogFooter className=\"mt-6\">
-              <Button type=\"button\" variant=\"outline\" onClick={() => setOpen(false)}>
+            <DialogFooter className="mt-6">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
-              <Button type=\"submit\" disabled={loading || !newEmail || !password}>
+              <Button type="submit" disabled={loading || !newEmail || !password}>
                 {loading ? (
                   <>
-                    <Loader2 className=\"w-4 h-4 mr-2 animate-spin\" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Sending...
                   </>
                 ) : (
