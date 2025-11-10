@@ -3,8 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiClient } from '../services/api';
 import Navigation from '../components/Navigation';
 import { CheckCircle, X, TrendingUp, Users, Zap, Shield, Clock, Star, Loader2, Calendar, CreditCard, History as HistoryIcon, BarChart3 } from 'lucide-react';
-import { ProrationPreview } from '../components/subscription/ProrationPreview';
-import { SubscriptionManagement } from '../components/subscription/SubscriptionManagement';
 
 interface Plan {
   id: string;
@@ -225,6 +223,55 @@ const SubscriptionPage: React.FC = () => {
     }
   };
 
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [cancelFeedback, setCancelFeedback] = useState('');
+  const [processingCancel, setProcessingCancel] = useState(false);
+
+  const handleCancelSubscription = () => {
+    setShowCancelModal(true);
+  };
+
+  const confirmCancelSubscription = async () => {
+    if (!currentSubscription) return;
+    
+    try {
+      setProcessingCancel(true);
+      setError(null);
+
+      await apiClient.post('/subscriptions/cancel', {
+        reason: cancelReason,
+        feedback: cancelFeedback
+      });
+
+      setShowCancelModal(false);
+      setSuccess(true);
+      
+      // Refresh data
+      await fetchData();
+      
+      // Show success message
+      setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
+    } catch (err: any) {
+      console.error('Cancel error:', err);
+      setError(err.response?.data?.error || 'Failed to cancel subscription');
+    } finally {
+      setProcessingCancel(false);
+    }
+  };
+
+  const handleDowngradeInstead = () => {
+    setShowCancelModal(false);
+    // Downgrade to free plan instead of canceling
+    if (currentSubscription?.tier === 'team') {
+      handleSelectPlan('pro'); // Team -> Pro
+    } else if (currentSubscription?.tier === 'pro') {
+      setActiveTab('plans'); // Show plans to consider free
+    }
+  };
+
   const getFeaturesList = (plan: Plan): Array<{ text: string; available: boolean }> => {
     const features = [];
     
@@ -364,7 +411,7 @@ const SubscriptionPage: React.FC = () => {
               <X className="h-6 w-6 text-white" />
               <p className="text-white">{error}</p>
             </div>
-            <button onClick={() => setError(null)} className="text-white">
+            <button onClick={() => setError(null)} className="text-white" aria-label="Close error message">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -655,72 +702,198 @@ const SubscriptionPage: React.FC = () => {
         {activeTab === 'usage' && (
           <div className="max-w-4xl mx-auto px-5">
             <div className="glass-card border border-white/10 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Usage Statistics</h2>
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <BarChart3 className="w-7 h-7 mr-3 text-blue-400" />
+                Usage Statistics
+              </h2>
               
               {usageStats ? (
-                <div className="space-y-6">
+                <div className="space-y-8">
+                  {/* Current Plan Display */}
+                  <div className="p-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-xl">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-gray-300 text-sm mb-1">Current Plan</p>
+                        <p className="text-2xl font-bold text-white capitalize">{usageStats.tier}</p>
+                      </div>
+                      {usageStats.tier !== 'team' && (
+                        <button
+                          onClick={() => setActiveTab('plans')}
+                          className="px-6 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-semibold rounded-lg transition-all shadow-lg"
+                        >
+                          Upgrade Plan
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Query Usage with Enhanced Progress Bar */}
                   <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-400">Queries Used</span>
-                      <span className="text-white font-bold">
-                        {usageStats.usage.queriesUsed} / {usageStats.usage.queriesLimit === -1 ? 'Unlimited' : usageStats.usage.queriesLimit}
+                    <div className="flex justify-between items-center mb-3">
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">Query Usage</h3>
+                        <p className="text-gray-400 text-sm">Monthly limit resets on the 1st</p>
+                      </div>
+                      <span className="text-white font-bold text-xl">
+                        {usageStats.usage.queriesUsed} / {usageStats.usage.queriesLimit === -1 ? '∞' : usageStats.usage.queriesLimit}
                       </span>
                     </div>
+                    
                     {usageStats.usage.queriesLimit !== -1 && (
-                      <div className="w-full bg-gray-700 rounded-full h-3">
-                        <div
-                          className="bg-blue-500 h-3 rounded-full transition-all"
-                          style={{ width: `${Math.min(usageStats.usage.percentage, 100)}%` }}
-                        />
+                      <>
+                        <div className="w-full bg-gray-700/50 rounded-full h-4 mb-3 overflow-hidden">
+                          <div
+                            className={`h-4 rounded-full transition-all duration-500 ${
+                              usageStats.usage.percentage >= 90 ? 'bg-gradient-to-r from-red-500 to-red-600' :
+                              usageStats.usage.percentage >= 70 ? 'bg-gradient-to-r from-yellow-500 to-orange-500' :
+                              'bg-gradient-to-r from-blue-500 to-cyan-400'
+                            }`}
+                            style={{ width: `${Math.min(usageStats.usage.percentage, 100)}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">{usageStats.usage.percentage.toFixed(0)}% used</span>
+                          <span className="text-gray-400">
+                            {usageStats.usage.queriesLimit - usageStats.usage.queriesUsed} remaining
+                          </span>
+                        </div>
+                      </>
+                    )}
+
+                    {usageStats.usage.queriesLimit === -1 && (
+                      <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center">
+                        <Zap className="w-5 h-5 text-green-400 mr-3" />
+                        <span className="text-green-400 font-semibold">Unlimited queries - no restrictions!</span>
+                      </div>
+                    )}
+
+                    {/* Quota Warnings */}
+                    {usageStats.usage.queriesLimit !== -1 && usageStats.usage.percentage >= 90 && (
+                      <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                        <div className="flex items-start">
+                          <Shield className="w-5 h-5 text-red-400 mr-3 mt-0.5" />
+                          <div className="flex-1">
+                            <p className="text-red-400 font-semibold mb-2">⚠️ Almost out of queries!</p>
+                            <p className="text-gray-300 text-sm mb-3">
+                              You've used {usageStats.usage.percentage.toFixed(0)}% of your monthly limit. Upgrade now to get unlimited queries.
+                            </p>
+                            <button
+                              onClick={() => setActiveTab('plans')}
+                              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all text-sm"
+                            >
+                              Upgrade to Pro - $3/month
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {usageStats.usage.queriesLimit !== -1 && usageStats.usage.percentage >= 70 && usageStats.usage.percentage < 90 && (
+                      <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                        <div className="flex items-start">
+                          <Clock className="w-5 h-5 text-yellow-400 mr-3 mt-0.5" />
+                          <div className="flex-1">
+                            <p className="text-yellow-400 font-semibold mb-1">Approaching your limit</p>
+                            <p className="text-gray-300 text-sm">
+                              Consider upgrading to Pro for unlimited queries and advanced features.
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
 
+                  {/* Available Features */}
                   <div>
-                    <p className="text-gray-400 text-sm mb-4">Available Features</p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex items-center gap-2">
-                        {usageStats.features.errorExplanation ? (
-                          <CheckCircle className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <X className="h-4 w-4 text-red-400" />
-                        )}
-                        <span className="text-white text-sm">Error Explanations</span>
+                    <h3 className="text-lg font-semibold text-white mb-4">Available Features</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className={`p-4 rounded-xl border ${usageStats.features.errorExplanation ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}>
+                        <div className="flex items-center gap-3">
+                          {usageStats.features.errorExplanation ? (
+                            <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                          )}
+                          <span className={`font-medium ${usageStats.features.errorExplanation ? 'text-white' : 'text-gray-500'}`}>
+                            Error Explanations
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {usageStats.features.fixSuggestions ? (
-                          <CheckCircle className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <X className="h-4 w-4 text-red-400" />
-                        )}
-                        <span className="text-white text-sm">Fix Suggestions</span>
+                      
+                      <div className={`p-4 rounded-xl border ${usageStats.features.fixSuggestions ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}>
+                        <div className="flex items-center gap-3">
+                          {usageStats.features.fixSuggestions ? (
+                            <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                          )}
+                          <span className={`font-medium ${usageStats.features.fixSuggestions ? 'text-white' : 'text-gray-500'}`}>
+                            Fix Suggestions
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {usageStats.features.codeExamples ? (
-                          <CheckCircle className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <X className="h-4 w-4 text-red-400" />
-                        )}
-                        <span className="text-white text-sm">Code Examples</span>
+                      
+                      <div className={`p-4 rounded-xl border ${usageStats.features.codeExamples ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}>
+                        <div className="flex items-center gap-3">
+                          {usageStats.features.codeExamples ? (
+                            <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                          )}
+                          <span className={`font-medium ${usageStats.features.codeExamples ? 'text-white' : 'text-gray-500'}`}>
+                            Code Examples
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {usageStats.features.exportHistory ? (
-                          <CheckCircle className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <X className="h-4 w-4 text-red-400" />
-                        )}
-                        <span className="text-white text-sm">Export History</span>
+                      
+                      <div className={`p-4 rounded-xl border ${usageStats.features.exportHistory ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}>
+                        <div className="flex items-center gap-3">
+                          {usageStats.features.exportHistory ? (
+                            <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                          )}
+                          <span className={`font-medium ${usageStats.features.exportHistory ? 'text-white' : 'text-gray-500'}`}>
+                            Export History
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {usageStats.features.teamFeatures ? (
-                          <CheckCircle className="h-4 w-4 text-green-400" />
-                        ) : (
-                          <X className="h-4 w-4 text-red-400" />
-                        )}
-                        <span className="text-white text-sm">Team Features</span>
+                      
+                      <div className={`p-4 rounded-xl border ${usageStats.features.teamFeatures ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}>
+                        <div className="flex items-center gap-3">
+                          {usageStats.features.teamFeatures ? (
+                            <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                          )}
+                          <span className={`font-medium ${usageStats.features.teamFeatures ? 'text-white' : 'text-gray-500'}`}>
+                            Team Features
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Upgrade CTA for Free Users */}
+                  {usageStats.tier === 'free' && (
+                    <div className="p-6 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl">
+                      <div className="flex items-start">
+                        <Star className="w-6 h-6 text-yellow-400 mr-4 mt-1 flex-shrink-0" />
+                        <div className="flex-1">
+                          <h4 className="text-white font-bold text-lg mb-2">Unlock Premium Features</h4>
+                          <p className="text-gray-300 mb-4">
+                            Upgrade to Pro and get unlimited queries, advanced AI, code examples, and export capabilities for just $3/month.
+                          </p>
+                          <button
+                            onClick={() => setActiveTab('plans')}
+                            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl transition-all shadow-lg"
+                          >
+                            Upgrade to Pro Now
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p className="text-gray-400">No usage data available</p>
@@ -768,6 +941,111 @@ const SubscriptionPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Enhanced Cancel Subscription Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-card border border-white/20 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-2">Cancel Subscription?</h2>
+                <p className="text-gray-400">We'd hate to see you go! Let's explore your options.</p>
+              </div>
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Retention Offer - Downgrade Option */}
+            <div className="mb-8 p-6 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+              <h3 className="text-lg font-bold text-blue-400 mb-3 flex items-center">
+                <TrendingUp className="w-5 h-5 mr-2" />
+                Consider Downgrading Instead
+              </h3>
+              <p className="text-gray-300 mb-4">
+                Not ready to commit? You can downgrade to a {currentSubscription?.tier === 'team' ? 'Pro or Free' : 'Free'} plan and keep access to ErrorWise.
+              </p>
+              <button
+                onClick={handleDowngradeInstead}
+                className="w-full py-3 px-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition-all"
+              >
+                {currentSubscription?.tier === 'team' ? 'Downgrade to Pro ($3/month)' : 'Downgrade to Free Plan'}
+              </button>
+            </div>
+
+            {/* Reason Selection */}
+            <div className="mb-6">
+              <label htmlFor="cancel-reason" className="block text-white font-semibold mb-3">
+                Why are you canceling? (Optional)
+              </label>
+              <select
+                id="cancel-reason"
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-blue-500 focus:outline-none"
+              >
+                <option value="">Select a reason...</option>
+                <option value="too_expensive">Too expensive</option>
+                <option value="not_using">Not using it enough</option>
+                <option value="missing_features">Missing features I need</option>
+                <option value="found_alternative">Found a better alternative</option>
+                <option value="technical_issues">Technical issues</option>
+                <option value="temporary">Taking a break (temporary)</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            {/* Feedback */}
+            <div className="mb-8">
+              <label className="block text-white font-semibold mb-3">
+                Any feedback to help us improve? (Optional)
+              </label>
+              <textarea
+                value={cancelFeedback}
+                onChange={(e) => setCancelFeedback(e.target.value)}
+                placeholder="We'd love to hear your thoughts..."
+                rows={4}
+                className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none resize-none"
+              />
+            </div>
+
+            {/* Warning */}
+            <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <p className="text-yellow-400 text-sm">
+                <strong>Note:</strong> You'll lose access to {currentSubscription?.tier === 'team' ? 'team features, advanced AI, and priority support' : 'unlimited queries, code examples, and premium AI'} at the end of your billing period.
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 py-3 px-6 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/10 transition-all"
+              >
+                Keep Subscription
+              </button>
+              <button
+                onClick={confirmCancelSubscription}
+                disabled={processingCancel}
+                className="flex-1 py-3 px-6 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {processingCancel ? (
+                  <>
+                    <Loader2 className="inline w-4 h-4 animate-spin mr-2" />
+                    Canceling...
+                  </>
+                ) : (
+                  'Confirm Cancellation'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
