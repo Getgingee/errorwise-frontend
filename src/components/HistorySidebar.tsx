@@ -112,12 +112,12 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
       {/* Sidebar */}
       <div 
-        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-gradient-to-br from-gray-900/98 via-blue-900/95 to-gray-900/98 backdrop-blur-xl border-l border-white/10 shadow-2xl z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-gradient-to-br from-gray-900/95 via-blue-900/80 to-gray-900/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-50 transform transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-gradient-to-r from-blue-900/50 to-purple-900/50 backdrop-blur-xl border-b border-white/10 p-4">
+        <div className="sticky top-0 z-10 bg-gradient-to-r from-blue-900/30 to-purple-900/30 backdrop-blur-xl border-b border-white/10 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl shadow-lg">

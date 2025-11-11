@@ -16,14 +16,10 @@ import {
 import { ThemeToggle } from './ThemeToggle';
 
 interface NavigationProps {
-  showRecentAnalyses?: boolean;
-  onRecentAnalysesClick?: () => void;
   onHistoryClick?: () => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ 
-  showRecentAnalyses = false, 
-  onRecentAnalysesClick,
   onHistoryClick 
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -128,20 +124,6 @@ const Navigation: React.FC<NavigationProps> = ({
                 );
               })}
               
-              {/* Only show Recent Analyses on Dashboard page */}
-              {showRecentAnalyses && location.pathname === '/dashboard' && (
-                <button
-                  onClick={() => {
-                    onRecentAnalysesClick?.();
-                    setIsMobileOpen(false);
-                  }}
-                  className="w-full flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 transform hover:translate-x-1"
-                >
-                  <FileText className="w-5 h-5 mr-3 transition-transform duration-300" />
-                  Recent Analyses
-                </button>
-              )}
-
               {/* History Button - Always show */}
               <button
                 onClick={() => {
@@ -289,20 +271,6 @@ const Navigation: React.FC<NavigationProps> = ({
                 </Link>
               );
             })}
-
-            {/* Only show Recent Analyses on Dashboard page */}
-            {showRecentAnalyses && location.pathname === '/dashboard' && (
-              <button
-                onClick={onRecentAnalysesClick}
-                className="w-full flex items-center px-3 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 transform hover:translate-x-1 hover:shadow-lg group"
-                title={isCollapsed ? 'Recent Analyses' : ''}
-              >
-                <FileText className={`w-5 h-5 transition-all duration-300 group-hover:scale-110 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
-                <span className={`font-medium transition-all duration-500 overflow-hidden whitespace-nowrap ${
-                  isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
-                }`}>Recent Analyses</span>
-              </button>
-            )}
 
             {/* History Button - Always show */}
             <button
