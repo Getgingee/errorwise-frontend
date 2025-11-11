@@ -39,8 +39,8 @@ export const ErrorAnalysisEnhanced: React.FC<ErrorAnalysisEnhancedProps> = ({
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {currentTier === 'free' 
-                ? 'Upgrade to Pro for Google Assistant-like AI conversations' 
-                : 'Get context-aware help with follow-up questions and web solutions'}
+                ? 'Upgrade to Pro for Universal AI Assistant - ask anything!' 
+                : 'Ask any question - errors, tutorials, facts, or latest news'}
             </p>
           </div>
         </div>

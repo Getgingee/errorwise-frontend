@@ -237,7 +237,7 @@ const ConversationalChat: React.FC<ConversationalChatProps> = ({
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask a follow-up question..."
+            placeholder="Ask me anything - errors, tutorials, facts, news..."
             disabled={isLoading}
             className="flex-1 px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white disabled:opacity-50"
           />
