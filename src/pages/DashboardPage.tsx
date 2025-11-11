@@ -568,10 +568,82 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Recent Analyses - Two Column Layout */}
+              {/* Recent Analyses - Enhanced Spacious Layout */}
               {recentAnalyses.length > 0 && showRecentAnalyses && (
-                <div ref={recentAnalysesRef} className="mt-12 max-w-[95vw] mx-auto mb-12 px-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+                <div ref={recentAnalysesRef} className="mt-16 max-w-[95vw] mx-auto mb-16 px-4 sm:px-6 lg:px-8">
+                  {/* Section Header */}
+                  <div className="mb-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                      <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl">
+                        <FileText className="h-6 w-6 text-white" />
+                      </div>
+                      Recent Analyses
+                    </h2>
+                    <p className="text-gray-400 text-sm sm:text-base">
+                      Your recent error analyses and solutions
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-6 lg:gap-8">
+                    {/* Left: Recent Analyses List */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                          History ({recentAnalyses.length})
+                        </h3>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        {recentAnalyses.map((recent) => (
+                          <button
+                            key={recent.id}
+                            onClick={() => setSelectedRecentAnalysis(recent)}
+                            className={`group relative overflow-hidden rounded-xl p-5 w-full text-left transition-all duration-300 hover:scale-[1.02] ${
+                              selectedRecentAnalysis?.id === recent.id
+                                ? 'bg-gradient-to-br from-blue-900/40 via-blue-800/30 to-cyan-900/40 border-2 border-cyan-400/50 shadow-lg shadow-cyan-500/20'
+                                : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyan-500/30'
+                            }`}
+                          >
+                            {/* Gradient overlay for selected state */}
+                            {selectedRecentAnalysis?.id === recent.id && (
+                              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-cyan-500/10 pointer-events-none" />
+                            )}
+                            
+                            <div className="relative flex flex-col gap-3">
+                              {/* Header with category and time */}
+                              <div className="flex items-center justify-between gap-2 flex-wrap">
+                                <span className="text-xs px-2.5 py-1 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 rounded-lg text-cyan-300 font-medium backdrop-blur-sm">
+                                  {recent.category}
+                                </span>
+                                <div className="flex items-center gap-3">
+                                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    {formatTimeAgo(recent.createdAt)}
+                                  </span>
+                                  <div className="flex items-center gap-1 text-xs font-semibold">
+                                    <TrendingUp className="h-3.5 w-3.5 text-green-400" />
+                                    <span className="text-white">{recent.confidence}%</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Error message preview */}
+                              <p className="text-sm text-gray-200 font-medium leading-relaxed line-clamp-2">
+                                {recent.errorMessage}
+                              </p>
+
+                              {/* Hover indicator */}
+                              <div className={`mt-1 h-0.5 rounded-full transition-all duration-300 ${
+                                selectedRecentAnalysis?.id === recent.id
+                                  ? 'w-full bg-gradient-to-r from-blue-400 to-cyan-400'
+                                  : 'w-0 bg-cyan-400 group-hover:w-full'
+                              }`} />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Right: Selected Analysis Details */}
                     <div>
                       {selectedRecentAnalysis ? (
@@ -589,50 +661,21 @@ const DashboardPage: React.FC = () => {
                           showTimestamp={true}
                         />
                       ) : (
-                        <div className="glass-card rounded-lg p-16 text-center">
-                          <FileText className="h-20 w-20 text-gray-600 mx-auto mb-4 opacity-50" />
-                          <p className="text-gray-400 text-xl font-semibold mb-2">Select an analysis to view details</p>
-                          <p className="text-gray-500 text-sm">Click on any recent analysis from the list to see the full explanation and solution</p>
+                        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/95 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border border-white/10 shadow-2xl">
+                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+                          <div className="relative p-16 text-center">
+                            <div className="mb-6 inline-flex p-6 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-2xl">
+                              <FileText className="h-16 w-16 text-cyan-400" />
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-3">
+                              Select an Analysis
+                            </h3>
+                            <p className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
+                              Click on any recent analysis from the list to see the full explanation, solution, and code examples
+                            </p>
+                          </div>
                         </div>
                       )}
-                    </div>
-
-                    {/* Left: Recent Analyses List */}
-                    <div className="space-y-3">
-                      {recentAnalyses.map((recent) => (
-                        <button
-                          key={recent.id}
-                          onClick={() => setSelectedRecentAnalysis(recent)}
-                          className={`glass-card rounded-lg p-5 w-full text-left transition-all duration-300 hover:scale-[1.02] ${
-                            selectedRecentAnalysis?.id === recent.id
-                              ? 'ring-2 ring-cyan-400 bg-cyan-500/10'
-                              : ''
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded text-cyan-400">
-                                  {recent.category}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {formatTimeAgo(recent.createdAt)}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-200 font-medium leading-relaxed">
-                                {recent.errorMessage.length > 80 
-                                  ? recent.errorMessage.substring(0, 80) + '...'
-                                  : recent.errorMessage
-                                }
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2 text-xs text-gray-400 flex-shrink-0">
-                              <TrendingUp className="h-3 w-3" />
-                              {recent.confidence}%
-                            </div>
-                          </div>
-                        </button>
-                      ))}
                     </div>
                   </div>
                 </div>
