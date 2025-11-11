@@ -35,6 +35,11 @@ interface ErrorAnalysis {
   explanation: string;
   solution: string;
   codeExample?: string;
+  sources?: Array<{
+    title: string;
+    url: string;
+    description: string;
+  }>;
   confidence: number;
   category: string;
   createdAt: string;
@@ -653,6 +658,7 @@ const DashboardPage: React.FC = () => {
                           category={selectedRecentAnalysis.category}
                           confidence={selectedRecentAnalysis.confidence}
                           codeExample={selectedRecentAnalysis.codeExample}
+                          sources={selectedRecentAnalysis.sources}
                           errorMessage={selectedRecentAnalysis.errorMessage}
                           createdAt={selectedRecentAnalysis.createdAt}
                           onCopy={copyToClipboard}
@@ -692,6 +698,7 @@ const DashboardPage: React.FC = () => {
                 category={analysis.category}
                 confidence={analysis.confidence}
                 codeExample={analysis.codeExample}
+                sources={analysis.sources}
                 errorMessage={analysis.errorMessage}
                 createdAt={analysis.createdAt}
                 onCopy={copyToClipboard}
