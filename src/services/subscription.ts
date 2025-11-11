@@ -41,6 +41,7 @@ export interface SubscriptionData {
   current_period_end: string;
   created_at: string;
   updated_at: string;
+  tier?: 'free' | 'pro' | 'team'; // Added tier field for frontend usage
   subscription?: any;
   plan?: any;
   usage?: Usage;
