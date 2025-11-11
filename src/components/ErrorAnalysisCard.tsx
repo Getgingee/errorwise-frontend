@@ -1,7 +1,13 @@
 import React from 'react';
-import { Copy, Check, Lightbulb, Code, Share2, Download, Clock } from 'lucide-react';
+import { Copy, Check, Lightbulb, Code, Share2, Download, Clock, ExternalLink, BookOpen, Sparkles } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { ExportButton } from './ProFeatures';
+
+interface Source {
+  title: string;
+  url: string;
+  description: string;
+}
 
 interface ErrorAnalysisCardProps {
   explanation: string;
@@ -9,6 +15,7 @@ interface ErrorAnalysisCardProps {
   category: string;
   confidence: number;
   codeExample?: string;
+  sources?: Source[];
   errorMessage?: string;
   createdAt?: string;
   onCopy?: (text: string, section: string) => void;
@@ -23,6 +30,7 @@ export const ErrorAnalysisCard: React.FC<ErrorAnalysisCardProps> = ({
   category,
   confidence,
   codeExample,
+  sources = [],
   errorMessage,
   createdAt,
   onCopy,
@@ -68,125 +76,198 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
   };
 
   return (
-    <div className="p-5 bg-white/5 border border-white/10 rounded-lg space-y-4">
-      {/* Header Section */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-semibold text-white">Explanation</h3>
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/95 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border border-white/10 shadow-2xl">
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+      
+      {/* Content Container */}
+      <div className="relative p-6 sm:p-8 space-y-6">
+        
+        {/* Header with Category Badge and Confidence */}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl shadow-lg shadow-blue-500/20">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-white">AI Analysis</h3>
+              <p className="text-xs text-gray-400">Powered by ErrorWise AI</p>
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             {showTimestamp && createdAt && (
-              <span className="text-xs text-gray-500 flex items-center gap-1">
-                <Clock className="h-3 w-3" />
+              <span className="text-xs text-gray-400 flex items-center gap-1.5 px-3 py-1.5 bg-white/5 rounded-lg border border-white/10">
+                <Clock className="h-3.5 w-3.5" />
                 {formatTimeAgo(createdAt)}
               </span>
             )}
-            <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs font-medium rounded">
+            <span className="px-3 py-1.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold rounded-lg backdrop-blur-sm">
               {category}
             </span>
           </div>
         </div>
-        <p className="text-gray-300 leading-relaxed">{explanation}</p>
-      </div>
 
-      {/* Solution Section */}
-      <div className="border-t border-white/10 pt-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-semibold text-white mb-2">Solution</h3>
-          {onCopy && (
-            <button
-              onClick={() => onCopy(solution, 'solution')}
-              className="p-1.5 hover:bg-white/10 rounded transition-colors"
-              title="Copy solution"
-            >
-              {copiedSection === 'solution' ? (
-                <Check className="h-4 w-4 text-green-400" />
-              ) : (
-                <Copy className="h-4 w-4 text-gray-400" />
-              )}
-            </button>
-          )}
+        {/* Explanation Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-blue-500/20 rounded-lg">
+              <Lightbulb className="w-4 h-4 text-blue-400" />
+            </div>
+            <h4 className="text-base font-semibold text-white">What's Happening</h4>
+          </div>
+          <div className="pl-8 pr-4">
+            <p className="text-gray-300 leading-relaxed text-sm sm:text-base">{explanation}</p>
+          </div>
         </div>
-        <p className="text-gray-300 leading-relaxed whitespace-pre-line">{solution}</p>
-      </div>
 
-      {/* Code Example (if provided) */}
-      {codeExample && (
-        <div className="border-t border-white/10 pt-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Code className="h-5 w-5" />
-              Code Example
-            </h3>
+        {/* Solution Section */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-green-500/20 rounded-lg">
+                <Check className="w-4 h-4 text-green-400" />
+              </div>
+              <h4 className="text-base font-semibold text-white">How to Fix It</h4>
+            </div>
             {onCopy && (
               <button
-                onClick={() => onCopy(codeExample, 'code')}
-                className="p-1.5 hover:bg-white/10 rounded transition-colors"
-                title="Copy code"
+                onClick={() => onCopy(solution, 'solution')}
+                className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200 group"
+                title="Copy solution"
               >
-                {copiedSection === 'code' ? (
+                {copiedSection === 'solution' ? (
                   <Check className="h-4 w-4 text-green-400" />
                 ) : (
-                  <Copy className="h-4 w-4 text-gray-400" />
+                  <Copy className="h-4 w-4 text-gray-400 group-hover:text-white" />
                 )}
               </button>
             )}
           </div>
-          <pre className="bg-slate-950 text-gray-100 rounded-lg p-4 overflow-x-auto text-sm font-mono border border-white/10">
-            <code>{codeExample}</code>
-          </pre>
-        </div>
-      )}
-
-      {/* Confidence Meter */}
-      <div className="flex items-center gap-2 pt-2">
-        <span className="text-xs text-gray-400">Confidence:</span>
-        <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500"
-            data-confidence={confidence}
-          >
-            <style>{`.h-full[data-confidence="${confidence}"] { width: ${confidence}%; }`}</style>
+          <div className="pl-8 pr-4">
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line text-sm sm:text-base">{solution}</p>
           </div>
         </div>
-        <span className="text-xs text-gray-300 font-medium">{confidence}%</span>
-      </div>
 
-      {/* Action Buttons */}
-      {showActions && (
-        <div className="flex items-center gap-2 pt-2 border-t border-white/10">
-          <button
-            onClick={handleShare}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300 hover:bg-blue-500/30 hover:text-white transition-all"
-            title="Share Analysis"
-          >
-            <Share2 className="h-3.5 w-3.5" />
-            Share
-          </button>
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs bg-cyan-500/20 border border-cyan-500/30 rounded-lg text-cyan-300 hover:bg-cyan-500/30 hover:text-white transition-all"
-            title="Download Analysis"
-          >
-            <Download className="h-3.5 w-3.5" />
-            Download
-          </button>
-          
-          {/* Export Button - Pro Feature */}
-          <ExportButton 
-            data={{
-              errorMessage,
-              explanation,
-              solution,
-              codeExample,
-              category,
-              confidence,
-              createdAt
-            }}
-            filename="error-analysis"
-            format="json"
-          />
+        {/* Code Example */}
+        {codeExample && (
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-purple-500/20 rounded-lg">
+                  <Code className="w-4 h-4 text-purple-400" />
+                </div>
+                <h4 className="text-base font-semibold text-white">Code Example</h4>
+              </div>
+              {onCopy && (
+                <button
+                  onClick={() => onCopy(codeExample, 'code')}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200 group"
+                  title="Copy code"
+                >
+                  {copiedSection === 'code' ? (
+                    <Check className="h-4 w-4 text-green-400" />
+                  ) : (
+                    <Copy className="h-4 w-4 text-gray-400 group-hover:text-white" />
+                  )}
+                </button>
+              )}
+            </div>
+            <div className="pl-8 pr-4">
+              <pre className="bg-gray-950/80 border border-white/10 rounded-xl p-4 overflow-x-auto text-sm font-mono shadow-inner">
+                <code className="text-gray-100">{codeExample}</code>
+              </pre>
+            </div>
+          </div>
+        )}
+
+        {/* Sources/References Section - NEW */}
+        {sources && sources.length > 0 && (
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-cyan-500/20 rounded-lg">
+                <BookOpen className="w-4 h-4 text-cyan-400" />
+              </div>
+              <h4 className="text-base font-semibold text-white">References & Resources</h4>
+            </div>
+            <div className="pl-8 pr-4 space-y-3">
+              {sources.map((source, index) => (
+                <a
+                  key={index}
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/30 rounded-xl transition-all duration-300 group"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-cyan-500/20 rounded-lg group-hover:bg-cyan-500/30 transition-colors">
+                      <ExternalLink className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-semibold text-white text-sm mb-1 group-hover:text-cyan-300 transition-colors truncate">
+                        {source.title}
+                      </h5>
+                      <p className="text-xs text-gray-400 leading-relaxed line-clamp-2">
+                        {source.description}
+                      </p>
+                      <p className="text-xs text-cyan-400/70 mt-1.5 truncate">
+                        {source.url}
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Confidence Meter */}
+        <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+          <span className="text-xs text-gray-400 font-medium">Confidence:</span>
+          <div className="flex-1 h-2.5 bg-white/5 rounded-full overflow-hidden border border-white/10 shadow-inner">
+            <div 
+              className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-green-400 rounded-full transition-all duration-700 shadow-lg"
+              style={{ width: `${confidence}%` }}
+            />
+          </div>
+          <span className="text-sm text-white font-semibold min-w-[48px] text-right">{confidence}%</span>
         </div>
-      )}
+
+        {/* Action Buttons */}
+        {showActions && (
+          <div className="flex items-center gap-2 pt-4 border-t border-white/10 flex-wrap">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300 hover:bg-blue-500/30 hover:border-blue-400/50 hover:text-white transition-all duration-200 shadow-sm hover:shadow-blue-500/20"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              Share
+            </button>
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium bg-cyan-500/20 border border-cyan-500/30 rounded-lg text-cyan-300 hover:bg-cyan-500/30 hover:border-cyan-400/50 hover:text-white transition-all duration-200 shadow-sm hover:shadow-cyan-500/20"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Download
+            </button>
+            
+            {/* Export Button - Pro Feature */}
+            <ExportButton 
+              data={{
+                errorMessage,
+                explanation,
+                solution,
+                codeExample,
+                sources,
+                category,
+                confidence,
+                createdAt
+              }}
+              filename="error-analysis"
+              format="json"
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
