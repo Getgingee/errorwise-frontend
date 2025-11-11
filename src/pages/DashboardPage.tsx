@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
 import ErrorAnalysisCard from '../components/ErrorAnalysisCard';
 import ErrorAnalysisEnhanced from '../components/ErrorAnalysisEnhanced';
+import HistorySidebar from '../components/HistorySidebar';
 import {
   Upload,
   Loader2,
@@ -22,7 +23,8 @@ import {
   MessageSquare,
   RefreshCw,
   Share2,
-  Download
+  Download,
+  History
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
@@ -146,6 +148,7 @@ const DashboardPage: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const [showRecentAnalyses, setShowRecentAnalyses] = useState(true);
+  const [showHistorySidebar, setShowHistorySidebar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const recentAnalysesRef = useRef<HTMLDivElement>(null);
 
@@ -452,7 +455,29 @@ const DashboardPage: React.FC = () => {
 
   return (
     <>
-      <Navigation showRecentAnalyses={recentAnalyses.length > 0} onRecentAnalysesClick={scrollToRecentAnalyses} />
+      <Navigation 
+        showRecentAnalyses={recentAnalyses.length > 0} 
+        onRecentAnalysesClick={scrollToRecentAnalyses}
+        onHistoryClick={() => setShowHistorySidebar(true)}
+      />
+
+      <HistorySidebar
+        isOpen={showHistorySidebar}
+        onClose={() => setShowHistorySidebar(false)}
+        onSelectError={(error) => {
+          // When user selects an error from history, display it
+          setAnalysis({
+            id: error.id,
+            errorMessage: error.errorMessage,
+            explanation: '',
+            solution: '',
+            confidence: error.confidence,
+            category: error.category,
+            createdAt: error.createdAt,
+          });
+          setShowHistorySidebar(false);
+        }}
+      />
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
         {/* Subscription Section - Temporarily hidden for deployment */}
