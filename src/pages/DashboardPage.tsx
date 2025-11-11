@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
 import ErrorAnalysisCard from '../components/ErrorAnalysisCard';
+import ErrorAnalysisEnhanced from '../components/ErrorAnalysisEnhanced';
 import {
   Upload,
   Loader2,
@@ -655,6 +656,11 @@ const DashboardPage: React.FC = () => {
                 showActions={true}
                 showTimestamp={true}
               />
+              
+              {/* Conversational AI - New Feature */}
+              <div className="mt-6">
+                <ErrorAnalysisEnhanced errorMessage={analysis.errorMessage} />
+              </div>
             </div>
           )}
 

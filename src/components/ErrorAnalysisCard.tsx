@@ -1,6 +1,7 @@
 import React from 'react';
 import { Copy, Check, Lightbulb, Code, Share2, Download, Clock } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { ExportButton } from './ProFeatures';
 
 interface ErrorAnalysisCardProps {
   explanation: string;
@@ -169,6 +170,21 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
             <Download className="h-3.5 w-3.5" />
             Download
           </button>
+          
+          {/* Export Button - Pro Feature */}
+          <ExportButton 
+            data={{
+              errorMessage,
+              explanation,
+              solution,
+              codeExample,
+              category,
+              confidence,
+              createdAt
+            }}
+            filename="error-analysis"
+            format="json"
+          />
         </div>
       )}
     </div>

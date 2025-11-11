@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiClient } from '../services/api';
 import Navigation from '../components/Navigation';
 import { CheckCircle, X, TrendingUp, Users, Zap, Shield, Clock, Star, Loader2, Calendar, CreditCard, History as HistoryIcon, BarChart3 } from 'lucide-react';
+import { TierComparison, NewFeaturesHighlight } from '../components/TierFeatures';
 
 interface Plan {
   id: string;
@@ -485,6 +486,27 @@ const SubscriptionPage: React.FC = () => {
 
         {/* Tab Content */}
         {activeTab === 'plans' && (
+          <div className="max-w-7xl mx-auto px-5 mb-16">
+            {/* New Features Highlight */}
+            <NewFeaturesHighlight />
+            
+            {/* Tier Comparison */}
+            <TierComparison 
+              currentTier={currentSubscription?.tier as 'free' | 'pro' | 'team'}
+              onUpgrade={async (tier) => {
+                await handleSelectPlan(tier);
+              }}
+            />
+            
+            {/* Original plan cards below for fallback */}
+            <div className="mt-12 text-center text-gray-400 text-sm">
+              <p>Or view detailed plan breakdown below</p>
+            </div>
+          </div>
+        )}
+
+        {/* Keep original plans rendering for compatibility */}
+        {activeTab === 'plans' && false && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-5 mb-16">
             {console.log('ðŸŽ¨ Rendering plans tab. Plans count:', plans.length, 'Plans:', plans)}
             {plans.length === 0 && !loading && (
