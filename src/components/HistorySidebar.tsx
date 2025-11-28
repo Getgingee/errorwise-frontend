@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { History, X, Calendar, TrendingUp, ChevronRight, Clock, Download } from 'lucide-react';
+﻿import React, { useState, useEffect } from 'react';
+import { History, X, Calendar, TrendingUp, ChevronRight, Clock, Download, RefreshCw } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { API_ENDPOINTS } from '../config/api';
 import toast from 'react-hot-toast';
 import '../styles/HistorySidebar.css';
 
+declare const gtag: (...args: any[]) => void;
+
 interface ErrorHistoryItem {
   id: string;
   errorMessage: string;
+  explanation: string;
+  solution: string;
   category: string;
   confidence: number;
   createdAt: string;
+  codeExample?: string;
+  sources?: Array<{ title: string; url: string; description: string }>;
 }
 
 interface HistorySidebarProps {
@@ -19,8 +25,17 @@ interface HistorySidebarProps {
   onClose: () => void;
 }
 
-export const HistorySidebar: React.FC<HistorySidebarProps> = ({ 
-  onSelectError, 
+/**
+ * B3: Basic History View (Per User or Anonymous Session)
+ * 
+ * Shows last 20 queries with:
+ * - Timestamp
+ * - First 100 chars of query
+ * - Category
+ * - Click to reload result card
+ */
+export const HistorySidebar: React.FC<HistorySidebarProps> = ({
+  onSelectError,
   isOpen,
   onClose
 }) => {
@@ -38,8 +53,8 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
   const fetchHistory = async () => {
     setLoading(true);
     try {
-      // Fetch last 7 days of history (limit can be adjusted)
-      const response = await fetch(`${API_ENDPOINTS.errors.history}?limit=30`, {
+      // B3: Fetch last 20 queries
+      const response = await fetch(`${API_ENDPOINTS.errors.history}?limit=20`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -48,15 +63,16 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
       if (response.ok) {
         const data = await response.json();
-        // Filter for last 7 days
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        setHistory(data.history || []);
         
-        const recentHistory = (data.history || []).filter((item: ErrorHistoryItem) => {
-          return new Date(item.createdAt) >= sevenDaysAgo;
-        });
-        
-        setHistory(recentHistory);
+        // B3: Track history view
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'history_view', {
+            event_category: 'engagement',
+            event_label: 'sidebar_opened',
+            value: data.history?.length || 0
+          });
+        }
       }
     } catch (error) {
       console.error('Failed to fetch history:', error);
@@ -70,7 +86,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    
+
     if (days === 0) return 'Today';
     if (days === 1) return 'Yesterday';
     if (days < 7) return `${days} days ago`;
@@ -79,16 +95,33 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
+  };
+
+  // B3: Truncate query to first 100 chars
+  const truncateQuery = (text: string, maxLength: number = 100) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength).trim() + '...';
   };
 
   const handleSelectError = (error: ErrorHistoryItem) => {
     setSelectedId(error.id);
+    
+    // B3: Track history revisit event
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'history_revisit', {
+        event_category: 'engagement',
+        event_label: error.category,
+        query_id: error.id
+      });
+    }
+    
     onSelectError?.(error);
+    toast.success('Previous analysis loaded');
   };
 
   // Export history function
@@ -104,7 +137,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
       if (response.status === 403) {
         toast.error('Export requires Pro or Team subscription. Upgrade to unlock!', {
           duration: 4000,
-          icon: '🔒',
+          icon: '',
         });
         return;
       }
@@ -113,7 +146,6 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
         throw new Error('Export failed');
       }
 
-      // Download the file
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -124,9 +156,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
 
-      toast.success(`History exported as ${format.toUpperCase()}!`, {
-        icon: '✅',
-      });
+      toast.success(`History exported as ${format.toUpperCase()}!`);
     } catch (error) {
       console.error('Export failed:', error);
       toast.error('Failed to export history');
@@ -146,7 +176,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
   return (
     <>
       {/* Backdrop */}
-      <div 
+      <div
         className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
@@ -154,7 +184,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
       />
 
       {/* Sidebar */}
-      <div 
+      <div
         className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-gradient-to-br from-gray-900/95 via-blue-900/80 to-gray-900/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-50 transform transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
@@ -167,18 +197,26 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 <History className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white">Error History</h2>
-                <p className="text-xs text-gray-400">Last 7 days</p>
+                <h2 className="text-lg font-bold text-white">Query History</h2>
+                <p className="text-xs text-gray-400">Last 20 queries</p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
-              aria-label="Close history sidebar"
-              title="Close"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={fetchHistory}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                title="Refresh history"
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </button>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                title="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Export Buttons - Pro/Team Feature */}
@@ -223,7 +261,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto h-[calc(100vh-180px)] p-4">
+        <div className="overflow-y-auto h-[calc(100vh-280px)] p-4">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400"></div>
@@ -233,7 +271,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
               <div className="p-4 bg-white/5 rounded-2xl mb-4">
                 <History className="w-12 h-12 text-gray-500" />
               </div>
-              <p className="text-gray-400 text-sm">No errors in the last 7 days</p>
+              <p className="text-gray-400 text-sm">No queries yet</p>
               <p className="text-gray-500 text-xs mt-1">Your history will appear here</p>
             </div>
           ) : (
@@ -263,8 +301,8 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            {/* Category Badge */}
-                            <div className="flex items-center gap-2 mb-2">
+                            {/* Header: Category + Timestamp */}
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
                               <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 rounded text-cyan-300 font-medium">
                                 {item.category}
                               </span>
@@ -274,17 +312,25 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
                               </span>
                             </div>
 
-                            {/* Error Message */}
-                            <p className="text-sm text-gray-200 font-medium line-clamp-2 leading-relaxed">
-                              {item.errorMessage}
+                            {/* B3: Query preview - first 100 chars */}
+                            <p className="text-sm text-gray-200 font-medium leading-relaxed">
+                              {truncateQuery(item.errorMessage, 100)}
                             </p>
 
                             {/* Confidence */}
                             <div className="flex items-center gap-2 mt-2">
                               <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                                <div 
-                                  className="h-full bg-gradient-to-r from-blue-500 to-green-400 rounded-full transition-all duration-500 confidence-bar"
-                                  data-confidence={item.confidence}
+                                <div
+                                  className={`h-full rounded-full transition-all duration-500 ${
+                                    item.confidence >= 80 
+                                      ? 'bg-gradient-to-r from-green-500 to-emerald-400'
+                                      : item.confidence >= 60
+                                        ? 'bg-gradient-to-r from-blue-500 to-cyan-400'
+                                        : item.confidence >= 40
+                                          ? 'bg-gradient-to-r from-yellow-500 to-orange-400'
+                                          : 'bg-gradient-to-r from-red-500 to-orange-400'
+                                  }`}
+                                  style={{ width: `${item.confidence}%` }}
                                 />
                               </div>
                               <span className="text-xs text-gray-400 font-semibold">{item.confidence}%</span>
@@ -302,6 +348,13 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
               ))}
             </div>
           )}
+        </div>
+
+        {/* Footer tip */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-gray-900 to-transparent">
+          <p className="text-xs text-gray-500 text-center">
+            Click any item to reload its analysis
+          </p>
         </div>
       </div>
     </>

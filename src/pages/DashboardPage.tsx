@@ -469,8 +469,10 @@ const DashboardPage: React.FC = () => {
           setAnalysis({
             id: error.id,
             errorMessage: error.errorMessage,
-            explanation: '',
-            solution: '',
+            explanation: error.explanation || 'Loading...',
+              solution: error.solution || '',
+              codeExample: error.codeExample,
+              sources: error.sources,
             confidence: error.confidence,
             category: error.category,
             createdAt: error.createdAt,
