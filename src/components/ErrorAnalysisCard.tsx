@@ -5,6 +5,7 @@ import { ExportButton } from './ProFeatures';
 import { LowConfidenceBadge } from './LowConfidenceBadge';
 import { ConfidenceWarningBanner } from './ConfidenceWarningBanner';
 import { ConfidenceWarning } from '../types';
+import { FallbackInfoBadge } from './FallbackInfoBadge';
 
 interface Source {
   title: string;
@@ -25,6 +26,10 @@ interface ErrorAnalysisCardProps {
   copiedSection?: string | null;
   showActions?: boolean;
   showTimestamp?: boolean;
+  // A2: Fallback props
+  fallbackUsed?: boolean;
+  primaryModelAttempted?: string;
+  retryCount?: number;
   // A3: New confidence props
   isLowConfidence?: boolean;
   confidenceScore?: number;
@@ -44,6 +49,10 @@ export const ErrorAnalysisCard: React.FC<ErrorAnalysisCardProps> = ({
   copiedSection,
   showActions = false,
   showTimestamp = false,
+  // A2: Fallback props
+  fallbackUsed = false,
+  primaryModelAttempted,
+  retryCount = 0,
   // A3: New props with defaults
   isLowConfidence = false,
   confidenceScore,
@@ -115,6 +124,15 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* A2: Fallback Badge */}
+            {fallbackUsed && (
+              <FallbackInfoBadge 
+                fallbackUsed={fallbackUsed}
+                primaryModel={primaryModelAttempted}
+                retryCount={retryCount}
+                showDetails={true}
+              />
+            )}
             {/* A3: Low Confidence Badge */}
             {(isLowConfidence || normalizedConfidence < 0.6) && (
               <LowConfidenceBadge confidence={normalizedConfidence} size="sm" />
@@ -315,3 +333,5 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
 };
 
 export default ErrorAnalysisCard;
+
+

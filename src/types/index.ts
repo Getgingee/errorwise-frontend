@@ -69,6 +69,15 @@ export interface ErrorExplanationRequest {
   };
 }
 
+// A2: User-friendly error message type
+export interface UserFriendlyError {
+  type: 'rateLimit' | 'timeout' | 'allProvidersFailed' | 'invalidJson' | 'unexpectedError';
+  title: string;
+  message: string;
+  suggestion?: string;
+  retryAfter?: number;
+}
+
 export interface ErrorExplanationResponse {
   id: string;
   errorMessage: string;
@@ -80,10 +89,15 @@ export interface ErrorExplanationResponse {
   prevention?: string[];
   subscriptionTier: 'free' | 'pro' | 'team';
   aiModel: string;
-  aiProvider: 'openai' | 'gemini';
+  aiProvider: 'openai' | 'gemini' | 'anthropic';
   responseTime: number;
   upgradeMessage?: string;
   created_at: string;
+  // A2: Fallback fields
+  fallbackUsed?: boolean;
+  primaryModelAttempted?: string;
+  retryCount?: number;
+  userFriendlyError?: UserFriendlyError;
   // A3: Confidence fields
   confidence: number;
   confidenceScore?: number;
@@ -259,3 +273,4 @@ export interface DodoPaymentMethod {
 }
 
 export default {};
+
