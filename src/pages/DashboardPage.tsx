@@ -579,7 +579,7 @@ const DashboardPage: React.FC = () => {
                 Welcome back, {user?.username || 'Developer'}!
               </h1>
               <p className="text-lg text-gray-300 mb-8">
-                Paste your error message or code below to get instant AI-powered solutions
+                Describe any tech issue below to get instant AI-powered solutions
               </p>
               
               {/* Quick Stats */}
@@ -749,7 +749,7 @@ const DashboardPage: React.FC = () => {
                   onKeyPress={handleKeyPress}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  placeholder="Paste your error message, stack trace, or describe your coding issue..."
+                  placeholder="Describe any tech issue: app crash, printer error, Wi-Fi problem, software glitch, code bug..."
                   className="w-full px-6 py-5 bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none text-base leading-relaxed error-input-textarea"
                   maxLength={5000}
                 />
@@ -762,7 +762,71 @@ const DashboardPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Bottom Action Bar */}
+                                  {/* B1: Example Chips */}
+                  {!errorInput && (
+                    <div className="px-6 py-3 border-t border-white/5">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs text-gray-500">Try an example:</span>
+                        <button
+                          onClick={() => {
+                            setErrorInput("My Wi-Fi keeps disconnecting every few minutes. I've tried restarting the router but it doesn't help.");
+                            // Track chip click
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'wifi' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 hover:border-blue-500/40 text-blue-300 rounded-full transition-all duration-200"
+                        >
+                           Wi-Fi Issue
+                        </button>
+                        <button
+                          onClick={() => {
+                            setErrorInput("Excel keeps freezing when I try to open a large spreadsheet with formulas. It shows 'Not Responding' and I have to force close it.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'excel' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 hover:border-green-500/40 text-green-300 rounded-full transition-all duration-200"
+                        >
+                           Excel Freeze
+                        </button>
+                        <button
+                          onClick={() => {
+                            setErrorInput("TypeError: Cannot read properties of undefined (reading 'map')\n    at App.js:25:15\n    at renderWithHooks (react-dom.development.js:14985:18)");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'python' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 hover:border-yellow-500/40 text-yellow-300 rounded-full transition-all duration-200"
+                        >
+                           Code Error
+                        </button>
+                        <button
+                          onClick={() => {
+                            setErrorInput("My iPhone keeps crashing and restarting randomly. It happens multiple times a day, especially when using certain apps.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'iphone' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 hover:border-purple-500/40 text-purple-300 rounded-full transition-all duration-200"
+                        >
+                           iPhone Crash
+                        </button>
+                        <button
+                          onClick={() => {
+                            setErrorInput("My printer is showing 'offline' status even though it's turned on and connected to the same network as my computer.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'printer' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-500/40 text-cyan-300 rounded-full transition-all duration-200"
+                        >
+                           Printer Offline
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {/* Bottom Action Bar */}
                 <div className="px-6 py-3 border-t border-white/10 bg-white/5 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {/* Conversation Context Indicator */}
@@ -846,6 +910,8 @@ const DashboardPage: React.FC = () => {
 
 export default DashboardPage;
     
+
+
 
 
 
