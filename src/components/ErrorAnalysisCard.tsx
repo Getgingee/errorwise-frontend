@@ -1,11 +1,15 @@
-﻿import React from 'react';
-import { Copy, Check, Lightbulb, Code, Share2, Download, Clock, ExternalLink, BookOpen, Sparkles } from 'lucide-react';
+﻿import React, { useState } from 'react';
+import { Copy, Check, Lightbulb, Code, Share2, Download, Clock, ExternalLink, BookOpen, Sparkles, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { ExportButton } from './ProFeatures';
 import { LowConfidenceBadge } from './LowConfidenceBadge';
 import { ConfidenceWarningBanner } from './ConfidenceWarningBanner';
 import { ConfidenceWarning } from '../types';
 import { FallbackInfoBadge } from './FallbackInfoBadge';
+import { submitResultFeedback } from '../services/feedbackService';
+import { useAuthStore } from '../store/authStore';
+
+declare const gtag: (...args: any[]) => void;
 
 interface Source {
   title: string;
@@ -34,6 +38,10 @@ interface ErrorAnalysisCardProps {
   isLowConfidence?: boolean;
   confidenceScore?: number;
   confidenceWarning?: ConfidenceWarning;
+  // B2: Feedback props
+  queryId?: string;
+  initialFeedback?: 'up' | 'down' | null;
+  onFeedbackChange?: (type: 'up' | 'down') => void;
 }
 
 export const ErrorAnalysisCard: React.FC<ErrorAnalysisCardProps> = ({
@@ -56,12 +64,20 @@ export const ErrorAnalysisCard: React.FC<ErrorAnalysisCardProps> = ({
   // A3: New props with defaults
   isLowConfidence = false,
   confidenceScore,
-  confidenceWarning
+  confidenceWarning,
+  // B2: Feedback props
+  queryId,
+  initialFeedback,
+  onFeedbackChange,
 }) => {
+  const { token } = useAuthStore();
+  const [localFeedback, setLocalFeedback] = useState<'up' | 'down' | null>(initialFeedback || null);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+
   // A3: Normalize confidence to 0-1 range for display
   const normalizedConfidence = confidenceScore ?? (confidence > 1 ? confidence / 100 : confidence);
   const displayConfidence = confidence > 1 ? confidence : Math.round(confidence * 100);
-  
+
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -99,11 +115,47 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
     toast.success('Analysis downloaded!');
   };
 
+  // B2: Handle feedback submission
+  const handleFeedback = async (type: 'up' | 'down') => {
+    if (localFeedback === type || feedbackLoading) return;
+    
+    setFeedbackLoading(true);
+    setLocalFeedback(type);
+    
+    // Track with gtag
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'result_feedback', {
+        event_category: 'engagement',
+        event_label: type === 'up' ? 'helpful' : 'not_helpful',
+        query_id: queryId,
+        category: category,
+      });
+    }
+    
+    // Submit feedback to backend
+    if (queryId && token) {
+      try {
+        await submitResultFeedback(queryId, { type }, token);
+        toast.success(type === 'up' ? 'Thanks for your feedback!' : "Sorry to hear that. We'll improve!");
+        onFeedbackChange?.(type);
+      } catch (error) {
+        console.error('Failed to submit feedback:', error);
+        toast.error('Failed to save feedback');
+        setLocalFeedback(initialFeedback || null);
+      }
+    } else {
+      toast.success(type === 'up' ? 'Thanks for your feedback!' : "Sorry to hear that. We'll improve!");
+      onFeedbackChange?.(type);
+    }
+    
+    setFeedbackLoading(false);
+  };
+
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/95 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border border-white/10 shadow-2xl">
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-      
+
       {/* Content Container */}
       <div className="relative p-6 sm:p-8 space-y-6">
 
@@ -126,7 +178,7 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
           <div className="flex items-center gap-2">
             {/* A2: Fallback Badge */}
             {fallbackUsed && (
-              <FallbackInfoBadge 
+              <FallbackInfoBadge
                 fallbackUsed={fallbackUsed}
                 primaryModel={primaryModelAttempted}
                 retryCount={retryCount}
@@ -268,9 +320,9 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
           <div className="flex-1 h-2.5 bg-white/5 rounded-full overflow-hidden border border-white/10 shadow-inner">
             <div
               className={`h-full rounded-full transition-all duration-700 shadow-lg ${
-                normalizedConfidence >= 0.8 
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-400' 
-                  : normalizedConfidence >= 0.6 
+                normalizedConfidence >= 0.8
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-400'
+                  : normalizedConfidence >= 0.6
                     ? 'bg-gradient-to-r from-blue-500 via-cyan-400 to-green-400'
                     : normalizedConfidence >= 0.4
                       ? 'bg-gradient-to-r from-yellow-500 to-orange-400'
@@ -280,9 +332,9 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
             />
           </div>
           <span className={`text-sm font-semibold min-w-[48px] text-right ${
-            normalizedConfidence >= 0.8 
-              ? 'text-green-400' 
-              : normalizedConfidence >= 0.6 
+            normalizedConfidence >= 0.8
+              ? 'text-green-400'
+              : normalizedConfidence >= 0.6
                 ? 'text-white'
                 : normalizedConfidence >= 0.4
                   ? 'text-yellow-400'
@@ -290,6 +342,37 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
           }`}>
             {displayConfidence}%
           </span>
+        </div>
+
+        {/* B2: Feedback Controls */}
+        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <span className="text-xs text-gray-400">Was this analysis helpful?</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleFeedback('up')}
+              disabled={feedbackLoading}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 disabled:opacity-50 ${
+                localFeedback === 'up'
+                  ? 'bg-green-500/30 text-green-400 border border-green-500/50'
+                  : 'bg-white/5 text-gray-400 hover:bg-green-500/20 hover:text-green-400 border border-white/10'
+              }`}
+            >
+              <ThumbsUp className="w-3.5 h-3.5" />
+              Helpful
+            </button>
+            <button
+              onClick={() => handleFeedback('down')}
+              disabled={feedbackLoading}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 disabled:opacity-50 ${
+                localFeedback === 'down'
+                  ? 'bg-red-500/30 text-red-400 border border-red-500/50'
+                  : 'bg-white/5 text-gray-400 hover:bg-red-500/20 hover:text-red-400 border border-white/10'
+              }`}
+            >
+              <ThumbsDown className="w-3.5 h-3.5" />
+              Not helpful
+            </button>
+          </div>
         </div>
 
         {/* Action Buttons */}
@@ -333,5 +416,3 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
 };
 
 export default ErrorAnalysisCard;
-
-

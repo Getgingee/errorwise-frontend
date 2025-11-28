@@ -1,4 +1,4 @@
-﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -107,7 +107,7 @@ const DashboardPage: React.FC = () => {
       toast.loading('Verifying payment...');
       await subscriptionService.verifyPayment(sessionId);
       toast.dismiss();
-      toast.success('Subscription activated! ≡ƒÄë');
+      toast.success('Subscription activated! =���');
       await loadSubscription();
     } catch (error) {
       toast.dismiss();
@@ -317,7 +317,7 @@ const DashboardPage: React.FC = () => {
         const newPath = window.location.pathname;
         if (authRoutes.includes(newPath)) {
           window.history.forward();
-          toast('Cannot navigate back to login pages', { icon: 'Γä╣∩╕Å' });
+          toast('Cannot navigate back to login pages', { icon: 'G�n+�' });
         }
       }, 100);
     }
@@ -678,6 +678,7 @@ const DashboardPage: React.FC = () => {
                     <div>
                       {selectedRecentAnalysis ? (
                         <ErrorAnalysisCard
+                          queryId={selectedRecentAnalysis.id}
                           explanation={selectedRecentAnalysis.explanation}
                           solution={selectedRecentAnalysis.solution}
                           category={selectedRecentAnalysis.category}
@@ -718,6 +719,7 @@ const DashboardPage: React.FC = () => {
           {analysis && (
             <div className="max-w-4xl mx-auto w-full mb-6 result-card">
               <ErrorAnalysisCard
+                queryId={analysis.id}
                 explanation={analysis.explanation}
                 solution={analysis.solution}
                 category={analysis.category}
