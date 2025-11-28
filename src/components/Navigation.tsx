@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import {
@@ -12,7 +12,9 @@ import {
   Eye,
   Bot,
   History,
-  BookOpen
+  BookOpen,
+  Diamond,
+  Settings
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -45,7 +47,6 @@ const Navigation: React.FC<NavigationProps> = ({
   React.useEffect(() => {
     const root = document.documentElement;
 
-    // Font size adjustments
     if (fontSize === 'large') {
       root.style.fontSize = '18px';
     } else if (fontSize === 'xlarge') {
@@ -54,7 +55,6 @@ const Navigation: React.FC<NavigationProps> = ({
       root.style.fontSize = '16px';
     }
 
-    // High contrast mode
     if (highContrast) {
       root.style.filter = 'contrast(1.3)';
     } else {
@@ -62,17 +62,17 @@ const Navigation: React.FC<NavigationProps> = ({
     }
   }, [fontSize, highContrast]);
 
+  // Updated nav items with icons and renamed items
   const navItems = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Home', href: '/dashboard', icon: Home },
     { name: 'Library', href: '/library', icon: BookOpen },
-    { name: 'Subscription', href: '/subscription', icon: CreditCard },
+    { name: 'Upgrade', href: '/subscription', icon: Diamond },
     { name: 'Profile', href: '/profile', icon: User },
   ];
 
   const isActive = (path: string) => location.pathname === path;
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {
-    // If clicking on the current page, navigate back to dashboard
     if (isActive(href) && href !== '/dashboard') {
       e.preventDefault();
       navigate('/dashboard');
@@ -128,7 +128,7 @@ const Navigation: React.FC<NavigationProps> = ({
                 );
               })}
 
-              {/* History Button - Always show */}
+              {/* My History Button */}
               <button
                 onClick={() => {
                   onHistoryClick?.();
@@ -138,37 +138,39 @@ const Navigation: React.FC<NavigationProps> = ({
               >
                 <History className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-12" />
                 <span className="flex items-center gap-2">
-                  History
+                  My History
                   <span className="text-xs px-2 py-0.5 bg-blue-500/20 border border-blue-400/30 rounded text-blue-300">7 days</span>
                 </span>
               </button>
 
               {/* Features Section in Mobile */}
               <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                {/* AI Model Selection */}
+                {/* Settings - combines AI Model and Accessibility */}
                 <div className="px-4 py-2">
-                  <p className="text-xs text-gray-500 mb-2">AI Model</p>
-                  <div className="flex gap-2">
-                    {(['gemini', 'anthropic'] as const).map((model) => (
-                      <button
-                        key={model}
-                        onClick={() => setSelectedAI(model)}
-                        className={`flex-1 px-3 py-2 text-xs rounded-lg transition-all duration-200 ${
-                          selectedAI === model
-                            ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
-                            : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
-                        }`}
-                      >
-                        {model === 'gemini' ? 'Gemini' : 'Claude'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  <p className="text-xs text-gray-500 mb-2 flex items-center gap-2">
+                    <Settings className="h-3 w-3" /> Settings
+                  </p>
+                  <div className="space-y-3">
+                    {/* AI Model Selection */}
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">AI Model</p>
+                      <div className="flex gap-2">
+                        {(['gemini', 'anthropic'] as const).map((model) => (
+                          <button
+                            key={model}
+                            onClick={() => setSelectedAI(model)}
+                            className={`flex-1 px-3 py-2 text-xs rounded-lg transition-all duration-200 ${
+                              selectedAI === model
+                                ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
+                                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            {model === 'gemini' ? 'Gemini' : 'Claude'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* Accessibility */}
-                <div className="px-4 py-2">
-                  <p className="text-xs text-gray-500 mb-2">Accessibility</p>
-                  <div className="space-y-2">
                     {/* Font Size */}
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Font Size</p>
@@ -210,10 +212,10 @@ const Navigation: React.FC<NavigationProps> = ({
                   </div>
                 </div>
 
-              {/* Theme Toggle */}
-              <div className="px-4 py-2">
-                <ThemeToggle />
-              </div>
+                {/* Theme Toggle */}
+                <div className="px-4 py-2">
+                  <ThemeToggle />
+                </div>
               </div>
 
               <div className="border-t border-white/10 pt-4 mt-4">
@@ -276,25 +278,25 @@ const Navigation: React.FC<NavigationProps> = ({
               );
             })}
 
-            {/* History Button - Always show */}
+            {/* My History Button */}
             <button
               onClick={onHistoryClick}
               className="w-full flex items-center px-3 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 transform hover:translate-x-1 hover:shadow-lg group"
-              title={isCollapsed ? '7-Day History' : ''}
+              title={isCollapsed ? 'My History (7 days)' : ''}
             >
               <History className={`w-5 h-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
               <span className={`font-medium transition-all duration-500 overflow-hidden whitespace-nowrap ${
                 isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
               }`}>
                 <span className="flex items-center gap-2">
-                  History
+                  My History
                   <span className="text-xs px-1.5 py-0.5 bg-blue-500/20 border border-blue-400/30 rounded text-blue-300">7d</span>
                 </span>
               </span>
             </button>
           </nav>
 
-          {/* Features Section - Bottom Right Corner */}
+          {/* Settings Section */}
           <div className="p-3 border-t border-white/10 space-y-2">
             {/* AI Model Selection */}
             <div className="relative">
@@ -311,7 +313,6 @@ const Navigation: React.FC<NavigationProps> = ({
                 </span>
               </button>
 
-              {/* AI Model Dropdown */}
               {showAIMenu && !isCollapsed && (
                 <div className="absolute bottom-full left-0 right-0 mb-2 bg-slate-800 border border-white/20 rounded-lg shadow-2xl overflow-hidden z-50">
                   {(['gemini', 'anthropic'] as const).map((model) => (
@@ -347,7 +348,6 @@ const Navigation: React.FC<NavigationProps> = ({
                 }`}>Accessibility</span>
               </button>
 
-              {/* Accessibility Dropdown */}
               {showAccessibilityMenu && !isCollapsed && (
                 <div className="absolute bottom-full left-0 right-0 mb-2 bg-slate-800 border border-white/20 rounded-lg shadow-2xl p-3 z-50 space-y-3">
                   {/* Font Size */}
@@ -387,21 +387,6 @@ const Navigation: React.FC<NavigationProps> = ({
                         highContrast ? 'left-4' : 'left-0.5'
                       }`}></div>
                     </div>
-                  </button>
-
-                  {/* Reduce Motion */}
-                  <button
-                    onClick={() => {
-                      const reducedMotion = window.matchMedia('(prefers-reduced-motion)').matches;
-                      if (!reducedMotion) {
-                        document.documentElement.style.setProperty('--animation-duration', '0.01ms');
-                      } else {
-                        document.documentElement.style.setProperty('--animation-duration', '');
-                      }
-                    }}
-                    className="w-full px-3 py-2 text-xs text-left bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white rounded-lg transition-all"
-                  >
-                    Toggle Animations
                   </button>
                 </div>
               )}

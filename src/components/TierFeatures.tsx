@@ -1,73 +1,71 @@
-import React from 'react';
+﻿import React from 'react';
 import { Check, Sparkles, Globe, Code, FileJson, MessageCircle, Users, BarChart, Lock } from 'lucide-react';
 
-// Comprehensive tier feature definitions matching pricing page and backend
+// Comprehensive tier feature definitions - Updated for universal appeal
 export const TIER_FEATURES = {
   free: {
     name: 'Free',
     price: '$0',
     period: 'forever',
-    description: 'Perfect for trying out ErrorWise. Get 50 error explanations per month with 7-day history.',
+    description: 'Perfect for casual users. Get 50 problems solved per month.',
     color: 'gray',
     mostPopular: false,
     features: [
-      { name: 'Up to 50 queries/month', included: true, icon: MessageCircle },
-      { name: 'Basic error explanations', included: true, icon: MessageCircle },
-      { name: '7-day error history', included: true, icon: BarChart },
-      { name: 'AI Model: Gemini Flash', included: true, icon: Sparkles },
-      { name: 'Full error explanations', included: false },
-      { name: 'Fix suggestions', included: false },
-      { name: 'Code examples', included: false },
-      { name: 'Web scraping & context', included: false },
-      { name: 'Export to JSON/CSV', included: false },
+      { name: '50 error lookups/month', included: true, icon: MessageCircle },
+      { name: '7-day history', included: true, icon: BarChart },
+      { name: 'Plain English explanations', included: true, icon: MessageCircle },
+      { name: 'Step-by-step solutions', included: true, icon: Code },
+      { name: 'Email support', included: true, icon: Sparkles },
+      { name: 'Works with any error type', included: true, icon: Globe },
+      { name: 'Unlimited lookups', included: false },
+      { name: 'Web search for solutions', included: false },
+      { name: 'Follow-up conversations', included: false },
     ],
   },
   pro: {
     name: 'Pro',
     price: '$3',
     period: 'month',
-    description: 'Universal AI assistant - ask anything! Unlimited queries with web search across the internet.',
+    description: 'For power users. Unlimited help with any tech problem.',
     color: 'blue',
     mostPopular: true,
     features: [
-      { name: 'Unlimited queries', included: true, icon: MessageCircle, highlight: true },
-      { name: 'Universal AI (any question!)', included: true, icon: Sparkles, highlight: true },
-      { name: 'Web search across internet', included: true, icon: Globe, highlight: true },
-      { name: 'Full error explanations', included: true, icon: MessageCircle },
-      { name: 'Fix suggestions with steps', included: true, icon: Code, highlight: true },
-      { name: 'Code examples', included: true, icon: Code },
-      { name: 'Tutorials & how-to guides', included: true, icon: Code, highlight: true },
-      { name: 'Factual information', included: true, icon: Globe, highlight: true },
-      { name: 'Latest news & trends', included: true, icon: Globe, highlight: true },
+      { name: 'Unlimited error lookups', included: true, icon: MessageCircle, highlight: true },
+      { name: 'Ask anything about tech', included: true, icon: Sparkles, highlight: true },
+      { name: 'Web search for solutions', included: true, icon: Globe, highlight: true },
+      { name: 'Detailed explanations', included: true, icon: MessageCircle },
+      { name: 'Step-by-step fixes', included: true, icon: Code, highlight: true },
+      { name: 'Visual guides & screenshots', included: true, icon: Code },
+      { name: 'How-to tutorials', included: true, icon: Code, highlight: true },
+      { name: 'Latest app updates', included: true, icon: Globe, highlight: true },
       { name: 'Prevention tips', included: true, icon: Sparkles },
-      { name: 'Documentation links', included: true, icon: Globe },
+      { name: 'Official documentation links', included: true, icon: Globe },
       { name: 'Multi-language support', included: true, icon: Sparkles, highlight: true },
-      { name: 'Export to JSON/CSV', included: true, icon: FileJson },
-      { name: 'Unlimited error history', included: true, icon: BarChart },
-      { name: 'AI Model: Claude Haiku', included: true, icon: Sparkles },
-      { name: 'Conversational AI', included: true, icon: MessageCircle, highlight: true },
-      { name: 'Follow-up questions', included: true, icon: MessageCircle, highlight: true },
-      { name: 'Indian context awareness', included: true, icon: Globe, highlight: true },
+      { name: 'Export your history', included: true, icon: FileJson },
+      { name: 'Unlimited history storage', included: true, icon: BarChart },
+      { name: 'Faster AI responses', included: true, icon: Sparkles },
+      { name: 'Follow-up conversations', included: true, icon: MessageCircle, highlight: true },
+      { name: 'India-specific solutions', included: true, icon: Globe, highlight: true },
     ],
   },
   team: {
     name: 'Team',
     price: '$8',
     period: 'month',
-    description: 'Everything in Pro plus shared team history, team dashboard, and collaborative features.',
+    description: 'Perfect for small businesses, remote teams, or families sharing tech support.',
     color: 'purple',
     mostPopular: false,
     features: [
       { name: 'Everything in Pro', included: true, icon: Check, highlight: true },
       { name: 'Team dashboard', included: true, icon: BarChart, highlight: true },
-      { name: 'Shared error history', included: true, icon: Users, highlight: true },
-      { name: 'Team collaboration', included: true, icon: Users },
-      { name: 'Advanced debugging tools', included: true, icon: Code },
+      { name: 'Shared problem history', included: true, icon: Users, highlight: true },
+      { name: 'Help teammates with their errors', included: true, icon: Users },
+      { name: 'Advanced troubleshooting', included: true, icon: Code },
       { name: 'Priority support', included: true, icon: Sparkles },
       { name: 'API access', included: true, icon: Code },
       { name: 'Custom integrations', included: true, icon: Code },
-      { name: 'AI Model: Claude Sonnet', included: true, icon: Sparkles },
-      { name: 'Team analytics', included: true, icon: BarChart },
+      { name: 'Best AI model (Claude Sonnet)', included: true, icon: Sparkles },
+      { name: 'Usage analytics', included: true, icon: BarChart },
     ],
   },
 };
@@ -77,9 +75,9 @@ interface TierComparisonProps {
   onUpgrade?: (tier: 'pro' | 'team') => void;
 }
 
-export const TierComparison: React.FC<TierComparisonProps> = ({ 
+export const TierComparison: React.FC<TierComparisonProps> = ({
   currentTier = 'free',
-  onUpgrade 
+  onUpgrade
 }) => {
   return (
     <div className="grid md:grid-cols-3 gap-6">
@@ -98,16 +96,14 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               colorClasses[tier.color as keyof typeof colorClasses]
             } p-6 ${tier.mostPopular ? 'shadow-xl' : 'shadow-lg'} transition-all hover:shadow-2xl`}
           >
-            {/* Most Popular Badge */}
             {tier.mostPopular && (
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
-                  ⭐ Most Popular
+                   Most Popular
                 </span>
               </div>
             )}
 
-            {/* Current Plan Badge */}
             {isCurrentTier && (
               <div className="absolute -top-3 right-4">
                 <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
@@ -116,7 +112,6 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               </div>
             )}
 
-            {/* Header */}
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 {tier.name}
@@ -132,7 +127,6 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               </p>
             </div>
 
-            {/* Features List */}
             <div className="space-y-3 mb-6">
               {tier.features.map((feature, index) => {
                 const Icon = feature.icon;
@@ -155,8 +149,8 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
                     <div className="flex items-center gap-2 flex-1">
                       {Icon && <Icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />}
                       <span className={`text-sm ${
-                        feature.included 
-                          ? 'text-gray-900 dark:text-white font-medium' 
+                        feature.included
+                          ? 'text-gray-900 dark:text-white font-medium'
                           : 'text-gray-500 dark:text-gray-500 line-through'
                       }`}>
                         {feature.name}
@@ -172,7 +166,6 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               })}
             </div>
 
-            {/* CTA Button */}
             {!isCurrentTier && tierKey !== 'free' && onUpgrade && (
               <button
                 onClick={() => onUpgrade(tierKey as 'pro' | 'team')}
@@ -188,7 +181,7 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
 
             {isCurrentTier && (
               <div className="w-full py-3 rounded-lg font-semibold text-center bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
-                ✓ Active Plan
+                 Active Plan
               </div>
             )}
           </div>
@@ -198,27 +191,27 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
   );
 };
 
-// New Features Highlight Component
+// New Features Highlight Component - Updated descriptions
 export const NewFeaturesHighlight: React.FC = () => {
   const newFeatures = [
     {
       icon: MessageCircle,
-      title: 'Conversational AI',
-      description: 'Google Assistant-like experience with context-aware responses and follow-up questions',
+      title: 'Ask Follow-Up Questions',
+      description: 'Get clarifications and additional help about your errorjust like chatting with tech support',
       tier: 'Pro',
       color: 'blue',
     },
     {
       icon: Globe,
-      title: 'Web Scraping & Context',
-      description: 'Automatically scrapes Stack Overflow, Reddit, and manufacturer forums for real solutions',
+      title: 'Real Solutions from Real Users',
+      description: 'Automatically searches forums, support sites, and community discussions to find solutions that actually worked for others',
       tier: 'Pro',
       color: 'purple',
     },
     {
       icon: Sparkles,
-      title: 'Indian Context Awareness',
-      description: 'Understands Indian culture, searches Indian tech forums (digit.in, techenclave.com)',
+      title: 'India-Specific Solutions',
+      description: 'Get solutions tailored for Indiaincluding regional payment systems, ISP issues, and local app problems',
       tier: 'Pro',
       color: 'yellow',
     },
@@ -236,10 +229,10 @@ export const NewFeaturesHighlight: React.FC = () => {
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-6 h-6 text-yellow-500 animate-pulse" />
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-          ✨ New Pro Features Available!
+           Pro Features Available!
         </h3>
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-4">
         {newFeatures.map((feature, index) => {
           const Icon = feature.icon;

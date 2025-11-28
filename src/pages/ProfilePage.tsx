@@ -1,8 +1,8 @@
-import { API_ENDPOINTS } from '../config/api';
+﻿import { API_ENDPOINTS } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
-import { User, Mail, Calendar, Shield, Trash2, Edit3, Save, X } from 'lucide-react';
+import { User, Mail, Calendar, Shield, Trash2, Edit3, Save, X, BarChart } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 interface UserProfile {
@@ -20,7 +20,7 @@ interface UserStats {
 
 const ProfilePage: React.FC = () => {
   const { token, updateUser, logout } = useAuthStore();
-  
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +30,7 @@ const ProfilePage: React.FC = () => {
     username: '',
     email: ''
   });
-  
+
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -38,7 +38,7 @@ const ProfilePage: React.FC = () => {
   });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-  
+
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -209,7 +209,7 @@ const ProfilePage: React.FC = () => {
       <div className="md:pl-64 pt-16 md:pt-0 py-8">
         <div className="max-w-[896px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white/10 backdrop-blur-lg shadow-2xl rounded-2xl border border-white/20">
-          {/* Header */}
+          {/* Header - Updated */}
           <div className="px-6 py-6 border-b border-white/20">
             <h1 className="text-3xl font-bold text-white">
               Account{' '}
@@ -217,7 +217,7 @@ const ProfilePage: React.FC = () => {
                 Settings
               </span>
             </h1>
-            <p className="text-gray-300 mt-2">Manage your profile and account preferences</p>
+            <p className="text-gray-300 mt-2">Manage your profile, preferences, and error-solving history</p>
           </div>
 
           <div className="p-6">
@@ -395,7 +395,7 @@ const ProfilePage: React.FC = () => {
                         Delete Account
                       </button>
                     </div>
-  
+
                     {showDeleteForm && (
                       <div className="space-y-4">
                         <div>
@@ -436,13 +436,16 @@ const ProfilePage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Stats Sidebar */}
+              {/* Stats Sidebar - Updated terminology */}
               <div>
                 <div className="bg-white/10 border border-white/20 rounded-xl p-6 backdrop-blur-lg">
-                  <h2 className="text-xl font-semibold text-white mb-6">Account Stats</h2>
+                  <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                    <BarChart className="h-5 w-5 text-cyan-400" />
+                    Your ErrorWise Stats
+                  </h2>
                   <div className="space-y-6">
                     <div>
-                      <p className="text-sm text-gray-400">Total Queries</p>
+                      <p className="text-sm text-gray-400">Problems Solved</p>
                       <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent">{stats?.totalQueries || 0}</p>
                     </div>
                     <div>
@@ -450,7 +453,7 @@ const ProfilePage: React.FC = () => {
                       <p className="text-3xl font-bold text-cyan-400">{stats?.thisMonthQueries || 0}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Plan</p>
+                      <p className="text-sm text-gray-400">Current Plan</p>
                       <p className="text-lg font-semibold text-white capitalize">
                         {stats?.subscriptionTier || 'free'}
                       </p>
@@ -468,6 +471,3 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
-
-
-
