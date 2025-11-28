@@ -762,66 +762,130 @@ const DashboardPage: React.FC = () => {
                   )}
                 </div>
 
-                                  {/* B1: Example Chips */}
+                                                    {/* B1: Example Chips */}
                   {!errorInput && (
                     <div className="px-6 py-3 border-t border-white/5">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-xs text-gray-500">Try an example:</span>
+                        {/* Wi-Fi / Network */}
                         <button
                           onClick={() => {
-                            setErrorInput("My Wi-Fi keeps disconnecting every few minutes. I've tried restarting the router but it doesn't help.");
-                            // Track chip click
+                            setErrorInput("My Wi-Fi keeps disconnecting every few minutes. I've tried restarting the router but it doesn't help. Other devices work fine.");
                             if (typeof window !== 'undefined' && (window as any).gtag) {
                               (window as any).gtag('event', 'example_chip_click', { chip_type: 'wifi' });
                             }
                           }}
                           className="px-3 py-1.5 text-xs bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 hover:border-blue-500/40 text-blue-300 rounded-full transition-all duration-200"
                         >
-                           Wi-Fi Issue
+                           Wi-Fi Drops
                         </button>
+                        {/* Excel / Office */}
                         <button
                           onClick={() => {
-                            setErrorInput("Excel keeps freezing when I try to open a large spreadsheet with formulas. It shows 'Not Responding' and I have to force close it.");
+                            setErrorInput("Excel shows #VALUE! error in my VLOOKUP formula: =VLOOKUP(A2,Sheet2!A:B,2,FALSE). The lookup value exists in the other sheet.");
                             if (typeof window !== 'undefined' && (window as any).gtag) {
                               (window as any).gtag('event', 'example_chip_click', { chip_type: 'excel' });
                             }
                           }}
                           className="px-3 py-1.5 text-xs bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 hover:border-green-500/40 text-green-300 rounded-full transition-all duration-200"
                         >
-                           Excel Freeze
+                           Excel #VALUE!
                         </button>
+                        {/* Python Error */}
                         <button
                           onClick={() => {
-                            setErrorInput("TypeError: Cannot read properties of undefined (reading 'map')\n    at App.js:25:15\n    at renderWithHooks (react-dom.development.js:14985:18)");
+                            setErrorInput("ModuleNotFoundError: No module named 'pandas'\n\nI already ran pip install pandas but still getting this error when I run my script.");
                             if (typeof window !== 'undefined' && (window as any).gtag) {
                               (window as any).gtag('event', 'example_chip_click', { chip_type: 'python' });
                             }
                           }}
                           className="px-3 py-1.5 text-xs bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 hover:border-yellow-500/40 text-yellow-300 rounded-full transition-all duration-200"
                         >
-                           Code Error
+                           Python Import
                         </button>
+                        {/* JavaScript Error */}
                         <button
                           onClick={() => {
-                            setErrorInput("My iPhone keeps crashing and restarting randomly. It happens multiple times a day, especially when using certain apps.");
+                            setErrorInput("Uncaught TypeError: Cannot read properties of undefined (reading 'map')\n    at App.js:25:15\n    at renderWithHooks (react-dom.development.js:14985:18)");
                             if (typeof window !== 'undefined' && (window as any).gtag) {
-                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'iphone' });
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'javascript' });
                             }
                           }}
-                          className="px-3 py-1.5 text-xs bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 hover:border-purple-500/40 text-purple-300 rounded-full transition-all duration-200"
+                          className="px-3 py-1.5 text-xs bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-500/40 text-amber-300 rounded-full transition-all duration-200"
                         >
-                           iPhone Crash
+                           React Error
                         </button>
+                        {/* Windows / PC */}
                         <button
                           onClick={() => {
-                            setErrorInput("My printer is showing 'offline' status even though it's turned on and connected to the same network as my computer.");
+                            setErrorInput("Blue Screen of Death (BSOD) with error code IRQL_NOT_LESS_OR_EQUAL. My PC crashes randomly, usually when gaming or running heavy apps.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'windows' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/20 hover:border-sky-500/40 text-sky-300 rounded-full transition-all duration-200"
+                        >
+                           Blue Screen
+                        </button>
+                        {/* Mac */}
+                        <button
+                          onClick={() => {
+                            setErrorInput("My MacBook is running extremely slow and the fan is always on. Activity Monitor shows 'kernel_task' using 400% CPU.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'mac' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-gray-500/10 hover:bg-gray-500/20 border border-gray-500/20 hover:border-gray-500/40 text-gray-300 rounded-full transition-all duration-200"
+                        >
+                           Mac Slow
+                        </button>
+                        {/* Phone */}
+                        <button
+                          onClick={() => {
+                            setErrorInput("My Android phone battery drains from 100% to 0% in just 4 hours, even when I'm not using it. It started after the last update.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'android' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/40 text-emerald-300 rounded-full transition-all duration-200"
+                        >
+                           Battery Drain
+                        </button>
+                        {/* Printer */}
+                        <button
+                          onClick={() => {
+                            setErrorInput("Printer shows 'offline' in Windows but it's turned on and connected. I can ping it but Windows won't recognize it as online.");
                             if (typeof window !== 'undefined' && (window as any).gtag) {
                               (window as any).gtag('event', 'example_chip_click', { chip_type: 'printer' });
                             }
                           }}
-                          className="px-3 py-1.5 text-xs bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-500/40 text-cyan-300 rounded-full transition-all duration-200"
+                          className="px-3 py-1.5 text-xs bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 hover:border-rose-500/40 text-rose-300 rounded-full transition-all duration-200"
                         >
                            Printer Offline
+                        </button>
+                        {/* Database / SQL */}
+                        <button
+                          onClick={() => {
+                            setErrorInput("MySQL Error 1045: Access denied for user 'root'@'localhost' (using password: YES). I'm sure the password is correct.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'database' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 hover:border-indigo-500/40 text-indigo-300 rounded-full transition-all duration-200"
+                        >
+                           MySQL Access
+                        </button>
+                        {/* Git */}
+                        <button
+                          onClick={() => {
+                            setErrorInput("fatal: refusing to merge unrelated histories\n\nI'm trying to pull from remote but git won't let me merge the branches.");
+                            if (typeof window !== 'undefined' && (window as any).gtag) {
+                              (window as any).gtag('event', 'example_chip_click', { chip_type: 'git' });
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/20 hover:border-orange-500/40 text-orange-300 rounded-full transition-all duration-200"
+                        >
+                           Git Merge
                         </button>
                       </div>
                     </div>
@@ -910,6 +974,7 @@ const DashboardPage: React.FC = () => {
 
 export default DashboardPage;
     
+
 
 
 
