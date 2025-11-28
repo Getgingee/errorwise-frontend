@@ -19,6 +19,7 @@ import TeamDashboard from './pages/team/TeamDashboard';
 import TeamAnalyses from './pages/team/TeamAnalyses';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import LibraryPage from './pages/LibraryPage';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
 import { PricingPage } from './pages/PricingPage';
@@ -64,12 +65,15 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          
+
           {/* Email Verification Routes - Public */}
           <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/* Mock Payment Route - Public (for development) */}
           <Route path="/subscription/mock-payment" element={<MockPaymentPage />} />
+
+          {/* Error Library - Public (browse solutions without login) */}
+          <Route path="/library" element={<LibraryPage />} />
 
           {/* Protected Routes */}
           <Route path="/dashboard" element={
@@ -80,6 +84,7 @@ function App() {
 
             {/* Error Analysis redirects to Dashboard (same functionality) */}
             <Route path="/error-analysis" element={<Navigate to="/dashboard" replace />} />
+
           <Route path="/subscription" element={
             <ProtectedRoute>
               <SubscriptionPage />
@@ -156,6 +161,3 @@ function App() {
 }
 
 export default App;
-
-
-

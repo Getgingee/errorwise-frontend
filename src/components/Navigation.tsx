@@ -11,7 +11,8 @@ import {
   FileText,
   Eye,
   Bot,
-  History
+  History,
+  BookOpen
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -21,8 +22,8 @@ interface NavigationProps {
   onRecentAnalysesClick?: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ 
-  onHistoryClick 
+const Navigation: React.FC<NavigationProps> = ({
+  onHistoryClick
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -43,7 +44,7 @@ const Navigation: React.FC<NavigationProps> = ({
   // Apply accessibility settings
   React.useEffect(() => {
     const root = document.documentElement;
-    
+
     // Font size adjustments
     if (fontSize === 'large') {
       root.style.fontSize = '18px';
@@ -52,7 +53,7 @@ const Navigation: React.FC<NavigationProps> = ({
     } else {
       root.style.fontSize = '16px';
     }
-    
+
     // High contrast mode
     if (highContrast) {
       root.style.filter = 'contrast(1.3)';
@@ -63,6 +64,7 @@ const Navigation: React.FC<NavigationProps> = ({
 
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Library', href: '/library', icon: BookOpen },
     { name: 'Subscription', href: '/subscription', icon: CreditCard },
     { name: 'Profile', href: '/profile', icon: User },
   ];
@@ -125,7 +127,7 @@ const Navigation: React.FC<NavigationProps> = ({
                   </Link>
                 );
               })}
-              
+
               {/* History Button - Always show */}
               <button
                 onClick={() => {
@@ -186,7 +188,7 @@ const Navigation: React.FC<NavigationProps> = ({
                         ))}
                       </div>
                     </div>
-                    
+
                     {/* High Contrast Toggle */}
                     <button
                       onClick={() => setHighContrast(!highContrast)}
@@ -308,7 +310,7 @@ const Navigation: React.FC<NavigationProps> = ({
                   {selectedAI === 'gemini' ? 'Gemini' : 'Claude'}
                 </span>
               </button>
-              
+
               {/* AI Model Dropdown */}
               {showAIMenu && !isCollapsed && (
                 <div className="absolute bottom-full left-0 right-0 mb-2 bg-slate-800 border border-white/20 rounded-lg shadow-2xl overflow-hidden z-50">
@@ -367,7 +369,7 @@ const Navigation: React.FC<NavigationProps> = ({
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* High Contrast Toggle */}
                   <button
                     onClick={() => setHighContrast(!highContrast)}
@@ -431,8 +433,3 @@ const Navigation: React.FC<NavigationProps> = ({
 };
 
 export default Navigation;
-
-
-
-
-
