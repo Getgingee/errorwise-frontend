@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { ToastProps } from '../components/UI/Toast';
+import { ToastProps } from '../components/UI/toast';
 
 export interface UseToastReturn {
   toasts: ToastProps[];

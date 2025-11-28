@@ -31,6 +31,34 @@ export interface AuthResponse {
   user: User;
 }
 
+// A3: Confidence Warning types
+export interface ConfidenceWarning {
+  isLowConfidence: boolean;
+  confidenceScore: number;
+  warningMessage: string;
+  suggestions: string[];
+  disclaimer: string;
+}
+
+export type ConfidenceBucket = 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
+
+export const CONFIDENCE_THRESHOLD = 0.6;
+
+export const getConfidenceLevel = (confidence: number): ConfidenceBucket => {
+  if (confidence >= 0.9) return 'very_high';
+  if (confidence >= 0.8) return 'high';
+  if (confidence >= 0.6) return 'medium';
+  if (confidence >= 0.4) return 'low';
+  return 'very_low';
+};
+
+export const getConfidenceColor = (confidence: number): string => {
+  if (confidence >= 0.8) return 'green';
+  if (confidence >= 0.6) return 'yellow';
+  if (confidence >= 0.4) return 'orange';
+  return 'red';
+};
+
 // Error explanation types
 export interface ErrorExplanationRequest {
   errorMessage: string;
@@ -56,6 +84,12 @@ export interface ErrorExplanationResponse {
   responseTime: number;
   upgradeMessage?: string;
   created_at: string;
+  // A3: Confidence fields
+  confidence: number;
+  confidenceScore?: number;
+  isLowConfidence?: boolean;
+  confidenceBucket?: ConfidenceBucket;
+  confidenceWarning?: ConfidenceWarning;
 }
 
 // Subscription types - Updated for Dodo Payments
@@ -63,10 +97,10 @@ export interface SubscriptionPlan {
   id: 'free' | 'pro' | 'team';
   name: string;
   price: number;
-  dodoProductId?: string; // Updated for Dodo Payments
+  dodoProductId?: string;
   features: string[];
   limits: {
-    daily_queries: number; // -1 for unlimited
+    daily_queries: number;
   };
 }
 
@@ -85,9 +119,9 @@ export interface Subscription {
 export interface BillingInfo {
   currentPlan: SubscriptionPlan;
   subscription?: Subscription;
-  dodoCustomerId?: string; // Updated for Dodo Payments
+  dodoCustomerId?: string;
   availablePlans: SubscriptionPlan[];
-  dodoSubscription?: { // Updated for Dodo Payments
+  dodoSubscription?: {
     id: string;
     status: string;
     currentPeriodEnd: string;
@@ -105,6 +139,9 @@ export interface ErrorHistoryItem {
   aiModel: string;
   responseTime: number;
   created_at: string;
+  // A3: Confidence fields
+  confidence?: number;
+  isLowConfidence?: boolean;
 }
 
 export interface PaginatedResponse<T> {
@@ -187,12 +224,10 @@ export interface ButtonProps {
   className?: string;
 }
 
-
-
 export interface InputProps {
   label?: string;
   error?: string;
-  helperText?: string; // Added helperText support
+  helperText?: string;
   required?: boolean;
   disabled?: boolean;
   className?: string;
@@ -224,4 +259,3 @@ export interface DodoPaymentMethod {
 }
 
 export default {};
-

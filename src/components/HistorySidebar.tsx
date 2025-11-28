@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { History, X, Calendar, TrendingUp, ChevronRight, Clock } from 'lucide-react';
+import { History, X, Calendar, TrendingUp, ChevronRight, Clock, Download } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { API_ENDPOINTS } from '../config/api';
+import toast from 'react-hot-toast';
 import '../styles/HistorySidebar.css';
 
 interface ErrorHistoryItem {
@@ -90,6 +91,48 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
     onSelectError?.(error);
   };
 
+  // Export history function
+  const handleExport = async (format: 'json' | 'csv') => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.errors.history}/export?format=${format}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
+      });
+
+      if (response.status === 403) {
+        toast.error('Export requires Pro or Team subscription. Upgrade to unlock!', {
+          duration: 4000,
+          icon: '🔒',
+        });
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Export failed');
+      }
+
+      // Download the file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `errorwise-history-${Date.now()}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      toast.success(`History exported as ${format.toUpperCase()}!`, {
+        icon: '✅',
+      });
+    } catch (error) {
+      console.error('Export failed:', error);
+      toast.error('Failed to export history');
+    }
+  };
+
   // Group by day
   const groupedHistory = history.reduce((acc, item) => {
     const date = formatDate(item.createdAt);
@@ -135,6 +178,26 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
               title="Close"
             >
               <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Export Buttons - Pro/Team Feature */}
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => handleExport('json')}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white text-sm font-medium rounded-lg transition-all shadow-md hover:shadow-lg"
+              title="Export as JSON (Pro/Team)"
+            >
+              <Download className="w-4 h-4" />
+              <span>Export JSON</span>
+            </button>
+            <button
+              onClick={() => handleExport('csv')}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white text-sm font-medium rounded-lg transition-all shadow-md hover:shadow-lg"
+              title="Export as CSV (Pro/Team)"
+            >
+              <Download className="w-4 h-4" />
+              <span>Export CSV</span>
             </button>
           </div>
 

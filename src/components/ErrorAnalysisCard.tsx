@@ -1,7 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 import { Copy, Check, Lightbulb, Code, Share2, Download, Clock, ExternalLink, BookOpen, Sparkles } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { ExportButton } from './ProFeatures';
+import { LowConfidenceBadge } from './LowConfidenceBadge';
+import { ConfidenceWarningBanner } from './ConfidenceWarningBanner';
+import { ConfidenceWarning } from '../types';
 
 interface Source {
   title: string;
@@ -22,6 +25,10 @@ interface ErrorAnalysisCardProps {
   copiedSection?: string | null;
   showActions?: boolean;
   showTimestamp?: boolean;
+  // A3: New confidence props
+  isLowConfidence?: boolean;
+  confidenceScore?: number;
+  confidenceWarning?: ConfidenceWarning;
 }
 
 export const ErrorAnalysisCard: React.FC<ErrorAnalysisCardProps> = ({
@@ -36,13 +43,21 @@ export const ErrorAnalysisCard: React.FC<ErrorAnalysisCardProps> = ({
   onCopy,
   copiedSection,
   showActions = false,
-  showTimestamp = false
+  showTimestamp = false,
+  // A3: New props with defaults
+  isLowConfidence = false,
+  confidenceScore,
+  confidenceWarning
 }) => {
+  // A3: Normalize confidence to 0-1 range for display
+  const normalizedConfidence = confidenceScore ?? (confidence > 1 ? confidence / 100 : confidence);
+  const displayConfidence = confidence > 1 ? confidence : Math.round(confidence * 100);
+  
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
+
     if (seconds < 60) return 'just now';
     if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
@@ -59,12 +74,12 @@ export const ErrorAnalysisCard: React.FC<ErrorAnalysisCardProps> = ({
     const text = `ErrorWise Analysis Report
 Generated: ${new Date().toLocaleString()}
 Category: ${category}
-Confidence: ${confidence}%
+Confidence: ${displayConfidence}%
 
 ${errorMessage ? `ERROR MESSAGE:\n${errorMessage}\n\n` : ''}EXPLANATION:\n${explanation}
 
 SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`;
-    
+
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -82,7 +97,12 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
       
       {/* Content Container */}
       <div className="relative p-6 sm:p-8 space-y-6">
-        
+
+        {/* A3: Low Confidence Warning Banner */}
+        {confidenceWarning && confidenceWarning.isLowConfidence && (
+          <ConfidenceWarningBanner warning={confidenceWarning} />
+        )}
+
         {/* Header with Category Badge and Confidence */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
@@ -95,6 +115,10 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* A3: Low Confidence Badge */}
+            {(isLowConfidence || normalizedConfidence < 0.6) && (
+              <LowConfidenceBadge confidence={normalizedConfidence} size="sm" />
+            )}
             {showTimestamp && createdAt && (
               <span className="text-xs text-gray-400 flex items-center gap-1.5 px-3 py-1.5 bg-white/5 rounded-lg border border-white/10">
                 <Clock className="h-3.5 w-3.5" />
@@ -180,7 +204,7 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
           </div>
         )}
 
-        {/* Sources/References Section - NEW */}
+        {/* Sources/References Section */}
         {sources && sources.length > 0 && (
           <div className="space-y-3 pt-2">
             <div className="flex items-center gap-2">
@@ -220,16 +244,34 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
           </div>
         )}
 
-        {/* Confidence Meter */}
+        {/* Confidence Meter - A3: Enhanced with color coding */}
         <div className="flex items-center gap-3 pt-4 border-t border-white/10">
           <span className="text-xs text-gray-400 font-medium">Confidence:</span>
           <div className="flex-1 h-2.5 bg-white/5 rounded-full overflow-hidden border border-white/10 shadow-inner">
-            <div 
-              className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-green-400 rounded-full transition-all duration-700 shadow-lg"
-              style={{ width: `${confidence}%` }}
+            <div
+              className={`h-full rounded-full transition-all duration-700 shadow-lg ${
+                normalizedConfidence >= 0.8 
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-400' 
+                  : normalizedConfidence >= 0.6 
+                    ? 'bg-gradient-to-r from-blue-500 via-cyan-400 to-green-400'
+                    : normalizedConfidence >= 0.4
+                      ? 'bg-gradient-to-r from-yellow-500 to-orange-400'
+                      : 'bg-gradient-to-r from-red-500 to-orange-400'
+              }`}
+              style={{ width: `${displayConfidence}%` }}
             />
           </div>
-          <span className="text-sm text-white font-semibold min-w-[48px] text-right">{confidence}%</span>
+          <span className={`text-sm font-semibold min-w-[48px] text-right ${
+            normalizedConfidence >= 0.8 
+              ? 'text-green-400' 
+              : normalizedConfidence >= 0.6 
+                ? 'text-white'
+                : normalizedConfidence >= 0.4
+                  ? 'text-yellow-400'
+                  : 'text-red-400'
+          }`}>
+            {displayConfidence}%
+          </span>
         </div>
 
         {/* Action Buttons */}
@@ -249,9 +291,9 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
               <Download className="h-3.5 w-3.5" />
               Download
             </button>
-            
+
             {/* Export Button - Pro Feature */}
-            <ExportButton 
+            <ExportButton
               data={{
                 errorMessage,
                 explanation,
@@ -259,7 +301,7 @@ SOLUTION:\n${solution}${codeExample ? `\n\nCODE EXAMPLE:\n${codeExample}` : ''}`
                 codeExample,
                 sources,
                 category,
-                confidence,
+                confidence: displayConfidence,
                 createdAt
               }}
               filename="error-analysis"

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiClient } from '../services/api';
 import Navigation from '../components/Navigation';
@@ -119,24 +119,24 @@ const SubscriptionPage: React.FC = () => {
   }, [navigate]);
 
   const fetchData = async () => {
-    console.log('ðŸš€ fetchData started...');
+    console.log('🚀 fetchData started...');
     try {
       setLoading(true);
-      console.log('â³ Loading set to TRUE');
+      console.log('⏳ Loading set to TRUE');
 
       // Fetch plans
-      console.log('ðŸ“¡ Fetching plans from API...');
+      console.log('📡 Fetching plans from API...');
       const plansResponse = await apiClient.get<{ plans: Plan[] }>('/subscriptions/plans');
-      console.log('âœ… Plans API Response:', plansResponse);
+      console.log('✅ Plans API Response:', plansResponse);
       
       // apiClient.get() already returns response.data, so plansResponse IS the data
       const responseData = plansResponse as any;
-      console.log('ðŸ“¦ Response data:', responseData);
-      console.log('ðŸ“‹ Plans array:', responseData.plans);
-      console.log('ðŸ“Š Plans count:', responseData.plans?.length);
+      console.log('📦 Response data:', responseData);
+      console.log('📋 Plans array:', responseData.plans);
+      console.log('📊 Plans count:', responseData.plans?.length);
       
       const plansData = responseData.plans || [];
-      console.log('ðŸ’¾ Setting plans to state. Count:', plansData.length);
+      console.log('💾 Setting plans to state. Count:', plansData.length);
       setPlans(plansData);
 
       // Fetch current subscription
@@ -175,17 +175,17 @@ const SubscriptionPage: React.FC = () => {
       }
 
       setError(null);
-      console.log('âœ… No errors - clearing error state');
+      console.log('✅ No errors - clearing error state');
     } catch (err: any) {
-      console.error('âŒ Error fetching subscription data:', err);
-      console.error('âŒ Error details:', err.response?.data);
+      console.error('❌ Error fetching subscription data:', err);
+      console.error('❌ Error details:', err.response?.data);
       setError(err.response?.data?.error || 'Failed to load subscription data');
     } finally {
-      console.log('ðŸ FINALLY block executing...');
+      console.log('🏁 FINALLY block executing...');
       setLoading(false);
-      console.log('âœ… Loading set to FALSE');
+      console.log('✅ Loading set to FALSE');
       // Note: plans.length here shows OLD state due to closure
-      console.log('ðŸ“Š Plans will render on next render cycle');
+      console.log('📊 Plans will render on next render cycle');
     }
   };
 
@@ -194,7 +194,7 @@ const SubscriptionPage: React.FC = () => {
       setProcessingPlanId(planId);
       setError(null);
 
-      console.log('ðŸš€ Creating checkout for plan:', planId);
+      console.log('🚀 Creating checkout for plan:', planId);
       
       const response = await apiClient.post<{ success?: boolean; data?: { url?: string; sessionUrl?: string }; sessionUrl?: string }>('/subscriptions/checkout', {
         planId,
@@ -202,23 +202,23 @@ const SubscriptionPage: React.FC = () => {
         cancelUrl: `${window.location.origin}/subscription?cancelled=true`
       });
 
-      console.log('ðŸ“¦ Checkout response:', response);
+      console.log('📦 Checkout response:', response);
 
       const responseData = response as any;
       // Handle different response formats
       const redirectUrl = responseData.data?.url || responseData.sessionUrl || responseData.data?.sessionUrl;
       
       if (redirectUrl) {
-        console.log('âœ… Redirecting to:', redirectUrl);
+        console.log('✅ Redirecting to:', redirectUrl);
         window.location.href = redirectUrl;
       } else {
-        console.log('âœ… Dev mode - reloading to show upgrade');
+        console.log('✅ Dev mode - reloading to show upgrade');
         // In dev mode, just reload to show the updated subscription
         window.location.reload();
       }
     } catch (err: any) {
-      console.error('âŒ Checkout error:', err);
-      console.error('âŒ Error response:', err.response);
+      console.error('❌ Checkout error:', err);
+      console.error('❌ Error response:', err.response);
       setError(err.response?.data?.error || err.response?.data?.message || 'Failed to create subscription');
       setProcessingPlanId(null);
     }
@@ -324,7 +324,7 @@ const SubscriptionPage: React.FC = () => {
 
     if (currentSubscription.tier === plan.id) {
       // Show Cancel button for current active subscription (except free)
-      if (plan.id !== 'free' && currentSubscription.status === 'active') {
+      if (currentSubscription.status === 'active') {
         return 'Cancel Subscription';
       }
       return currentSubscription.status === 'trial' ? 'Current (Trial)' : 'Current Plan';
@@ -351,7 +351,7 @@ const SubscriptionPage: React.FC = () => {
   };
 
   if (loading) {
-    console.log('ðŸ”„ RENDERING: Loading state is TRUE - showing spinner');
+    console.log('🔄 RENDERING: Loading state is TRUE - showing spinner');
     return (
       <>
         <Navigation />
@@ -366,7 +366,7 @@ const SubscriptionPage: React.FC = () => {
     );
   }
 
-  console.log('âœ¨ RENDERING: Loading FALSE - showing main content');
+  console.log('✨ RENDERING: Loading FALSE - showing main content');
 
   return (
     <>
@@ -508,20 +508,20 @@ const SubscriptionPage: React.FC = () => {
         {/* Keep original plans rendering for compatibility */}
         {activeTab === 'plans' && false && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-5 mb-16">
-            {console.log('ðŸŽ¨ Rendering plans tab. Plans count:', plans.length, 'Plans:', plans)}
+            
             {plans.length === 0 && !loading && (
               <div className="col-span-full text-center py-16">
                 <div className="glass-card border border-white/10 rounded-2xl p-12">
-                  <p className="text-white text-2xl mb-4 font-bold">âš ï¸ No plans available</p>
+                  <p className="text-white text-2xl mb-4 font-bold">⚠️ No plans available</p>
                   <p className="text-gray-400 mb-6">The plans API returned empty data</p>
                   <button
                     onClick={() => {
-                      console.log('ðŸ”„ Manual refresh triggered');
+                      console.log('🔄 Manual refresh triggered');
                       fetchData();
                     }}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
                   >
-                    ðŸ”„ Retry Loading Plans
+                    🔄 Retry Loading Plans
                   </button>
                 </div>
               </div>
@@ -709,7 +709,7 @@ const SubscriptionPage: React.FC = () => {
                   {billingInfo.subscription.cancelAtPeriodEnd && (
                     <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                       <p className="text-yellow-400">
-                        âš ï¸ Your subscription will be cancelled at the end of the current billing period
+                        ⚠️ Your subscription will be cancelled at the end of the current billing period
                       </p>
                     </div>
                   )}
@@ -757,7 +757,7 @@ const SubscriptionPage: React.FC = () => {
                         <p className="text-gray-400 text-sm">Monthly limit resets on the 1st</p>
                       </div>
                       <span className="text-white font-bold text-xl">
-                        {usageStats.usage.queriesUsed} / {usageStats.usage.queriesLimit === -1 ? '∞' : usageStats.usage.queriesLimit}
+                        {usageStats.usage.queriesUsed} / {usageStats.usage.queriesLimit === -1 ? '8' : usageStats.usage.queriesLimit}
                       </span>
                     </div>
                     
@@ -795,7 +795,7 @@ const SubscriptionPage: React.FC = () => {
                         <div className="flex items-start">
                           <Shield className="w-5 h-5 text-red-400 mr-3 mt-0.5" />
                           <div className="flex-1">
-                            <p className="text-red-400 font-semibold mb-2">⚠️ Almost out of queries!</p>
+                            <p className="text-red-400 font-semibold mb-2">?? Almost out of queries!</p>
                             <p className="text-gray-300 text-sm mb-3">
                               You've used {usageStats.usage.percentage.toFixed(0)}% of your monthly limit. Upgrade now to get unlimited queries.
                             </p>
@@ -937,7 +937,7 @@ const SubscriptionPage: React.FC = () => {
                         <div>
                           <p className="text-white font-semibold capitalize">{item.type}</p>
                           <p className="text-gray-400 text-sm">
-                            {item.fromPlan} â†’ {item.toPlan}
+                            {item.fromPlan} → {item.toPlan}
                           </p>
                           <p className="text-gray-500 text-xs mt-1">
                             {new Date(item.date).toLocaleDateString('en-US', {
@@ -1073,6 +1073,8 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
+
 
 
 

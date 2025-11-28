@@ -17,6 +17,8 @@ import { ThemeToggle } from './ThemeToggle';
 
 interface NavigationProps {
   onHistoryClick?: () => void;
+  showRecentAnalyses?: boolean;
+  onRecentAnalysesClick?: () => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ 
@@ -429,6 +431,7 @@ const Navigation: React.FC<NavigationProps> = ({
 };
 
 export default Navigation;
+
 
 
 

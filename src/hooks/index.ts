@@ -1,8 +1,7 @@
-﻿// Hook exports
+// Hook exports
 export { useToast } from './useToast';
 export { useLocalStorage } from './useLocalStorage';
-export { useSubscriptionEdgeCases } from './useSubscriptionEdgeCases';
-export { useAuthEdgeCases } from './useAuthEdgeCases';
+export { useSubscription } from './useSubscription';
 
 // Re-export types
 export type { UseToastReturn } from './useToast';

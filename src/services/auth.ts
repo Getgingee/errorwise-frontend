@@ -1,4 +1,4 @@
-﻿import axios from 'axios';
+import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 
 const api = axios.create({
@@ -30,6 +30,7 @@ export interface User {
   username: string;
   email: string;
   isEmailVerified: boolean;
+  isPhoneVerified?: boolean;
   createdAt: string;
 }
 
@@ -259,3 +260,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+
