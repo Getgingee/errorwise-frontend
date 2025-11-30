@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
 import { Menu, X, ChevronDown, ChevronUp, Briefcase, ShoppingCart, Gamepad2, Smartphone, CreditCard, Globe, Settings, Wifi, Mail } from 'lucide-react';
@@ -378,7 +378,7 @@ const LandingPage: React.FC = () => {
             </div>
             <div className="text-center group">
               <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">
-                500K+
+                2K+ & Growing
               </div>
               <div className="text-gray-400 mt-2">Users Helped</div>
             </div>
@@ -674,4 +674,5 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
 
