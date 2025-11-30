@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
 import { Menu, X, ChevronDown, ChevronUp, Briefcase, ShoppingCart, Gamepad2, Smartphone, CreditCard, Globe, Settings, Wifi, Mail } from 'lucide-react';
@@ -285,7 +285,7 @@ const LandingPage: React.FC = () => {
               
               <div className="relative">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300 shadow-xl">
-                  <span className="text-2xl sm:text-3xl"></span>
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 </div>
                 
                 <h3 className="text-xl sm:text-2xl font-semibold text-white group-hover:text-cyan-300 transition-colors duration-300 mt-4">
@@ -310,7 +310,7 @@ const LandingPage: React.FC = () => {
               
               <div className="relative">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-500 to-pink-400 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300 shadow-xl">
-                  <span className="text-2xl sm:text-3xl"></span>
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 </div>
                 
                 <h3 className="text-xl sm:text-2xl font-semibold text-white group-hover:text-purple-300 transition-colors duration-300 mt-4">
@@ -335,7 +335,7 @@ const LandingPage: React.FC = () => {
               
               <div className="relative">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-green-500 to-teal-400 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300 shadow-xl">
-                  <span className="text-2xl sm:text-3xl"></span>
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                 </div>
                 
                 <h3 className="text-xl sm:text-2xl font-semibold text-white group-hover:text-green-300 transition-colors duration-300 mt-4">
@@ -485,7 +485,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative px-4 py-16 sm:py-20 lg:py-24 lg:px-8 bg-gradient-to-b from-gray-900/50 via-blue-900/20 to-gray-900/50">
+      <section id="faq" className="relative px-4 py-16 sm:py-20 lg:py-24 lg:px-8 bg-gradient-to-b from-gray-900/50 via-blue-900/20 to-gray-900/50">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
