@@ -22,13 +22,15 @@ export default defineConfig({
         manualChunks(id) {
           // Split vendor chunks
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+            // Keep React ecosystem together to avoid useState errors
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || 
+                id.includes('zustand') || id.includes('use-sync-external-store') || id.includes('scheduler')) {
               return 'vendor-react';
             }
             if (id.includes('lucide') || id.includes('framer-motion')) {
               return 'vendor-ui';
             }
-            if (id.includes('axios') || id.includes('zustand')) {
+            if (id.includes('axios')) {
               return 'vendor-utils';
             }
             // Other node_modules
