@@ -38,10 +38,10 @@ const FALLBACK_DATA: SocialProofData = {
   testimonials: [
     {
       id: '1',
-      name: 'Alex Kumar',
+      name: 'David Chen',
       role: 'Developer',
       company: 'Freelance',
-      avatar: 'AK',
+      avatar: 'DC',
       quote: 'Really helpful for understanding cryptic error messages. Saves me a lot of Googling.',
       rating: 5
     },
@@ -285,6 +285,7 @@ const SocialProofSection: React.FC = () => {
 };
 
 export default SocialProofSection;
+
 
 
 
