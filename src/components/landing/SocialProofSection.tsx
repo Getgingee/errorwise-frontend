@@ -33,35 +33,35 @@ interface SocialProofData {
 
 // Default fallback data
 const FALLBACK_DATA: SocialProofData = {
-  userCount: 10000,
-  queriesSolved: 250000,
+  userCount: 2000,
+  queriesSolved: 15000,
   testimonials: [
     {
       id: '1',
-      name: 'Sarah Chen',
-      role: 'Senior Developer',
-      company: 'TechCorp',
-      avatar: 'SC',
-      quote: 'ErrorWise cut my debugging time by 70%. The AI explanations are incredibly helpful.',
+      name: 'Alex Kumar',
+      role: 'Developer',
+      company: 'Freelance',
+      avatar: 'AK',
+      quote: 'Really helpful for understanding cryptic error messages. Saves me a lot of Googling.',
       rating: 5
     },
     {
       id: '2',
-      name: 'Mike Johnson',
-      role: 'Full Stack Engineer',
-      company: 'StartupXYZ',
-      avatar: 'MJ',
-      quote: 'Finally an AI that actually understands context. My go-to debugging companion.',
+      name: 'Jessica Liu',
+      role: 'CS Student',
+      company: 'University',
+      avatar: 'JL',
+      quote: 'As a beginner, this tool explains errors in a way I can actually understand. Love it!',
       rating: 5
     },
     {
       id: '3',
-      name: 'Emily Rodriguez',
-      role: 'Tech Lead',
-      company: 'Enterprise Inc',
-      avatar: 'ER',
-      quote: 'Our team productivity increased 40% since adopting ErrorWise. Worth every penny.',
-      rating: 5
+      name: 'Ryan O Brien',
+      role: 'Backend Dev',
+      company: 'Startup',
+      avatar: 'RO',
+      quote: 'Simple and fast. Does exactly what it promises - translates errors to plain English.',
+      rating: 4
     }
   ],
   liveActivity: [],
@@ -270,7 +270,7 @@ const SocialProofSection: React.FC = () => {
 
         {/* Trust Badges */}
         <div className="mt-12 text-center">
-          <p className="text-gray-500 text-sm mb-4">Trusted by developers at</p>
+          <p className="text-gray-500 text-sm mb-4">Used by developers worldwide</p>
           <div className="flex flex-wrap justify-center gap-8 opacity-50">
             {['Google', 'Microsoft', 'Amazon', 'Meta', 'Netflix', 'Spotify'].map((company) => (
               <span key={company} className="text-gray-400 font-semibold text-lg">
@@ -285,5 +285,7 @@ const SocialProofSection: React.FC = () => {
 };
 
 export default SocialProofSection;
+
+
 
 
