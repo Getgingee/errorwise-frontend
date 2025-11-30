@@ -5,6 +5,7 @@ import { Menu, X, ChevronDown, ChevronUp, Briefcase, ShoppingCart, Gamepad2, Sma
 import LiveDemoModal from '../components/LiveDemoModal';
 import FeedbackModal from '../components/FeedbackModal';
 import { FeaturesModal, PricingInfoModal, APIDocsModal, InfoPagesModal } from '../components/info';
+import SocialProofSection from '../components/landing/SocialProofSection';
 
 const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -483,6 +484,9 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Social Proof Section - E3: Trust signals */}
+      <SocialProofSection />
 
       {/* FAQ Section */}
       <section id="faq" className="relative px-4 py-16 sm:py-20 lg:py-24 lg:px-8 bg-gradient-to-b from-gray-900/50 via-blue-900/20 to-gray-900/50">

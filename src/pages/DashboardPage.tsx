@@ -1,4 +1,4 @@
-﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -32,6 +32,8 @@ import {
 import { toast } from 'react-hot-toast';
 
 import { subscriptionService, SubscriptionData } from '../services/subscription';
+import SmartUpgradeBanner from '../components/subscription/SmartUpgradeBanner';
+import SuccessFeedback from '../components/SuccessFeedback';
 
 interface ErrorAnalysis {
   id: string;
@@ -361,6 +363,9 @@ const DashboardPage: React.FC = () => {
         }}
       />
 
+      {/* Smart Upgrade Banner - E1: Contextual upgrade prompts */}
+      <SmartUpgradeBanner context="dashboard" />
+
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
         <style>{`
           @keyframes slideUp {
@@ -555,6 +560,12 @@ const DashboardPage: React.FC = () => {
               <div className="mt-6">
                 <ErrorAnalysisEnhanced errorMessage={analysis.errorMessage} />
               </div>
+              
+              {/* Success Feedback - F2: Was this helpful? */}
+              <SuccessFeedback 
+                queryId={analysis.id} 
+                errorMessage={analysis.errorMessage}
+              />
             </div>
           )}
 
