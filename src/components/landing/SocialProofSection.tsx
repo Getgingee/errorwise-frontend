@@ -239,7 +239,7 @@ const SocialProofSection: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setActiveTestimonial(index)}
-                    className={w-2 h-2 rounded-full transition-all }
+                    className={`w-2 h-2 rounded-full transition-all ${index === safeIndex ? "bg-blue-500 w-6" : "bg-slate-600 hover:bg-slate-500"}`}
                   />
                 ))}
               </div>
@@ -285,3 +285,4 @@ const SocialProofSection: React.FC = () => {
 };
 
 export default SocialProofSection;
+
