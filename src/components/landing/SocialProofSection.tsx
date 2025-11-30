@@ -1,4 +1,4 @@
-// Social Proof Section (E3)
+﻿// Social Proof Section (E3)
 // User count, testimonials, live activity feed
 
 import React, { useState, useEffect } from 'react';
@@ -79,12 +79,14 @@ const SocialProofSection: React.FC = () => {
 
   useEffect(() => {
     fetchSocialProof();
+  }, []);
 
-    // Auto-rotate testimonials
+  // Separate effect for testimonial rotation
+  useEffect(() => {
+    if (!data?.testimonials?.length) return;
+    
     const interval = setInterval(() => {
-      setActiveTestimonial((prev) =>
-        data?.testimonials ? (prev + 1) % data.testimonials.length : 0
-      );
+      setActiveTestimonial((prev) => (prev + 1) % data.testimonials.length);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -94,15 +96,26 @@ const SocialProofSection: React.FC = () => {
     try {
       const response = await apiClient.get('/social-proof');
       const responseData = (response as any).data || response;
-      // Merge with fallback to ensure all properties exist
-      setData({
-        ...FALLBACK_DATA,
-        ...responseData,
+      
+      // Validate and sanitize data
+      const sanitizedData: SocialProofData = {
+        userCount: Math.max(0, Number(responseData?.userCount) || FALLBACK_DATA.userCount),
+        queriesSolved: Math.max(0, Number(responseData?.queriesSolved) || FALLBACK_DATA.queriesSolved),
+        testimonials: Array.isArray(responseData?.testimonials) && responseData.testimonials.length > 0
+          ? responseData.testimonials.map((t: any) => ({
+              ...t,
+              rating: Math.min(5, Math.max(0, Number(t?.rating) || 5))
+            }))
+          : FALLBACK_DATA.testimonials,
+        liveActivity: Array.isArray(responseData?.liveActivity) ? responseData.liveActivity : [],
         stats: {
-          ...FALLBACK_DATA.stats,
-          ...(responseData?.stats || {})
+          avgResponseTime: responseData?.stats?.avgResponseTime || FALLBACK_DATA.stats.avgResponseTime,
+          successRate: responseData?.stats?.successRate || FALLBACK_DATA.stats.successRate,
+          languagesSupported: Math.max(0, Number(responseData?.stats?.languagesSupported) || FALLBACK_DATA.stats.languagesSupported)
         }
-      });
+      };
+      
+      setData(sanitizedData);
     } catch (error) {
       console.error('Failed to fetch social proof:', error);
       // Keep fallback data (already set as default)
@@ -112,9 +125,17 @@ const SocialProofSection: React.FC = () => {
   };
 
   const formatNumber = (num: number): string => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M+';
-    if (num >= 1000) return (num / 1000).toFixed(0) + 'K+';
-    return num + '+';
+    const safeNum = Math.max(0, Number(num) || 0);
+    if (safeNum >= 1000000) return (safeNum / 1000000).toFixed(1) + 'M+';
+    if (safeNum >= 1000) return (safeNum / 1000).toFixed(0) + 'K+';
+    return safeNum + '+';
+  };
+
+  // Safe star count getter
+  const getStarCount = (rating: any): number => {
+    const num = Number(rating);
+    if (isNaN(num) || num < 0) return 5;
+    return Math.min(5, Math.max(0, Math.floor(num)));
   };
 
   if (loading) {
@@ -132,7 +153,14 @@ const SocialProofSection: React.FC = () => {
     );
   }
 
-  const testimonial = data.testimonials?.[activeTestimonial] || data.testimonials?.[0];
+  // Safe testimonial access
+  const testimonials = data?.testimonials || FALLBACK_DATA.testimonials;
+  const safeIndex = Math.min(activeTestimonial, testimonials.length - 1);
+  const testimonial = testimonials[safeIndex] || testimonials[0];
+
+  if (!testimonial) {
+    return null; // Don't render if no testimonials
+  }
 
   return (
     <section className="py-16 bg-slate-900/50">
@@ -140,7 +168,7 @@ const SocialProofSection: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Trusted by <span className="text-blue-400">{formatNumber(data.userCount || 10000)}</span> Developers
+            Trusted by <span className="text-blue-400">{formatNumber(data?.userCount || 10000)}</span> Developers
           </h2>
           <p className="text-gray-400 text-lg">
             Join thousands of developers who debug smarter, not harder
@@ -151,80 +179,76 @@ const SocialProofSection: React.FC = () => {
         <div className="grid md:grid-cols-4 gap-6 mb-16">
           <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 text-center">
             <Users className="w-8 h-8 text-blue-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white mb-1">{formatNumber(data.userCount || 10000)}</p>
+            <p className="text-3xl font-bold text-white mb-1">{formatNumber(data?.userCount || 10000)}</p>
             <p className="text-gray-400 text-sm">Active Users</p>
           </div>
 
           <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 text-center">
             <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white mb-1">{formatNumber(data.queriesSolved || 250000)}</p>
+            <p className="text-3xl font-bold text-white mb-1">{formatNumber(data?.queriesSolved || 250000)}</p>
             <p className="text-gray-400 text-sm">Queries Solved</p>
           </div>
 
           <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 text-center">
             <Zap className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white mb-1">{data.stats?.avgResponseTime || '<2s'}</p>
+            <p className="text-3xl font-bold text-white mb-1">{data?.stats?.avgResponseTime || '<2s'}</p>
             <p className="text-gray-400 text-sm">Avg Response</p>
           </div>
 
           <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 text-center">
             <Code className="w-8 h-8 text-purple-400 mx-auto mb-3" />
-            <p className="text-3xl font-bold text-white mb-1">{data.stats?.languagesSupported || 50}+</p>
+            <p className="text-3xl font-bold text-white mb-1">{data?.stats?.languagesSupported || 50}+</p>
             <p className="text-gray-400 text-sm">Languages</p>
           </div>
         </div>
 
         {/* Testimonial Carousel */}
-        {testimonial && (
-          <div className="max-w-3xl mx-auto mb-12">
-            <div className="relative p-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700">
-              <Quote className="absolute top-6 left-6 w-10 h-10 text-blue-500/30" />
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="relative p-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700">
+            <Quote className="absolute top-6 left-6 w-10 h-10 text-blue-500/30" />
 
-              <div className="text-center">
-                {/* Avatar */}
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-white font-bold text-lg">{testimonial.avatar}</span>
-                </div>
-
-                {/* Quote */}
-                <p className="text-xl text-white mb-6 leading-relaxed italic">
-                  "{testimonial.quote}"
-                </p>
-
-                {/* Rating */}
-                <div className="flex justify-center gap-1 mb-4">
-                  {[...Array(testimonial.rating || 5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                  ))}
-                </div>
-
-                {/* Author */}
-                <p className="text-white font-medium">{testimonial.name}</p>
-                <p className="text-gray-400 text-sm">
-                  {testimonial.role} at {testimonial.company}
-                </p>
+            <div className="text-center">
+              {/* Avatar */}
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-lg">{testimonial.avatar || '?'}</span>
               </div>
 
-              {/* Dots Navigation */}
+              {/* Quote */}
+              <p className="text-xl text-white mb-6 leading-relaxed italic">
+                "{testimonial.quote || 'Great product!'}"
+              </p>
+
+              {/* Rating - with safe array creation */}
+              <div className="flex justify-center gap-1 mb-4">
+                {Array.from({ length: getStarCount(testimonial.rating) }, (_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                ))}
+              </div>
+
+              {/* Author */}
+              <p className="text-white font-medium">{testimonial.name || 'Anonymous'}</p>
+              <p className="text-gray-400 text-sm">
+                {testimonial.role || 'Developer'} at {testimonial.company || 'Tech Company'}
+              </p>
+            </div>
+
+            {/* Dots Navigation */}
+            {testimonials.length > 1 && (
               <div className="flex justify-center gap-2 mt-6">
-                {data.testimonials?.map((_, index) => (
+                {testimonials.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setActiveTestimonial(index)}
-                    className={'w-2 h-2 rounded-full transition-all ' + (
-                      index === activeTestimonial
-                        ? 'bg-blue-500 w-6'
-                        : 'bg-slate-600 hover:bg-slate-500'
-                    )}
+                    className={w-2 h-2 rounded-full transition-all }
                   />
                 ))}
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Live Activity Feed */}
-        {data.liveActivity && data.liveActivity.length > 0 && (
+        {data?.liveActivity && data.liveActivity.length > 0 && (
           <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-center gap-2 text-gray-400 mb-4">
               <Activity className="w-4 h-4 text-green-400 animate-pulse" />
