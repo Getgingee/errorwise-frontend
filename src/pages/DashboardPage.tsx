@@ -1,4 +1,4 @@
-﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -732,7 +732,7 @@ const DashboardPage: React.FC = () => {
 
               {/* Bottom Action Bar */}
               <div className="px-3 sm:px-6 py-3 border-t border-white/10 bg-white/5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-0">
-                <div className="flex items-center gap-2 flex-wrap">`n                  {/* Model Toggle - For Pro/Team users */}
+                <div className="flex items-center gap-2 flex-wrap">{/* Model Toggle - For Pro/Team users */}
                   <ModelToggle 
                     compact={true} 
                     onModelChange={setSelectedModel}
