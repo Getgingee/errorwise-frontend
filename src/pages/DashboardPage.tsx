@@ -6,6 +6,9 @@ import Navigation from '../components/Navigation';
 import ErrorAnalysisCard from '../components/ErrorAnalysisCard';
 import ErrorAnalysisEnhanced from '../components/ErrorAnalysisEnhanced';
 import HistorySidebar from '../components/HistorySidebar';
+import FollowUpChips from '../components/FollowUpChips';
+import ModelToggle from '../components/ModelToggle';
+import TrialBanner from '../components/TrialBanner';
 import {
   Upload,
   Loader2,
@@ -27,11 +30,13 @@ import {
   History,
   CheckCircle,
   Globe,
-  Lock
+  Lock,
+  Send
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 import { subscriptionService, SubscriptionData } from '../services/subscription';
+import { sendFollowUp, ConversationInfo, FollowUpResponse } from '../services/chatService';
 import SmartUpgradeBanner from '../components/subscription/SmartUpgradeBanner';
 import SuccessFeedback from '../components/SuccessFeedback';
 
@@ -49,13 +54,13 @@ interface ErrorAnalysis {
   confidence: number;
   category: string;
   createdAt: string;
+  conversation?: ConversationInfo;
 }
 
 interface ConversationMessage {
-  query: string;
-  explanation: string;
-  solution: string;
-  category: string;
+  role: 'user' | 'assistant';
+  content: string;
+  chips?: string[];
 }
 
 const DashboardPage: React.FC = () => {
@@ -140,13 +145,22 @@ const DashboardPage: React.FC = () => {
   const [analysis, setAnalysis] = useState<ErrorAnalysis | null>(null);
   const [recentAnalyses, setRecentAnalyses] = useState<ErrorAnalysis[]>([]);
   const [selectedRecentAnalysis, setSelectedRecentAnalysis] = useState<ErrorAnalysis | null>(null);
-  const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const [showRecentAnalyses, setShowRecentAnalyses] = useState(true);
   const [showHistorySidebar, setShowHistorySidebar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const recentAnalysesRef = useRef<HTMLDivElement>(null);
+  
+  // New conversation state
+  const [conversationMessages, setConversationMessages] = useState<ConversationMessage[]>([]);
+  const [suggestedChips, setSuggestedChips] = useState<string[]>([]);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [followUpsRemaining, setFollowUpsRemaining] = useState(3);
+  const [maxFollowUps, setMaxFollowUps] = useState(3);
+  const [canFollowUp, setCanFollowUp] = useState(true);
+  const [isFollowingUp, setIsFollowingUp] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>('auto');
 
   useEffect(() => {
     fetchRecentAnalyses();
@@ -202,7 +216,11 @@ const DashboardPage: React.FC = () => {
   };
 
   const handleNewChat = () => {
-    setConversationHistory([]);
+    setConversationMessages([]);
+    setSuggestedChips([]);
+    setConversationId(null);
+    setFollowUpsRemaining(maxFollowUps);
+    setCanFollowUp(true);
     setAnalysis(null);
     setErrorInput('');
     toast.success('New conversation started!');
@@ -239,7 +257,11 @@ const DashboardPage: React.FC = () => {
         credentials: 'include',
         body: JSON.stringify({
           errorMessage: errorInput,
-          conversationHistory: conversationHistory.slice(-5)
+          model: selectedModel,
+          conversationHistory: conversationMessages.slice(-5).map(m => ({
+            role: m.role,
+            content: m.content
+          }))
         })
       });
 
@@ -249,6 +271,8 @@ const DashboardPage: React.FC = () => {
       }
 
       const data = await response.json();
+      
+      // Handle new conversation data from backend
       const newAnalysis: ErrorAnalysis = {
         id: data.id || Date.now().toString(),
         errorMessage: errorInput,
@@ -257,18 +281,26 @@ const DashboardPage: React.FC = () => {
         codeExample: data.codeExample,
         confidence: data.confidence || 85,
         category: data.category || 'General',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        conversation: data.conversation
       };
 
       setAnalysis(newAnalysis);
-      setConversationHistory(prev => [
+      
+      // Set conversation state from response
+      if (data.conversation) {
+        setConversationId(data.conversation.id);
+        setSuggestedChips(data.conversation.suggestedQuestions || []);
+        setFollowUpsRemaining(data.conversation.followUpsRemaining);
+        setMaxFollowUps(data.conversation.maxFollowUps);
+        setCanFollowUp(data.conversation.canFollowUp);
+      }
+      
+      // Add to conversation history
+      setConversationMessages(prev => [
         ...prev,
-        {
-          query: errorInput,
-          explanation: data.explanation || '',
-          solution: data.solution || '',
-          category: data.category || 'General'
-        }
+        { role: 'user', content: errorInput },
+        { role: 'assistant', content: `${data.explanation}\n\n${data.solution}`, chips: data.conversation?.suggestedQuestions }
       ]);
 
       toast.success('Solution found!');
@@ -281,10 +313,51 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  const handleFollowUp = async (message: string) => {
+    if (!conversationId || !canFollowUp || isFollowingUp) return;
+    
+    setIsFollowingUp(true);
+    setErrorInput('');
+    
+    // Add user message immediately
+    setConversationMessages(prev => [...prev, { role: 'user', content: message }]);
+    
+    try {
+      const response = await sendFollowUp(conversationId, message);
+      
+      // Add assistant response
+      setConversationMessages(prev => [
+        ...prev,
+        { role: 'assistant', content: response.response, chips: response.suggestedChips }
+      ]);
+      
+      // Update chips and limits
+      setSuggestedChips(response.suggestedChips || []);
+      setFollowUpsRemaining(response.conversation.followUpsRemaining);
+      setCanFollowUp(response.conversation.canContinue);
+      
+      toast.success('Follow-up answered!');
+    } catch (error: any) {
+      toast.error(error.message);
+      // Remove the user message if follow-up failed
+      setConversationMessages(prev => prev.slice(0, -1));
+    } finally {
+      setIsFollowingUp(false);
+    }
+  };
+
+  const handleChipClick = (chip: string) => {
+    handleFollowUp(chip);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleAnalyze();
+      if (analysis && conversationId && canFollowUp) {
+        handleFollowUp(errorInput);
+      } else {
+        handleAnalyze();
+      }
     }
   };
 
@@ -397,9 +470,14 @@ const DashboardPage: React.FC = () => {
         `}</style>
 
         <div className="flex flex-col min-h-screen pb-8 px-4 pt-20">
+          {/* Trial Banner - Show for free users */}
+          <div className="max-w-4xl mx-auto w-full mb-4">
+            <TrialBanner onTrialStarted={() => loadSubscription()} />
+          </div>
+
           {/* Welcome Message - Only show when no analysis */}
           {!analysis && (
-            <div className="max-w-3xl mx-auto mb-auto text-center fade-in mt-20">
+            <div className="max-w-3xl mx-auto mb-auto text-center fade-in mt-10">
               <div className="mb-6">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 mb-4 animate-pulse">
                   <Sparkles className="h-8 w-8 text-white" />
@@ -557,13 +635,55 @@ const DashboardPage: React.FC = () => {
                 showActions={true}
                 showTimestamp={true}
               />
+              
+              {/* Follow-up Conversation Messages */}
+              {conversationMessages.length > 2 && (
+                <div className="mt-4 space-y-3">
+                  {conversationMessages.slice(2).map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-4 rounded-xl ${
+                        msg.role === 'user'
+                          ? 'bg-blue-500/20 border border-blue-500/30 ml-8'
+                          : 'bg-white/5 border border-white/10 mr-8'
+                      }`}
+                    >
+                      <p className="text-sm text-gray-300 whitespace-pre-wrap">{msg.content}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Follow-up Loading */}
+              {isFollowingUp && (
+                <div className="mt-4 p-4 bg-white/5 rounded-xl border border-white/10 mr-8">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm">Thinking...</span>
+                  </div>
+                </div>
+              )}
+              
+              {/* Follow-up Chips */}
+              {suggestedChips.length > 0 && (
+                <FollowUpChips
+                  chips={suggestedChips}
+                  onChipClick={handleChipClick}
+                  isLoading={isFollowingUp}
+                  followUpsRemaining={followUpsRemaining}
+                  maxFollowUps={maxFollowUps}
+                  canFollowUp={canFollowUp}
+                  onUpgrade={() => navigate('/pricing')}
+                />
+              )}
+              
               <div className="mt-6">
                 <ErrorAnalysisEnhanced errorMessage={analysis.errorMessage} />
               </div>
-              
+
               {/* Success Feedback - F2: Was this helpful? */}
-              <SuccessFeedback 
-                queryId={analysis.id} 
+              <SuccessFeedback
+                queryId={analysis.id}
                 errorMessage={analysis.errorMessage}
               />
             </div>
@@ -579,8 +699,9 @@ const DashboardPage: React.FC = () => {
                   onKeyPress={handleKeyPress}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  placeholder='Paste any error message here...
-Examples: "Payment declined", "Page not found", "App keeps crashing", "Cannot log in", or any error code'
+                  placeholder={analysis && canFollowUp 
+                    ? 'Ask a follow-up question...' 
+                    : 'Paste any error message here...\nExamples: "Payment declined", "Page not found", "App keeps crashing"'}
                   className="w-full px-6 py-5 bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none text-base leading-relaxed error-input-textarea"
                   maxLength={5000}
                 />
@@ -591,8 +712,8 @@ Examples: "Payment declined", "Page not found", "App keeps crashing", "Cannot lo
                 )}
               </div>
 
-              {/* Quick Examples Section - NEW */}
-              {!errorInput && (
+              {/* Quick Examples Section - Only show when no analysis */}
+              {!errorInput && !analysis && (
                 <div className="px-6 py-3 border-t border-white/5">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs text-gray-500">Not sure what to paste? Try:</span>
@@ -612,10 +733,16 @@ Examples: "Payment declined", "Page not found", "App keeps crashing", "Cannot lo
               {/* Bottom Action Bar */}
               <div className="px-6 py-3 border-t border-white/10 bg-white/5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {conversationHistory.length > 0 && (
+                  {/* Model Toggle - For Pro/Team users */}
+                  <ModelToggle 
+                    compact={true} 
+                    onModelChange={setSelectedModel}
+                  />
+                  
+                  {conversationMessages.length > 0 && (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/20 border border-blue-500/30 rounded-lg text-xs text-blue-300">
                       <MessageSquare className="h-3 w-3" />
-                      <span>{conversationHistory.length} message{conversationHistory.length !== 1 ? 's' : ''} in context</span>
+                      <span>{Math.floor(conversationMessages.length / 2)} turn{conversationMessages.length > 2 ? 's' : ''}</span>
                     </div>
                   )}
 
@@ -644,7 +771,7 @@ Examples: "Payment declined", "Page not found", "App keeps crashing", "Cannot lo
                     <FileText className="h-4 w-4" />
                     <span className="hidden sm:inline">Clear</span>
                   </button>
-                  {conversationHistory.length > 0 && (
+                  {conversationMessages.length > 0 && (
                     <button
                       onClick={handleNewChat}
                       className="flex items-center gap-2 px-3 py-1.5 text-sm text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 rounded-lg transition-colors"
@@ -657,14 +784,25 @@ Examples: "Payment declined", "Page not found", "App keeps crashing", "Cannot lo
                 </div>
 
                 <button
-                  onClick={handleAnalyze}
-                  disabled={isAnalyzing || errorInput.length < 10}
+                  onClick={() => {
+                    if (analysis && conversationId && canFollowUp && errorInput.trim()) {
+                      handleFollowUp(errorInput);
+                    } else {
+                      handleAnalyze();
+                    }
+                  }}
+                  disabled={(isAnalyzing || isFollowingUp) || errorInput.length < 10}
                   className="px-5 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 disabled:from-gray-600 disabled:to-gray-700 text-white text-sm font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  {isAnalyzing ? (
+                  {isAnalyzing || isFollowingUp ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Finding Solution...</span>
+                      <span>{isFollowingUp ? 'Sending...' : 'Finding Solution...'}</span>
+                    </>
+                  ) : analysis && canFollowUp ? (
+                    <>
+                      <Send className="h-4 w-4" />
+                      <span>Send</span>
                     </>
                   ) : (
                     <>
@@ -678,7 +816,7 @@ Examples: "Payment declined", "Page not found", "App keeps crashing", "Cannot lo
 
             <div className="mt-3 text-center">
               <p className="text-xs text-gray-500">
-                Press <kbd className="px-2 py-0.5 bg-white/10 rounded text-gray-400 font-mono text-xs">Enter</kbd> to find solution,
+                Press <kbd className="px-2 py-0.5 bg-white/10 rounded text-gray-400 font-mono text-xs">Enter</kbd> to {analysis && canFollowUp ? 'send' : 'find solution'},
                 <kbd className="ml-1 px-2 py-0.5 bg-white/10 rounded text-gray-400 font-mono text-xs">Shift + Enter</kbd> for new line
               </p>
             </div>
@@ -690,4 +828,3 @@ Examples: "Payment declined", "Page not found", "App keeps crashing", "Cannot lo
 };
 
 export default DashboardPage;
-

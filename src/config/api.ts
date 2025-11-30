@@ -1,7 +1,7 @@
 /**
  * API Configuration
  * Centralized API base URL configuration
- * 
+ *
  * CHANGE THIS ONE URL TO UPDATE ENTIRE APP!
  */
 
@@ -22,7 +22,29 @@ export const API_ENDPOINTS = {
   errors: {
     analyze: `${API_BASE_URL}/errors/analyze`,
     history: `${API_BASE_URL}/errors/history`,
-    recent: `${API_BASE_URL}/errors/recent`,
+  },
+
+  // Chat/Conversation endpoints (NEW)
+  chat: {
+    start: `${API_BASE_URL}/chat/start`,
+    followUp: `${API_BASE_URL}/chat/follow-up`,
+    get: (id: string) => `${API_BASE_URL}/chat/${id}`,
+    history: `${API_BASE_URL}/chat/history`,
+  },
+
+  // Tier endpoints (NEW)
+  tiers: {
+    features: `${API_BASE_URL}/tiers/features`,
+    current: `${API_BASE_URL}/tiers/current`,
+    limits: `${API_BASE_URL}/tiers/limits`,
+    startTrial: `${API_BASE_URL}/tiers/trial/start`,
+  },
+
+  // Model endpoints (NEW)
+  models: {
+    available: `${API_BASE_URL}/models/available`,
+    select: `${API_BASE_URL}/models/select`,
+    current: `${API_BASE_URL}/models/current`,
   },
 
   // Subscription endpoints
