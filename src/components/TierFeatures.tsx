@@ -1,78 +1,94 @@
-import React from 'react';
-import { Check, Sparkles, Globe, Code, FileJson, MessageCircle, Users, BarChart, Lock, Zap, Search, BookOpen, Shield, Clock, Star, Heart, HelpCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Check, Sparkles, Globe, Code, FileJson, MessageCircle, Users, BarChart, Lock, Zap, Search, BookOpen, Shield, Clock, Star, Heart, HelpCircle, Loader2 } from 'lucide-react';
+import { apiClient } from '../services/api';
 
-// Comprehensive tier feature definitions - For everyday non-tech users
-export const TIER_FEATURES = {
+// Types for backend data
+interface TierData {
+  id: string;
+  name: string;
+  price: { monthly: number; yearly: number };
+  priceLabel: string;
+  yearlyPriceLabel?: string;
+  description: string;
+  badge: string;
+  color: string;
+  popular?: boolean;
+  limits: {
+    queriesPerMonth: number;
+    queriesPerDay: number;
+    maxFollowUps: number;
+    historyRetentionDays: number;
+  };
+  featureHighlights: Array<{ text: string; icon: string; highlight?: boolean }>;
+}
+
+interface ConfigData {
+  tiers: TierData[];
+  comparisonTable: {
+    headers: string[];
+    categories: Array<{
+      name: string;
+      rows: Array<{ feature: string; free: string; pro: string; team: string }>;
+    }>;
+  };
+}
+
+// Fallback data if backend fails (should rarely be used)
+const FALLBACK_TIERS: Record<string, TierData> = {
   free: {
+    id: 'free',
     name: 'Free',
-    price: '$0',
-    period: 'forever',
-    description: 'Get started with basic error help. 50 problems solved per month.',
-    tagline: 'Try ErrorWise free',
-    color: 'gray',
-    mostPopular: false,
-    features: [
-      { name: '50 error solutions/month', included: true, icon: MessageCircle },
-      { name: '10 queries per day', included: true, icon: Clock },
-      { name: 'Plain English explanations', included: true, icon: MessageCircle },
-      { name: 'Basic step-by-step fixes', included: true, icon: Code },
-      { name: '7-day history', included: true, icon: BarChart },
-      { name: 'Works with any error type', included: true, icon: Globe },
-      { name: 'Community support', included: true, icon: Users },
-      { name: 'Unlimited queries', included: false },
-      { name: 'Web search for solutions', included: false },
-      { name: 'Follow-up questions', included: false },
-      { name: 'Export history', included: false },
-    ],
+    price: { monthly: 0, yearly: 0 },
+    priceLabel: 'Free forever',
+    description: 'Perfect for getting started',
+    badge: 'FREE',
+    color: '#6b7280',
+    limits: { queriesPerMonth: 50, queriesPerDay: 10, maxFollowUps: 3, historyRetentionDays: 7 },
+    featureHighlights: [
+      { text: '50 queries/month', icon: 'chart' },
+      { text: 'Conversational AI', icon: 'message', highlight: true },
+      { text: '3 follow-ups per chat', icon: 'help' },
+      { text: 'Basic AI analysis', icon: 'search' },
+      { text: '7-day history', icon: 'book' }
+    ]
   },
   pro: {
+    id: 'pro',
     name: 'Pro',
-    price: '$3',
-    period: 'month',
-    description: 'Unlimited help with any tech problem. Best for individuals.',
-    tagline: '7-day free trial',
-    color: 'blue',
-    mostPopular: true,
-    features: [
-      { name: 'UNLIMITED error solutions', included: true, icon: Zap, highlight: true },
-      { name: 'Ask anything about tech', included: true, icon: Sparkles, highlight: true },
-      { name: 'Web search for latest solutions', included: true, icon: Search, highlight: true },
-      { name: '5 follow-up questions per query', included: true, icon: MessageCircle, highlight: true },
-      { name: 'Visual guides & screenshots', included: true, icon: Code },
-      { name: 'How-to tutorials', included: true, icon: BookOpen },
-      { name: 'Prevention tips', included: true, icon: Shield },
-      { name: 'Detailed explanations', included: true, icon: MessageCircle },
-      { name: 'Multi-language support (10+)', included: true, icon: Globe, highlight: true },
-      { name: 'Unlimited history storage', included: true, icon: BarChart },
-      { name: 'Export to JSON/CSV', included: true, icon: FileJson },
-      { name: 'Save solutions to library', included: true, icon: BookOpen, highlight: true },
-      { name: 'Faster AI responses', included: true, icon: Zap },
-      { name: 'Email support', included: true, icon: HelpCircle },
-      { name: 'India-specific solutions', included: true, icon: Globe },
-    ],
+    price: { monthly: 3, yearly: 30 },
+    priceLabel: '$3/month',
+    description: 'For serious developers',
+    badge: 'PRO',
+    color: '#3b82f6',
+    popular: true,
+    limits: { queriesPerMonth: -1, queriesPerDay: -1, maxFollowUps: 10, historyRetentionDays: -1 },
+    featureHighlights: [
+      { text: 'Unlimited queries', icon: 'zap', highlight: true },
+      { text: 'Conversational AI', icon: 'message', highlight: true },
+      { text: 'Auto + Smart models', icon: 'sparkles', highlight: true },
+      { text: 'Follow-up questions', icon: 'help' },
+      { text: 'Unlimited history', icon: 'book' },
+      { text: 'Email support', icon: 'mail' }
+    ]
   },
   team: {
+    id: 'team',
     name: 'Team',
-    price: '$8',
-    period: 'month',
-    description: 'Share tech support with your team, office, or family.',
-    tagline: '14-day free trial',
-    color: 'purple',
-    mostPopular: false,
-    features: [
-      { name: 'Everything in Pro', included: true, icon: Check, highlight: true },
-      { name: 'Up to 10 team members', included: true, icon: Users, highlight: true },
-      { name: 'Team dashboard & analytics', included: true, icon: BarChart, highlight: true },
-      { name: 'Shared solution library', included: true, icon: BookOpen, highlight: true },
-      { name: 'Help teammates with errors', included: true, icon: Heart },
-      { name: 'Member usage reports', included: true, icon: BarChart },
-      { name: 'Best AI model (Claude Sonnet)', included: true, icon: Sparkles },
-      { name: '10 follow-up questions per query', included: true, icon: MessageCircle },
-      { name: 'Priority support queue', included: true, icon: Star },
-      { name: 'API access', included: true, icon: Code },
-      { name: 'Custom integrations', included: true, icon: Code },
-    ],
-  },
+    price: { monthly: 8, yearly: 80 },
+    priceLabel: '$8/month',
+    description: 'For teams up to 10',
+    badge: 'TEAM',
+    color: '#8b5cf6',
+    limits: { queriesPerMonth: -1, queriesPerDay: -1, maxFollowUps: -1, historyRetentionDays: -1 },
+    featureHighlights: [
+      { text: 'Everything in Pro', icon: 'star' },
+      { text: 'Up to 10 team members', icon: 'users', highlight: true },
+      { text: 'Shared solution library', icon: 'folder', highlight: true },
+      { text: 'Genius AI model', icon: 'zap', highlight: true },
+      { text: 'Team analytics', icon: 'chart' },
+      { text: 'Priority support', icon: 'shield' }
+    ]
+  }
 };
 
 interface TierComparisonProps {
@@ -84,22 +100,57 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
   currentTier = 'free',
   onUpgrade
 }) => {
+  const [tiers, setTiers] = useState<TierData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await apiClient.get<{ success: boolean; data: ConfigData }>('/config');
+        const data = response as any;
+        if (data.success && data.data?.tiers) {
+          setTiers(data.data.tiers);
+        } else {
+          // Use fallback if response format is unexpected
+          setTiers(Object.values(FALLBACK_TIERS));
+        }
+      } catch (error) {
+        console.warn('Failed to fetch config, using fallback:', error);
+        setTiers(Object.values(FALLBACK_TIERS));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConfig();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
+  const colorClasses: Record<string, string> = {
+    '#6b7280': 'border-gray-300 dark:border-gray-600',
+    '#3b82f6': 'border-blue-500 dark:border-blue-400 ring-2 ring-blue-500/20',
+    '#8b5cf6': 'border-purple-500 dark:border-purple-400',
+  };
+
   return (
     <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-      {Object.entries(TIER_FEATURES).map(([tierKey, tier]) => {
-        const isCurrentTier = tierKey === currentTier;
-        const colorClasses = {
-          gray: 'border-gray-300 dark:border-gray-600',
-          blue: 'border-blue-500 dark:border-blue-400 ring-2 ring-blue-500/20',
-          purple: 'border-purple-500 dark:border-purple-400',
-        };
+      {tiers.map((tier) => {
+        const isCurrentTier = tier.id === currentTier;
+        const borderClass = colorClasses[tier.color] || colorClasses['#6b7280'];
 
         return (
           <div
-            key={tierKey}
-            className={`relative bg-white dark:bg-gray-800 rounded-2xl border-2 ${colorClasses[tier.color as keyof typeof colorClasses]} p-6 lg:p-8 ${tier.mostPopular ? 'shadow-xl scale-[1.02]' : 'shadow-lg'} transition-all hover:shadow-2xl hover:scale-[1.01]`}
+            key={tier.id}
+            className={`relative bg-white dark:bg-gray-800 rounded-2xl border-2 ${borderClass} p-6 lg:p-8 ${tier.popular ? 'shadow-xl scale-[1.02]' : 'shadow-lg'} transition-all hover:shadow-2xl hover:scale-[1.01]`}
           >
-            {tier.mostPopular && (
+            {tier.popular && (
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg flex items-center gap-1">
                   <Star className="w-3.5 h-3.5" />
@@ -123,72 +174,49 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               </h3>
               <div className="flex items-baseline justify-center gap-1 mb-2">
                 <span className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  {tier.price}
+                  ${tier.price.monthly}
                 </span>
-                <span className="text-gray-600 dark:text-gray-400">/{tier.period}</span>
+                <span className="text-gray-600 dark:text-gray-400">/month</span>
               </div>
-              {tier.tagline && (
-                <span className="inline-block px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm rounded-full font-medium">
-                  {tier.tagline}
-                </span>
-              )}
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
                 {tier.description}
               </p>
             </div>
 
             <div className="space-y-2.5 mb-8">
-              {tier.features.map((feature, index) => {
-                const Icon = feature.icon;
+              {tier.featureHighlights.map((feature, index) => {
                 return (
                   <div
                     key={index}
-                    className={`flex items-start gap-3 ${!feature.included ? 'opacity-40' : ''} ${feature.highlight ? 'bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-2.5 rounded-lg -mx-2' : ''}`}
+                    className={`flex items-start gap-3 ${feature.highlight ? 'bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-2.5 rounded-lg -mx-2' : ''}`}
                   >
-                    {feature.included ? (
-                      <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5">
-                        <Check className="w-3 h-3 text-white" />
-                      </div>
-                    ) : (
-                      <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center mt-0.5">
-                        <Lock className="w-4 h-4 text-gray-400" />
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 flex-1">
-                      {Icon && <Icon className={`w-4 h-4 ${feature.included ? 'text-blue-500' : 'text-gray-400'}`} />}
-                      <span className={`text-sm ${feature.included ? 'text-gray-800 dark:text-gray-100 font-medium' : 'text-gray-500 dark:text-gray-500 line-through'}`}>
-                        {feature.name}
-                      </span>
-                      {feature.highlight && feature.included && (
-                        <span className="text-xs bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-1.5 py-0.5 rounded font-bold">
-                          NEW
-                        </span>
-                      )}
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-white" />
                     </div>
+                    <span className={`text-sm ${feature.highlight ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                      {feature.text}
+                    </span>
                   </div>
                 );
               })}
             </div>
 
-            {!isCurrentTier && tierKey !== 'free' && onUpgrade && (
+            {!isCurrentTier && tier.id !== 'free' && onUpgrade && (
               <button
-                onClick={() => onUpgrade(tierKey as 'pro' | 'team')}
-                className={`w-full py-3.5 rounded-xl font-bold transition-all transform hover:scale-[1.02] ${tier.mostPopular ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl' : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white'}`}
+                onClick={() => onUpgrade(tier.id as 'pro' | 'team')}
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${
+                  tier.popular
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
               >
-                {tierKey === 'pro' ? 'Start Free Trial' : `Upgrade to ${tier.name}`}
+                Upgrade to {tier.name}
               </button>
             )}
 
             {isCurrentTier && (
-              <div className="w-full py-3.5 rounded-xl font-bold text-center bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-2 border-green-200 dark:border-green-800">
-                <Check className="w-5 h-5 inline mr-2" />
-                Active Plan
-              </div>
-            )}
-
-            {tierKey === 'free' && !isCurrentTier && (
-              <div className="w-full py-3.5 rounded-xl font-bold text-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
-                Free Forever
+              <div className="w-full py-3 px-6 rounded-xl font-semibold text-center bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+                Current Plan
               </div>
             )}
           </div>
@@ -198,112 +226,36 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
   );
 };
 
-// New Features Highlight Component - Enhanced for AI SaaS Essentials
+// NewFeaturesHighlight - Static component about AI
 export const NewFeaturesHighlight: React.FC = () => {
-  const essentialFeatures = [
-    {
-      icon: Zap,
-      title: 'Unlimited AI Solutions',
-      description: 'No monthly limits - solve as many problems as you need',
-      tier: 'Pro',
-      gradient: 'from-yellow-500 to-orange-500',
-      stat: ''
-    },
-    {
-      icon: MessageCircle,
-      title: 'Smart Follow-Ups',
-      description: 'Ask 5 clarifying questions per query for deeper help',
-      tier: 'Pro',
-      gradient: 'from-blue-500 to-cyan-500',
-      stat: '5x'
-    },
-    {
-      icon: Search,
-      title: 'Live Web Search',
-      description: 'AI searches the internet for the latest solutions',
-      tier: 'Pro',
-      gradient: 'from-green-500 to-emerald-500',
-      stat: 'Live'
-    },
-    {
-      icon: Globe,
-      title: 'Multi-Language',
-      description: 'Get help in 10+ languages including Hindi',
-      tier: 'Pro',
-      gradient: 'from-purple-500 to-pink-500',
-      stat: '10+'
-    },
-    {
-      icon: BookOpen,
-      title: 'Solution Library',
-      description: 'Save and organize your fixes for quick access',
-      tier: 'Pro',
-      gradient: 'from-cyan-500 to-blue-500',
-      stat: 'Save'
-    },
-    {
-      icon: Users,
-      title: 'Team Dashboard',
-      description: 'Share with 10 members, track usage & analytics',
-      tier: 'Team',
-      gradient: 'from-violet-500 to-purple-600',
-      stat: '10'
-    },
-  ];
-
   return (
-    <div className="mb-10">
-      <div className="text-center mb-6">
-        <h2 className="text-xl font-bold text-white mb-1">
-           Upgrade Essentials
-        </h2>
-        <p className="text-gray-400 text-sm">
-          What you unlock with Pro & Team
-        </p>
+    <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-6 lg:p-8">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+          <Sparkles className="w-5 h-5 text-white" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+          Powered by Claude AI
+        </h3>
       </div>
-      
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        {essentialFeatures.map((feature, index) => {
-          const Icon = feature.icon;
-          return (
-            <div
-              key={index}
-              className="group relative bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4 hover:border-white/25 hover:bg-white/10 transition-all cursor-default"
-            >
-              {/* Stat Badge */}
-              <div className="absolute -top-2 -right-2">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full bg-gradient-to-r ${feature.gradient} text-white shadow-lg`}>
-                  {feature.stat}
-                </span>
-              </div>
-              
-              {/* Icon */}
-              <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg`}>
-                <Icon className="w-5 h-5 text-white" />
-              </div>
-              
-              {/* Content */}
-              <h3 className="font-semibold text-white text-sm mb-1 leading-tight">
-                {feature.title}
-              </h3>
-              <p className="text-[11px] text-gray-400 leading-snug mb-2">
-                {feature.description}
-              </p>
-              
-              {/* Tier Badge */}
-              <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${
-                feature.tier === 'Pro' 
-                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                  : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-              }`}>
-                {feature.tier}
-              </span>
-            </div>
-          );
-        })}
+      <p className="text-gray-600 dark:text-gray-400 mb-4">
+        ErrorWise uses Anthropic Claude for all AI-powered features - the same AI that powers enterprise applications.
+      </p>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center gap-2">
+          <Zap className="w-4 h-4 text-blue-500" />
+          <span className="text-sm text-gray-700 dark:text-gray-300">Fast Mode: Claude Haiku</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-purple-500" />
+          <span className="text-sm text-gray-700 dark:text-gray-300">Smart Mode: Claude Sonnet</span>
+        </div>
       </div>
     </div>
   );
 };
+
+// Export TIER_FEATURES for backwards compatibility (deprecated - use backend API instead)
+export const TIER_FEATURES = FALLBACK_TIERS;
 
 export default TierComparison;

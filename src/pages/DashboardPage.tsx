@@ -1,4 +1,4 @@
-﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -89,20 +89,20 @@ const DashboardPage: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get('payment');
     const sessionId = params.get('session_id');
-    const upgraded = params.get('upgraded');
+    const trialActivated = params.get('trial_activated');
     const plan = params.get('plan');
 
     if (paymentStatus === 'success' && sessionId) {
       verifyPayment(sessionId);
     } else if (paymentStatus === 'cancelled') {
       toast.error('Payment was cancelled');
-    } else if (upgraded === 'true') {
+    } else if (trialActivated === 'true') {
       // Trial activated successfully
       const planName = plan === 'team' ? 'Team' : 'Pro';
-      toast.success(`🎉 ${planName} trial activated! Enjoy your premium features.`);
+      toast.success(`?? ${planName} trial activated! Enjoy your premium features.`);
     }
 
-    if (paymentStatus || upgraded) {
+    if (paymentStatus || trialActivated) {
       window.history.replaceState({}, '', '/dashboard');
     }
 
@@ -709,6 +709,8 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
+
+
 
 
 

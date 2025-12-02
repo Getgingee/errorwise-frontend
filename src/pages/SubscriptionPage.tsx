@@ -13,15 +13,18 @@ interface Plan {
   price: number;
   interval: string;
   trialDays?: number;
+  popular?: boolean;
+  displayFeatures?: Array<{ text: string; available: boolean }>;
   features: {
-    dailyQueries: number;
-    errorExplanation: boolean;
-    fixSuggestions: boolean;
+    dailyQueries?: number;
+    monthlyQueries?: number;
+    errorExplanation?: boolean;
+    fixSuggestions?: boolean;
     codeExamples?: boolean;
     preventionTips?: boolean;
-    documentationLinks: boolean;
+    documentationLinks?: boolean;
     exportHistory?: boolean;
-    errorHistory: boolean;
+    errorHistory?: string;
     urlScrapingContext?: boolean;
     multiLanguage?: boolean;
     advancedAnalysis?: boolean;
@@ -31,6 +34,8 @@ interface Plan {
     teamMembers?: number;
     prioritySupport?: boolean;
     apiAccess?: boolean;
+    maxTokens?: number;
+    aiModel?: string;
   };
   description: string;
 }
@@ -276,47 +281,16 @@ const SubscriptionPage: React.FC = () => {
     }
   };
 
+  // USE BACKEND DISPLAYFEATURES - Single Source of Truth
   const getFeaturesList = (plan: Plan): Array<{ text: string; available: boolean }> => {
-    const features = [];
+    // Use displayFeatures from backend if available (single source of truth)
+    if (plan.displayFeatures && plan.displayFeatures.length > 0) {
+      return plan.displayFeatures;
+    }
     
-    if (plan.id === 'free') {
-      features.push(
-        { text: '50 queries per month', available: true },
-        { text: 'Basic error explanations', available: true },
-        { text: 'Claude Haiku AI (800 tokens)', available: true },
-        { text: '7-day error history', available: true },
-        { text: 'Community support', available: true },
-        { text: 'Code examples & fixes', available: false },
-        { text: 'Unlimited queries', available: false },
-        { text: 'Export history', available: false }
-      );
-    } else if (plan.id === 'pro') {
-      features.push(
-        { text: 'Unlimited queries', available: true },
-        { text: 'Full error explanations + fixes', available: true },
-        { text: 'Code examples & prevention tips', available: true },
-        { text: 'Claude Haiku AI (1200 tokens)', available: true },
-        { text: 'Unlimited error history', available: true },
-        { text: 'Export to JSON/CSV', available: true },
-        { text: 'URL scraping context', available: true },
-        { text: 'Multi-language support', available: true },
-        { text: 'Email support', available: true }
-      );
-} else if (plan.id === 'team') {
-      features.push(
-        { text: 'Everything in Pro', available: true },
-        { text: 'Team features (10 members)', available: true },
-        { text: 'Shared error history', available: true },
-        { text: 'Team dashboard & analytics', available: true },
-        { text: 'Claude Sonnet AI (2000 tokens)', available: true },
-        { text: 'Advanced debugging tools', available: true },
-        { text: 'Priority support', available: true },
-        { text: 'API access', available: true },
-        { text: 'Custom integrations', available: true }
-      );
-}
-
-    return features;
+    // Fallback only if backend didn't send displayFeatures (shouldn't happen)
+    console.warn('Warning: Plan missing displayFeatures from backend:', plan.id);
+    return [];
   };
 
   const getButtonText = (plan: Plan): string => {
