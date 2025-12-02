@@ -476,7 +476,7 @@ const ProfilePage: React.FC = () => {
                   <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6">
                     <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2"><Cpu className="w-5 h-5 text-cyan-400" />AI Model</h2>
                     <div className="space-y-3">
-                      {[{ id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', desc: 'Fast & efficient', badge: 'Recommended' }, { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', desc: 'Advanced reasoning', badge: 'Pro' }].map((model) => (
+                      {[{ id: 'haiku', name: 'Claude Haiku', desc: 'Fast & efficient', badge: 'Recommended' }, { id: 'sonnet', name: 'Claude Sonnet', desc: 'Advanced reasoning', badge: 'Pro' }, { id: 'opus', name: 'Claude Opus', desc: 'Most intelligent', badge: 'Team' }].map((model) => (
                         <button key={model.id} onClick={() => setSelectedModel(model.id)} className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${selectedModel === model.id ? 'bg-cyan-500/10 border-cyan-500/50' : 'bg-white/5 border-white/10 hover:border-white/30'}`}>
                           <div className="flex items-center gap-3">
                             <div className={`w-3 h-3 rounded-full ${selectedModel === model.id ? 'bg-cyan-400' : 'bg-white/30'}`} />

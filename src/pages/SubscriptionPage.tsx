@@ -283,7 +283,7 @@ const SubscriptionPage: React.FC = () => {
       features.push(
         { text: '50 queries per month', available: true },
         { text: 'Basic error explanations', available: true },
-        { text: 'Gemini 2.0 Flash AI (800 tokens)', available: true },
+        { text: 'Claude Haiku AI (800 tokens)', available: true },
         { text: '7-day error history', available: true },
         { text: 'Community support', available: true },
         { text: 'Code examples & fixes', available: false },
@@ -1195,6 +1195,7 @@ const SubscriptionPage: React.FC = () => {
 };
 
 export default SubscriptionPage;
+
 
 
 
