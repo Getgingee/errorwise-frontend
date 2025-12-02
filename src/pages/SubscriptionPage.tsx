@@ -14,7 +14,7 @@ interface Plan {
   interval: string;
   trialDays?: number;
   popular?: boolean;
-  displayFeatures?: Array<{ text: string; available: boolean }>;
+  displayFeatures?: Array<{ text: string; available: boolean; highlight?: boolean; badge?: string }>;
   features: {
     dailyQueries?: number;
     monthlyQueries?: number;
@@ -582,15 +582,24 @@ const SubscriptionPage: React.FC = () => {
 
                   <ul className="space-y-3 mb-8 flex-1">
                     {features.map((feature, index) => (
-                      <li key={index} className="flex items-center gap-3 text-sm">
+                      <li key={index} className={`flex items-center gap-3 text-sm ${feature.highlight ? 'py-1' : ''}`}>
                         {feature.available ? (
-                          <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <CheckCircle className={`h-4 w-4 flex-shrink-0 ${feature.highlight ? 'text-cyan-400' : 'text-green-400'}`} />
                         ) : (
                           <X className="h-4 w-4 text-gray-600 flex-shrink-0" />
                         )}
-                        <span className={feature.available ? 'text-gray-200' : 'text-gray-600 line-through'}>
+                        <span className={`${feature.available ? (feature.highlight ? 'text-white font-semibold' : 'text-gray-200') : 'text-gray-600 line-through'}`}>
                           {feature.text}
                         </span>
+                        {feature.badge && (
+                          <span className={`ml-auto px-2 py-0.5 text-xs font-bold rounded-full ${
+                            feature.badge === 'NEW' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' :
+                            feature.badge === 'Live' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                            'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                          }`}>
+                            {feature.badge}
+                          </span>
+                        )}
                       </li>
                     ))}
                   </ul>
