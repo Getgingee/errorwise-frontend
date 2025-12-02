@@ -97,9 +97,7 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
         return (
           <div
             key={tierKey}
-            className={elative bg-white dark:bg-gray-800 rounded-2xl border-2 ${
-              colorClasses[tier.color as keyof typeof colorClasses]
-            } p-6 lg:p-8 ${tier.mostPopular ? 'shadow-xl scale-[1.02]' : 'shadow-lg'} transition-all hover:shadow-2xl hover:scale-[1.01]}
+            className={`relative bg-white dark:bg-gray-800 rounded-2xl border-2 ${colorClasses[tier.color as keyof typeof colorClasses]} p-6 lg:p-8 ${tier.mostPopular ? 'shadow-xl scale-[1.02]' : 'shadow-lg'} transition-all hover:shadow-2xl hover:scale-[1.01]`}
           >
             {tier.mostPopular && (
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -145,9 +143,7 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
                 return (
                   <div
                     key={index}
-                    className={lex items-start gap-3 ${
-                      !feature.included ? 'opacity-40' : ''
-                    } ${feature.highlight ? 'bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-2.5 rounded-lg -mx-2' : ''}}
+                    className={`flex items-start gap-3 ${!feature.included ? 'opacity-40' : ''} ${feature.highlight ? 'bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-2.5 rounded-lg -mx-2' : ''}`}
                   >
                     {feature.included ? (
                       <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5">
@@ -159,12 +155,8 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
                       </div>
                     )}
                     <div className="flex items-center gap-2 flex-1">
-                      {Icon && <Icon className={w-4 h-4 ${feature.included ? 'text-blue-500' : 'text-gray-400'}} />}
-                      <span className={	ext-sm ${
-                        feature.included
-                          ? 'text-gray-800 dark:text-gray-100 font-medium'
-                          : 'text-gray-500 dark:text-gray-500 line-through'
-                      }}>
+                      {Icon && <Icon className={`w-4 h-4 ${feature.included ? 'text-blue-500' : 'text-gray-400'}`} />}
+                      <span className={`text-sm ${feature.included ? 'text-gray-800 dark:text-gray-100 font-medium' : 'text-gray-500 dark:text-gray-500 line-through'}`}>
                         {feature.name}
                       </span>
                       {feature.highlight && feature.included && (
@@ -181,13 +173,9 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
             {!isCurrentTier && tierKey !== 'free' && onUpgrade && (
               <button
                 onClick={() => onUpgrade(tierKey as 'pro' | 'team')}
-                className={w-full py-3.5 rounded-xl font-bold transition-all transform hover:scale-[1.02] ${
-                  tier.mostPopular
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl'
-                    : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white'
-                }}
+                className={`w-full py-3.5 rounded-xl font-bold transition-all transform hover:scale-[1.02] ${tier.mostPopular ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl' : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white'}`}
               >
-                {tierKey === 'pro' ? 'Start Free Trial' : Upgrade to ${tier.name}}
+                {tierKey === 'pro' ? 'Start Free Trial' : `Upgrade to ${tier.name}`}
               </button>
             )}
 
@@ -242,7 +230,7 @@ export const NewFeaturesHighlight: React.FC = () => {
   return (
     <div className="mb-12">
       <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
-        What's New in Pro & Team
+        What is New in Pro and Team
       </h2>
       <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
         Features that make solving problems even easier
@@ -259,11 +247,7 @@ export const NewFeaturesHighlight: React.FC = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                   <Icon className="w-5 h-5 text-white" />
                 </div>
-                <span className={	ext-xs font-bold px-2 py-1 rounded ${
-                  feature.tier === 'Pro' 
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' 
-                    : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                }}>
+                <span className={`text-xs font-bold px-2 py-1 rounded ${feature.tier === 'Pro' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}>
                   {feature.tier}
                 </span>
               </div>
