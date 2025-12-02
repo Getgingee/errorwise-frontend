@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Check, Sparkles, Globe, Code, FileJson, MessageCircle, Users, BarChart, Lock, Zap, Search, BookOpen, Shield, Clock, Star, Heart, HelpCircle } from 'lucide-react';
 
 // Comprehensive tier feature definitions - For everyday non-tech users
@@ -198,65 +198,106 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
   );
 };
 
-// New Features Highlight Component
+// New Features Highlight Component - Enhanced for AI SaaS Essentials
 export const NewFeaturesHighlight: React.FC = () => {
-  const newFeatures = [
+  const essentialFeatures = [
+    {
+      icon: Zap,
+      title: 'Unlimited AI Solutions',
+      description: 'No monthly limits - solve as many problems as you need',
+      tier: 'Pro',
+      gradient: 'from-yellow-500 to-orange-500',
+      stat: ''
+    },
     {
       icon: MessageCircle,
-      title: 'Ask Follow-Up Questions',
-      description: 'Get clarifications and more help - just like chatting with tech support',
-      tier: 'Pro'
+      title: 'Smart Follow-Ups',
+      description: 'Ask 5 clarifying questions per query for deeper help',
+      tier: 'Pro',
+      gradient: 'from-blue-500 to-cyan-500',
+      stat: '5x'
     },
     {
       icon: Search,
-      title: 'Web Search for Solutions',
-      description: 'We search the internet for the latest fixes and solutions',
-      tier: 'Pro'
+      title: 'Live Web Search',
+      description: 'AI searches the internet for the latest solutions',
+      tier: 'Pro',
+      gradient: 'from-green-500 to-emerald-500',
+      stat: 'Live'
+    },
+    {
+      icon: Globe,
+      title: 'Multi-Language',
+      description: 'Get help in 10+ languages including Hindi',
+      tier: 'Pro',
+      gradient: 'from-purple-500 to-pink-500',
+      stat: '10+'
     },
     {
       icon: BookOpen,
-      title: 'Save Your Solutions',
-      description: 'Build your personal library of fixes for future reference',
-      tier: 'Pro'
+      title: 'Solution Library',
+      description: 'Save and organize your fixes for quick access',
+      tier: 'Pro',
+      gradient: 'from-cyan-500 to-blue-500',
+      stat: 'Save'
     },
     {
       icon: Users,
-      title: 'Team Sharing',
-      description: 'Share solutions with your team, office, or family members',
-      tier: 'Team'
+      title: 'Team Dashboard',
+      description: 'Share with 10 members, track usage & analytics',
+      tier: 'Team',
+      gradient: 'from-violet-500 to-purple-600',
+      stat: '10'
     },
   ];
 
   return (
-    <div className="mb-12">
-      <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
-        What is New in Pro and Team
-      </h2>
-      <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
-        Features that make solving problems even easier
-      </p>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {newFeatures.map((feature, index) => {
+    <div className="mb-10">
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-bold text-white mb-1">
+           Upgrade Essentials
+        </h2>
+        <p className="text-gray-400 text-sm">
+          What you unlock with Pro & Team
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {essentialFeatures.map((feature, index) => {
           const Icon = feature.icon;
           return (
             <div
               key={index}
-              className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 p-5 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all"
+              className="group relative bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4 hover:border-white/25 hover:bg-white/10 transition-all cursor-default"
             >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-white" />
-                </div>
-                <span className={`text-xs font-bold px-2 py-1 rounded ${feature.tier === 'Pro' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}>
-                  {feature.tier}
+              {/* Stat Badge */}
+              <div className="absolute -top-2 -right-2">
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full bg-gradient-to-r ${feature.gradient} text-white shadow-lg`}>
+                  {feature.stat}
                 </span>
               </div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+              
+              {/* Icon */}
+              <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg`}>
+                <Icon className="w-5 h-5 text-white" />
+              </div>
+              
+              {/* Content */}
+              <h3 className="font-semibold text-white text-sm mb-1 leading-tight">
                 {feature.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-[11px] text-gray-400 leading-snug mb-2">
                 {feature.description}
               </p>
+              
+              {/* Tier Badge */}
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${
+                feature.tier === 'Pro' 
+                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
+                  : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+              }`}>
+                {feature.tier}
+              </span>
             </div>
           );
         })}
