@@ -1,7 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { History, X, Calendar, TrendingUp, ChevronRight, Clock, Download, RefreshCw } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
-import { API_ENDPOINTS } from '../config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import toast from 'react-hot-toast';
 import '../styles/HistorySidebar.css';
 
@@ -127,7 +127,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
   // Export history function
   const handleExport = async (format: 'json' | 'csv') => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.errors.history}/export?format=${format}`, {
+      const response = await fetch(`${API_BASE_URL}/history/export?format=${format}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
