@@ -243,8 +243,8 @@ const ProfilePage: React.FC = () => {
     const tier = stats?.subscriptionTier?.toLowerCase() || 'free';
     const tiers = {
       free: { name: 'Free', color: 'from-gray-500 to-gray-600', badge: 'bg-gray-500/20 text-gray-300 border-gray-500/30', icon: Zap, queries: 10, followUps: 3 },
-      pro: { name: 'Pro', color: 'from-blue-500 to-cyan-400', badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30', icon: Crown, queries: 100, followUps: 5 },
-      team: { name: 'Team', color: 'from-purple-500 to-pink-500', badge: 'bg-purple-500/20 text-purple-300 border-purple-500/30', icon: Sparkles, queries: 500, followUps: 10 }
+      pro: { name: 'Pro', color: 'from-blue-500 to-cyan-400', badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30', icon: Crown, queries: -1, followUps: 10 },
+      team: { name: 'Team', color: 'from-purple-500 to-pink-500', badge: 'bg-purple-500/20 text-purple-300 border-purple-500/30', icon: Sparkles, queries: -1, followUps: -1 }
     };
     return tiers[tier as keyof typeof tiers] || tiers.free;
   };
@@ -607,3 +607,4 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
