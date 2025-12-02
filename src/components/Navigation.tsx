@@ -128,21 +128,6 @@ const Navigation: React.FC<NavigationProps> = ({
                 );
               })}
 
-              {/* My History Button */}
-              <button
-                onClick={() => {
-                  onHistoryClick?.();
-                  setIsMobileOpen(false);
-                }}
-                className="w-full flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 transform hover:translate-x-1 group"
-              >
-                <History className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-12" />
-                <span className="flex items-center gap-2">
-                  My History
-                  <span className="text-xs px-2 py-0.5 bg-blue-500/20 border border-blue-400/30 rounded text-blue-300">7 days</span>
-                </span>
-              </button>
-
               {/* Features Section in Mobile */}
               <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
                 {/* Settings - combines AI Model and Accessibility */}
@@ -277,23 +262,6 @@ const Navigation: React.FC<NavigationProps> = ({
                 </Link>
               );
             })}
-
-            {/* My History Button */}
-            <button
-              onClick={onHistoryClick}
-              className="w-full flex items-center px-3 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300 transform hover:translate-x-1 hover:shadow-lg group"
-              title={isCollapsed ? 'My History (7 days)' : ''}
-            >
-              <History className={`w-5 h-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
-              <span className={`font-medium transition-all duration-500 overflow-hidden whitespace-nowrap ${
-                isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
-              }`}>
-                <span className="flex items-center gap-2">
-                  My History
-                  <span className="text-xs px-1.5 py-0.5 bg-blue-500/20 border border-blue-400/30 rounded text-blue-300">7d</span>
-                </span>
-              </span>
-            </button>
           </nav>
 
           {/* Settings Section */}
