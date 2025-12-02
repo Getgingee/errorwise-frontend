@@ -727,7 +727,7 @@ const SubscriptionPage: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <p className="text-gray-400 text-sm mb-1">Monthly Cost</p>
-                        <p className="text-2xl font-bold text-cyan-400">{currentSubscription?.tier === 'pro' ? '$3' : currentSubscription?.tier === 'team' ? '$8' : '<p className="text-gray-400">No billing information available</p>'}</p>
+                        <p className="text-2xl font-bold text-cyan-400">{currentSubscription?.tier === 'pro' ? '$9' : currentSubscription?.tier === 'team' ? '$29' : '$0'}</p>
                       </div>
                     </div>
                   </div>
