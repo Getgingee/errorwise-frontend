@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -143,14 +143,10 @@ const DashboardPage: React.FC = () => {
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<ErrorAnalysis | null>(null);
-  const [recentAnalyses, setRecentAnalyses] = useState<ErrorAnalysis[]>([]);
-  const [selectedRecentAnalysis, setSelectedRecentAnalysis] = useState<ErrorAnalysis | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
-  const [showRecentAnalyses, setShowRecentAnalyses] = useState(true);
   const [showHistorySidebar, setShowHistorySidebar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const recentAnalysesRef = useRef<HTMLDivElement>(null);
   
   // New conversation state
   const [conversationMessages, setConversationMessages] = useState<ConversationMessage[]>([]);
@@ -161,10 +157,6 @@ const DashboardPage: React.FC = () => {
   const [canFollowUp, setCanFollowUp] = useState(true);
   const [isFollowingUp, setIsFollowingUp] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>('auto');
-
-  useEffect(() => {
-    fetchRecentAnalyses();
-  }, []);
 
   useEffect(() => {
     const protectedRoutes = ['/dashboard', '/subscription', '/profile', '/settings'];
@@ -199,22 +191,6 @@ const DashboardPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const fetchRecentAnalyses = async () => {
-    try {
-      const response = await fetch(`${API_ENDPOINTS.errors.history}?limit=5`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setRecentAnalyses(data.history || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch recent solutions:', error);
-    }
-  };
-
   const handleNewChat = () => {
     setConversationMessages([]);
     setSuggestedChips([]);
@@ -226,14 +202,8 @@ const DashboardPage: React.FC = () => {
     toast.success('New conversation started!');
   };
 
-  const scrollToRecentAnalyses = () => {
-    if (showRecentAnalyses) {
-      setShowRecentAnalyses(false);
-      setSelectedRecentAnalysis(null);
     } else {
-      setShowRecentAnalyses(true);
       setTimeout(() => {
-        recentAnalysesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     }
   };
@@ -304,7 +274,6 @@ const DashboardPage: React.FC = () => {
       ]);
 
       toast.success('Solution found!');
-      fetchRecentAnalyses();
     } catch (error: any) {
       console.error('Solution error:', error);
       toast.error(error.message || 'Failed to find solution');
@@ -412,8 +381,8 @@ const DashboardPage: React.FC = () => {
   return (
     <>
       <Navigation
-        showRecentAnalyses={recentAnalyses.length > 0}
-        onRecentAnalysesClick={scrollToRecentAnalyses}
+        // History accessible via sidebar
+
         onHistoryClick={() => setShowHistorySidebar(true)}
       />
 
@@ -510,110 +479,22 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Recent Problems Solved - Updated header */}
-              {recentAnalyses.length > 0 && showRecentAnalyses && (
-                <div ref={recentAnalysesRef} className="mt-16 max-w-[95vw] mx-auto mb-16 px-4 sm:px-6 lg:px-8">
-                  <div className="mb-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 flex items-center gap-3">
-                      <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl">
-                        <FileText className="h-6 w-6 text-white" />
-                      </div>
-                      Recent Problems Solved
-                    </h2>
-                    <p className="text-gray-400 text-sm sm:text-base">
-                      Your error history and solutions
-                    </p>
+              {/* Quick History Access - Cleaner UI */}
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={() => setShowHistorySidebar(true)}
+                  className="group flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/20 hover:border-cyan-500/50 rounded-xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <div className="p-2 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all">
+                    <History className="h-5 w-5 text-cyan-400" />
                   </div>
-
-                  <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-6 lg:gap-8">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-                          History ({recentAnalyses.length})
-                        </h3>
-                      </div>
-
-                      <div className="space-y-3">
-                        {recentAnalyses.map((recent) => (
-                          <button
-                            key={recent.id}
-                            onClick={() => setSelectedRecentAnalysis(recent)}
-                            className={`group relative overflow-hidden rounded-xl p-5 w-full text-left transition-all duration-300 hover:scale-[1.02] ${
-                              selectedRecentAnalysis?.id === recent.id
-                                ? 'bg-gradient-to-br from-blue-900/40 via-blue-800/30 to-cyan-900/40 border-2 border-cyan-400/50 shadow-lg shadow-cyan-500/20'
-                                : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyan-500/30'
-                            }`}
-                          >
-                            {selectedRecentAnalysis?.id === recent.id && (
-                              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-cyan-500/10 pointer-events-none" />
-                            )}
-                            <div className="relative flex flex-col gap-3">
-                              <div className="flex items-center justify-between gap-2 flex-wrap">
-                                <span className="text-xs px-2.5 py-1 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 rounded-lg text-cyan-300 font-medium backdrop-blur-sm">
-                                  {recent.category}
-                                </span>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-xs text-gray-400 flex items-center gap-1">
-                                    <Clock className="h-3 w-3" />
-                                    {formatTimeAgo(recent.createdAt)}
-                                  </span>
-                                  <div className="flex items-center gap-1 text-xs font-semibold">
-                                    <TrendingUp className="h-3.5 w-3.5 text-green-400" />
-                                    <span className="text-white">{recent.confidence}%</span>
-                                  </div>
-                                </div>
-                              </div>
-                              <p className="text-sm text-gray-200 font-medium leading-relaxed line-clamp-2">
-                                {recent.errorMessage}
-                              </p>
-                              <div className={`mt-1 h-0.5 rounded-full transition-all duration-300 ${
-                                selectedRecentAnalysis?.id === recent.id
-                                  ? 'w-full bg-gradient-to-r from-blue-400 to-cyan-400'
-                                  : 'w-0 bg-cyan-400 group-hover:w-full'
-                              }`} />
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      {selectedRecentAnalysis ? (
-                        <ErrorAnalysisCard
-                          queryId={selectedRecentAnalysis.id}
-                          explanation={selectedRecentAnalysis.explanation}
-                          solution={selectedRecentAnalysis.solution}
-                          category={selectedRecentAnalysis.category}
-                          confidence={selectedRecentAnalysis.confidence}
-                          codeExample={selectedRecentAnalysis.codeExample}
-                          sources={selectedRecentAnalysis.sources}
-                          errorMessage={selectedRecentAnalysis.errorMessage}
-                          createdAt={selectedRecentAnalysis.createdAt}
-                          onCopy={copyToClipboard}
-                          copiedSection={copiedSection}
-                          showActions={true}
-                          showTimestamp={true}
-                        />
-                      ) : (
-                        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/95 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border border-white/10 shadow-2xl">
-                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-                          <div className="relative p-16 text-center">
-                            <div className="mb-6 inline-flex p-6 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-2xl">
-                              <FileText className="h-16 w-16 text-cyan-400" />
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-3">
-                              Select Any Previous Error
-                            </h3>
-                            <p className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
-                              Click on any item from your history to see the full explanation and step-by-step solution
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                  <div className="text-left">
+                    <p className="text-sm font-medium text-white">View Your History</p>
+                    <p className="text-xs text-gray-400">See all your solved problems</p>
                   </div>
-                </div>
-              )}
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -827,6 +708,8 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
+
+
 
 
 
