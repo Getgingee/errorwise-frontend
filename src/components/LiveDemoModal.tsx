@@ -36,7 +36,7 @@ const LiveDemoModal: React.FC<LiveDemoModalProps> = ({ isOpen, onClose, onFeedba
   useEffect(() => {
     if (isOpen) {
       // Fetch demo status
-      fetch(`/public/demo/status`)
+      fetch(`${API_BASE_URL}/public/demo/status`)
         .then(res => res.json())
         .then(data => {
           setRemainingDemos(data.remaining || 0);
