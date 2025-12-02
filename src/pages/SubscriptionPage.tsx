@@ -718,7 +718,46 @@ const SubscriptionPage: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <p className="text-gray-400">No billing information available</p>
+                <div className="space-y-6">
+                  <div className="p-6 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Your Current Plan</p>
+                        <p className="text-2xl font-bold text-white capitalize">{currentSubscription?.tier || 'Free'}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-gray-400 text-sm mb-1">Monthly Cost</p>
+                        <p className="text-2xl font-bold text-cyan-400">{currentSubscription?.tier === 'pro' ? '$3' : currentSubscription?.tier === 'team' ? '$8' : '<p className="text-gray-400">No billing information available</p>'}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                      <p className="text-gray-400 text-sm mb-2">Payment Method</p>
+                      <p className="text-white font-medium">{currentSubscription?.tier === 'free' || !currentSubscription ? 'No payment required' : 'Card on file'}</p>
+                    </div>
+                    <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                      <p className="text-gray-400 text-sm mb-2">Billing Cycle</p>
+                      <p className="text-white font-medium">{currentSubscription?.tier === 'free' || !currentSubscription ? 'N/A' : 'Monthly'}</p>
+                    </div>
+                    <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                      <p className="text-gray-400 text-sm mb-2">Next Billing Date</p>
+                      <p className="text-white font-medium">{currentSubscription?.tier === 'free' || !currentSubscription ? 'N/A' : '1st of next month'}</p>
+                    </div>
+                    <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                      <p className="text-gray-400 text-sm mb-2">Status</p>
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">Active</span>
+                    </div>
+                  </div>
+                  {(!currentSubscription || currentSubscription?.tier === 'free') && (
+                    <div className="p-5 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-4">
+                        <div><p className="text-white font-semibold mb-1">Upgrade to Pro</p><p className="text-gray-400 text-sm">Get unlimited queries & premium features</p></div>
+                        <button onClick={() => setActiveTab('plans')} className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-xl transition-all">View Plans</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -921,7 +960,55 @@ const SubscriptionPage: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <p className="text-gray-400">No usage data available</p>
+                <div className="space-y-6">
+                  <div className="p-6 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Current Plan</p>
+                        <p className="text-2xl font-bold text-white capitalize">{currentSubscription?.tier || 'Free'}</p>
+                      </div>
+                      {(!currentSubscription || currentSubscription?.tier !== 'team') && (
+                        <button onClick={() => setActiveTab('plans')} className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-semibold rounded-xl transition-all">Upgrade</button>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-3">
+                      <div><h3 className="text-lg font-semibold text-white">Query Usage</h3><p className="text-gray-400 text-sm">Monthly limit resets on the 1st</p></div>
+                      <span className="text-white font-bold text-xl">0 / {currentSubscription?.tier === 'pro' ? '' : currentSubscription?.tier === 'team' ? '' : '50'}</span>
+                    </div>
+                    <div className="w-full bg-gray-700/50 rounded-full h-4 mb-3 overflow-hidden">
+                      <div className="h-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500" style={{ width: '0%' }} />
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">0% used</span>
+                      <span className="text-gray-400">{currentSubscription?.tier === 'pro' || currentSubscription?.tier === 'team' ? 'Unlimited remaining' : '50 remaining'}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-4">Available Features</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 rounded-xl border bg-green-500/10 border-green-500/30"><div className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-green-400" /><span className="font-medium text-white">Error Explanations</span></div></div>
+                      <div className="p-4 rounded-xl border bg-green-500/10 border-green-500/30"><div className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-green-400" /><span className="font-medium text-white">Fix Suggestions</span></div></div>
+                      <div className={`p-4 rounded-xl border ${currentSubscription?.tier !== 'free' ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}><div className="flex items-center gap-3">{currentSubscription?.tier !== 'free' ? <CheckCircle className="h-5 w-5 text-green-400" /> : <X className="h-5 w-5 text-gray-500" />}<span className={`font-medium ${currentSubscription?.tier !== 'free' ? 'text-white' : 'text-gray-500'}`}>Web Search</span></div></div>
+                      <div className={`p-4 rounded-xl border ${currentSubscription?.tier !== 'free' ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}><div className="flex items-center gap-3">{currentSubscription?.tier !== 'free' ? <CheckCircle className="h-5 w-5 text-green-400" /> : <X className="h-5 w-5 text-gray-500" />}<span className={`font-medium ${currentSubscription?.tier !== 'free' ? 'text-white' : 'text-gray-500'}`}>Follow-up Questions</span></div></div>
+                      <div className={`p-4 rounded-xl border ${currentSubscription?.tier !== 'free' ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}><div className="flex items-center gap-3">{currentSubscription?.tier !== 'free' ? <CheckCircle className="h-5 w-5 text-green-400" /> : <X className="h-5 w-5 text-gray-500" />}<span className={`font-medium ${currentSubscription?.tier !== 'free' ? 'text-white' : 'text-gray-500'}`}>Export History</span></div></div>
+                      <div className={`p-4 rounded-xl border ${currentSubscription?.tier === 'team' ? 'bg-green-500/10 border-green-500/30' : 'bg-gray-700/30 border-gray-600/30'}`}><div className="flex items-center gap-3">{currentSubscription?.tier === 'team' ? <CheckCircle className="h-5 w-5 text-green-400" /> : <X className="h-5 w-5 text-gray-500" />}<span className={`font-medium ${currentSubscription?.tier === 'team' ? 'text-white' : 'text-gray-500'}`}>Team Features</span></div></div>
+                    </div>
+                  </div>
+                  {(!currentSubscription || currentSubscription?.tier === 'free') && (
+                    <div className="p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl">
+                      <div className="flex items-start gap-4">
+                        <Star className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
+                        <div className="flex-1">
+                          <h4 className="text-white font-bold text-lg mb-2">Unlock Premium Features</h4>
+                          <p className="text-gray-300 mb-4">Upgrade to Pro for unlimited queries, web search, follow-ups, and more - just $3/month.</p>
+                          <button onClick={() => setActiveTab('plans')} className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl transition-all shadow-lg">Upgrade to Pro Now</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -960,7 +1047,25 @@ const SubscriptionPage: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-400">No subscription history available</p>
+                <div className="space-y-4">
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-white font-semibold">Account Created</p>
+                        <p className="text-gray-400 text-sm">Started with Free plan</p>
+                      </div>
+                      <p className="text-gray-500 text-sm">Today</p>
+                    </div>
+                  </div>
+                  <div className="p-6 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/10 rounded-xl text-center">
+                    <HistoryIcon className="w-12 h-12 text-blue-400/50 mx-auto mb-3" />
+                    <p className="text-gray-400 mb-2">Your subscription changes will appear here</p>
+                    <p className="text-gray-500 text-sm">Upgrades, downgrades, and billing events</p>
+                  </div>
+                </div>
               )}
             </div>
           </div>
