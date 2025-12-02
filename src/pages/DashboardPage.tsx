@@ -89,14 +89,20 @@ const DashboardPage: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get('payment');
     const sessionId = params.get('session_id');
+    const upgraded = params.get('upgraded');
+    const plan = params.get('plan');
 
     if (paymentStatus === 'success' && sessionId) {
       verifyPayment(sessionId);
     } else if (paymentStatus === 'cancelled') {
       toast.error('Payment was cancelled');
+    } else if (upgraded === 'true') {
+      // Trial activated successfully
+      const planName = plan === 'team' ? 'Team' : 'Pro';
+      toast.success(`🎉 ${planName} trial activated! Enjoy your premium features.`);
     }
 
-    if (paymentStatus) {
+    if (paymentStatus || upgraded) {
       window.history.replaceState({}, '', '/dashboard');
     }
 
