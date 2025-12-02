@@ -202,11 +202,6 @@ const DashboardPage: React.FC = () => {
     toast.success('New conversation started!');
   };
 
-    } else {
-      setTimeout(() => {
-      }, 100);
-    }
-  };
 
   const handleAnalyze = async () => {
     if (!errorInput.trim() || errorInput.length < 10) {
