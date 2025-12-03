@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
-import { Menu, X, ChevronDown, ChevronUp, Briefcase, ShoppingCart, Gamepad2, Smartphone, CreditCard, Globe, Settings, Wifi, Mail } from 'lucide-react';
+import { Menu, X, Briefcase, ShoppingCart, Gamepad2, Smartphone, CreditCard, Globe, Settings, Wifi, Mail } from 'lucide-react';
 import LiveDemoModal from '../components/LiveDemoModal';
 import FeedbackModal from '../components/FeedbackModal';
 import { FeaturesModal, PricingInfoModal, APIDocsModal, InfoPagesModal } from '../components/info';
@@ -9,7 +9,6 @@ import SocialProofSection from '../components/landing/SocialProofSection';
 
 const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  const [expandedFaq, setExpandedFaq] = React.useState<number | null>(null);
   
   const [demoModalOpen, setDemoModalOpen] = React.useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = React.useState(false);
@@ -23,34 +22,6 @@ const LandingPage: React.FC = () => {
     setInfoModalPage(page);
     setInfoModalOpen(true);
   };
-
-  // FAQ Data
-  const faqData = [
-    {
-      question: "What is ErrorWise?",
-      answer: "ErrorWise is an AI-powered tool that instantly translates confusing error messages into plain English explanations with step-by-step solutions. Whether you're dealing with payment failures, website errors, app crashes, or device issues - just paste the error and get help in seconds."
-    },
-    {
-      question: "Do I need to be a programmer to use it?",
-      answer: "Not at all! ErrorWise is designed for everyone. You don't need any technical knowledge. Simply copy and paste any error message you see, and our AI will explain what went wrong and how to fix it in simple terms."
-    },
-    {
-      question: "Is it really free?",
-      answer: "Yes! ErrorWise offers a free tier that lets you analyze up to 5 errors per day. For unlimited access and advanced features like detailed fix steps and priority support, you can upgrade to our Pro plan."
-    },
-    {
-      question: "What kinds of errors can it solve?",
-      answer: "ErrorWise can help with virtually any error message you encounter: payment processing errors, website 404/500 errors, app crashes, software installation failures, gaming errors, device connectivity issues, and much more. If you see an error message, we can help explain it."
-    },
-    {
-      question: "How accurate are the solutions?",
-      answer: "Our AI maintains a 99.2% accuracy rate across hundreds of thousands of error analyses. We continuously learn from user feedback and update our knowledge base with the latest solutions."
-    },
-    {
-      question: "Is my data safe?",
-      answer: "Absolutely. We take privacy seriously. Your error messages are processed securely and never shared. We don't store sensitive information and all data is encrypted in transit and at rest."
-    }
-  ];
 
   // Example errors data
   const exampleErrors = [
@@ -488,41 +459,6 @@ const LandingPage: React.FC = () => {
       {/* Social Proof Section - E3: Trust signals */}
       <SocialProofSection />
 
-      {/* FAQ Section */}
-      <section id="faq" className="relative px-4 py-16 sm:py-20 lg:py-24 lg:px-8 bg-gradient-to-b from-gray-900/50 via-blue-900/20 to-gray-900/50">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              Frequently Asked 
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent"> Questions</span>
-            </h2>
-          </div>
-          
-          <div className="space-y-4">
-            {faqData.map((faq, index) => (
-              <div key={index} className="bg-gray-800/50 border border-gray-700/50 rounded-xl overflow-hidden hover:border-gray-600/50 transition-all duration-300">
-                <button
-                  onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                  className="w-full flex items-center justify-between p-5 text-left"
-                >
-                  <span className="text-white font-semibold pr-4">{faq.question}</span>
-                  {expandedFaq === index ? (
-                    <ChevronUp className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                  )}
-                </button>
-                {expandedFaq === index && (
-                  <div className="px-5 pb-5">
-                    <p className="text-gray-300 leading-relaxed">{faq.answer}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA Section */}
       <section id="contact" className="relative px-4 py-24 lg:px-8 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
         <div className="absolute inset-0 overflow-hidden opacity-30">
@@ -643,7 +579,7 @@ const LandingPage: React.FC = () => {
             <div className="space-y-3 sm:space-y-4">
               <h4 className="text-white font-semibold text-sm sm:text-base">Support</h4>
               <ul className="space-y-2">
-                <li><a href="#faq" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors">FAQ</a></li>
+                <li><Link to="/faq" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors">FAQ</Link></li>
                 <li><a href="mailto:support@errorwise.com" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors">Contact Us</a></li>
               </ul>
             </div>
@@ -674,5 +610,7 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
+
 
 

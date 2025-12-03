@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from 'react';
+﻿import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/authStore';
@@ -23,6 +23,7 @@ const TeamDashboard = lazy(() => import('./pages/team/TeamDashboard'));
 const TeamAnalyses = lazy(() => import('./pages/team/TeamAnalyses'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const FAQPage = lazy(() => import('./pages/FAQPage'));
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 const PricingPage = lazy(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })));
 
@@ -140,6 +141,7 @@ function App() {
             {/* Legal Pages - Public */}
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/faq" element={<FAQPage />} />
 
             {/* Catch all - redirect to landing page */}
             <Route path="*" element={<Navigate to="/" replace />} />
@@ -163,3 +165,4 @@ function App() {
 }
 
 export default App;
+
