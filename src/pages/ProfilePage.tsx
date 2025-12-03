@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
@@ -31,6 +31,10 @@ interface UsageData {
   followUpsUsed: number;
   followUpsLimit: number;
   resetDate: string;
+  percentage: number;
+  daily: number;
+  weekly: number;
+  total: number;
 }
 
 interface NotificationSettings {
@@ -109,13 +113,19 @@ const ProfilePage: React.FC = () => {
       });
       if (response.ok) {
         const data = await response.json();
+        // Map backend response to frontend UsageData format
+        const monthlyUsage = data.usage?.monthly || {};
         setUsage({
-          queriesUsed: data.queriesUsed || 0,
-          queriesLimit: data.queriesLimit || 10,
-          followUpsUsed: data.followUpsUsed || 0,
-          followUpsLimit: data.followUpsLimit || 3,
-          resetDate: data.resetDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          queriesUsed: monthlyUsage.used || 0,
+          queriesLimit: monthlyUsage.limit === -1 ? 999999 : (monthlyUsage.limit || 50),
+          followUpsUsed: 0,
+          followUpsLimit: data.tier === 'free' ? 3 : (data.tier === 'pro' ? 5 : 10),
+          resetDate: monthlyUsage.resetTime || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         });
+        // Update stats with real total from usage endpoint
+        if (data.usage?.total !== undefined) {
+          setStats(prev => prev ? { ...prev, totalQueries: data.usage.total } : prev);
+        }
       }
     } catch (error) {
       console.error('Usage fetch error:', error);
@@ -607,4 +617,7 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
+
+
 

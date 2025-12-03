@@ -41,6 +41,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
 }) => {
   const { token } = useAuthStore();
   const [history, setHistory] = useState<ErrorHistoryItem[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -64,13 +65,14 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
       if (response.ok) {
         const data = await response.json();
         setHistory(data.history || []);
-        
+        setTotalCount(data.pagination?.total || data.history?.length || 0);
+
         // B3: Track history view
         if (typeof gtag !== 'undefined') {
           gtag('event', 'history_view', {
             event_category: 'engagement',
             event_label: 'sidebar_opened',
-            value: data.history?.length || 0
+            value: data.pagination?.total || data.history?.length || 0
           });
         }
       }
@@ -246,7 +248,7 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 <Calendar className="w-4 h-4 text-blue-400" />
                 <span className="text-xs text-gray-400">Total</span>
               </div>
-              <p className="text-xl font-bold text-white mt-1">{history.length}</p>
+              <p className="text-xl font-bold text-white mt-1">{totalCount}</p>
             </div>
             <div className="bg-white/5 rounded-lg p-3 border border-white/10">
               <div className="flex items-center gap-2">
