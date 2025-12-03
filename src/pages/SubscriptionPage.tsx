@@ -659,12 +659,30 @@ const SubscriptionPage: React.FC = () => {
                   <div>
                     <p className="text-gray-400 text-sm mb-2">Current Plan</p>
                     <p className="text-white text-xl font-bold">
-                      {billingInfo.currentPlan.name} - ${billingInfo.currentPlan.price}/{billingInfo.currentPlan.interval}
+                      {billingInfo.currentPlan.name} - {billingInfo.currentPlan.status === 'trial' ? 'Free Trial' : `$${billingInfo.currentPlan.price}/${billingInfo.currentPlan.interval}`}
                     </p>
-                    <p className="text-gray-400 text-sm mt-1">Status: {billingInfo.currentPlan.status}</p>
+                    <p className={`text-sm mt-1 ${billingInfo.currentPlan.status === 'trial' ? 'text-green-400' : 'text-gray-400'}`}>
+                      Status: {billingInfo.currentPlan.status === 'trial' ? '🎉 Free Trial Active' : billingInfo.currentPlan.status}
+                    </p>
                   </div>
 
-                  {billingInfo.billing.nextBillingDate && (
+                  {/* Show trial end date for trial users */}
+                  {billingInfo.currentPlan.status === 'trial' && billingInfo.subscription.trialEndsAt && (
+                    <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <p className="text-gray-400 text-sm mb-1">Trial Ends</p>
+                      <p className="text-green-400 text-lg font-medium">
+                        {new Date(billingInfo.subscription.trialEndsAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                      <p className="text-gray-500 text-xs mt-1">Add a payment method to continue after trial</p>
+                    </div>
+                  )}
+
+                  {/* Show next billing date for paid active users */}
+                  {billingInfo.currentPlan.status === 'active' && billingInfo.billing.nextBillingDate && (
                     <div>
                       <p className="text-gray-400 text-sm mb-2">Next Billing Date</p>
                       <p className="text-white text-lg">
@@ -680,13 +698,18 @@ const SubscriptionPage: React.FC = () => {
                   <div>
                     <p className="text-gray-400 text-sm mb-2">Payment Method</p>
                     <p className="text-white text-lg">
-                      {billingInfo.billing.paymentMethod || 'Not set'}
+                      {billingInfo.currentPlan.status === 'trial' 
+                        ? 'Not required during trial' 
+                        : (billingInfo.billing.paymentMethod || 'Not set')}
                     </p>
                   </div>
 
+                  {/* Show subscription start date for trial, last payment for paid */}
                   {billingInfo.billing.lastPaymentDate && (
                     <div>
-                      <p className="text-gray-400 text-sm mb-2">Last Payment Date</p>
+                      <p className="text-gray-400 text-sm mb-2">
+                        {billingInfo.currentPlan.status === 'trial' ? 'Trial Started' : 'Last Payment Date'}
+                      </p>
                       <p className="text-white text-lg">
                         {new Date(billingInfo.billing.lastPaymentDate).toLocaleDateString('en-US', {
                           year: 'numeric',
@@ -697,12 +720,15 @@ const SubscriptionPage: React.FC = () => {
                     </div>
                   )}
 
-                  <div>
-                    <p className="text-gray-400 text-sm mb-2">Billing Amount</p>
-                    <p className="text-white text-lg">
-                      ${billingInfo.billing.amount} {billingInfo.billing.currency} / {billingInfo.billing.interval}
-                    </p>
-                  </div>
+                  {/* Only show billing amount for paid users */}
+                  {billingInfo.currentPlan.status !== 'trial' && billingInfo.currentPlan.status !== 'free' && (
+                    <div>
+                      <p className="text-gray-400 text-sm mb-2">Billing Amount</p>
+                      <p className="text-white text-lg">
+                        ${billingInfo.billing.amount} {billingInfo.billing.currency} / {billingInfo.billing.interval}
+                      </p>
+                    </div>
+                  )}
 
                   {billingInfo.subscription.cancelAtPeriodEnd && (
                     <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
