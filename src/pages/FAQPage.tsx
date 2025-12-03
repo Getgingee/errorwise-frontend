@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Search, ArrowLeft, MessageCircle, Zap, CreditCard, Shield, Settings, HelpCircle } from 'lucide-react';
 
@@ -30,7 +30,7 @@ const faqs: FAQItem[] = [
     question: "What types of errors can ErrorWise analyze?",
     answer: "ErrorWise can analyze virtually any error - from programming errors (JavaScript, Python, Java, C++, and 50+ languages) to system errors, network issues, application crashes, database errors, and even hardware error codes."
   },
-  
+
   // Pricing & Plans
   {
     category: "Pricing & Plans",
@@ -45,218 +45,173 @@ const faqs: FAQItem[] = [
   {
     category: "Pricing & Plans",
     question: "What's included in the Pro plan?",
-    answer: "Pro plan (\/month) includes: Unlimited error queries, Follow-up questions (5 per conversation), Access to Smart & Fast AI models, Priority response times, Web scraping for solutions, Context memory for conversations, and Email support."
+    answer: "Pro plan ($9/month) includes: Unlimited error queries, Follow-up questions (5 per conversation), Access to Smart & Fast AI models, Priority response times, Web scraping for solutions, Context memory for conversations, and Email support."
   },
   {
     category: "Pricing & Plans",
-    question: "What's the difference between Pro and Team plans?",
-    answer: "Team plan (\/month) includes everything in Pro, plus: Team collaboration features, Shared error library, Admin dashboard with analytics, Priority 24/7 support, Access to our most powerful Genius AI model, and Team video chat for debugging sessions."
+    question: "Can I cancel my subscription anytime?",
+    answer: "Yes, you can cancel your subscription at any time. Your access will continue until the end of your current billing period, and you won't be charged again."
   },
-  {
-    category: "Pricing & Plans",
-    question: "Can I try Pro features before subscribing?",
-    answer: "Yes! We offer a 7-day free trial of Pro features. You can start your trial from the Upgrade page - no credit card required to start the trial."
-  },
-  {
-    category: "Pricing & Plans",
-    question: "How do I cancel my subscription?",
-    answer: "You can cancel anytime from your Profile > Subscription page. Your Pro features will remain active until the end of your current billing period. We don't offer partial refunds for unused time."
-  },
-  {
-    category: "Pricing & Plans",
-    question: "Do you offer refunds?",
-    answer: "Yes, we offer a 7-day money-back guarantee. If you're not satisfied with your Pro or Team subscription, contact support within 7 days of purchase for a full refund."
-  },
-  {
-    category: "Pricing & Plans",
-    question: "Is there a student discount?",
-    answer: "Yes! Students with a valid .edu email can get 50% off Pro plans. Contact our support team with your student email to claim your discount."
-  },
-  
+
   // Features
   {
     category: "Features",
     question: "What are follow-up questions?",
-    answer: "Follow-up questions allow you to ask for more details about an error solution without starting over. For example, after getting a fix, you can ask 'Can you explain this simpler?' or 'What if this doesn't work?'. Free users get 3 follow-ups, Pro gets 5, and Team gets 10 per conversation."
+    answer: "Follow-up questions let you ask for more details about your error analysis. Pro users get 5 follow-ups per conversation, Team users get 10. This helps you dig deeper into complex issues without starting a new analysis."
   },
   {
     category: "Features",
-    question: "What's the difference between Fast, Smart, and Genius AI models?",
-    answer: "Fast (Haiku) - Quick responses for simple errors, responds in 2-5 seconds. Smart (Sonnet) - Better analysis for complex errors with more detailed explanations. Genius (Opus) - Our most intelligent model for the trickiest problems with deep reasoning. Free users get Fast, Pro gets Fast+Smart, Team gets all three."
+    question: "What's the difference between Fast and Smart modes?",
+    answer: "Fast mode uses optimized models for quick responses (ideal for simple errors). Smart mode uses advanced AI models like GPT-4 and Claude for complex problems requiring deeper analysis and more accurate solutions."
   },
   {
     category: "Features",
-    question: "Does ErrorWise save my error history?",
-    answer: "Yes! Your Library saves all your past queries so you can reference solutions later. This is useful when you encounter the same error again. Pro and Team users also get a searchable, categorized error library."
+    question: "What is the Library feature?",
+    answer: "The Library stores all your past error analyses. You can search, filter, and revisit previous solutions. It's great for recurring issues or building your personal knowledge base of error fixes."
   },
   {
     category: "Features",
-    question: "Can I export my error solutions?",
-    answer: "Yes! You can download solutions as text files or export them as JSON for documentation purposes. This feature is available on all plans including Free."
+    question: "Can I share my error analysis with others?",
+    answer: "Yes! You can export your error analysis as a shareable link or download it as a PDF. Team plan users can also collaborate directly within their team workspace."
   },
-  {
-    category: "Features",
-    question: "What is the Error Library?",
-    answer: "The Error Library is a collection of error solutions that grows as you use ErrorWise. It includes your personal history plus community-contributed solutions. Team users can share their library with teammates."
-  },
-  {
-    category: "Features",
-    question: "How does the AI model selection work?",
-    answer: "Pro and Team users can choose between different AI models based on their needs. Use 'Fast' for quick answers to simple errors, 'Smart' for detailed analysis, and 'Genius' (Team only) for complex debugging scenarios. You can switch models anytime from the dashboard."
-  },
-  
+
   // Privacy & Security
   {
     category: "Privacy & Security",
-    question: "Is my code and error data secure?",
-    answer: "Absolutely. We use industry-standard encryption (TLS 1.3) for all data transmission. Your error data is stored securely on encrypted servers and never shared with third parties. We are SOC 2 compliant."
+    question: "Is my data safe with ErrorWise?",
+    answer: "Absolutely. We use industry-standard encryption (TLS 1.3) for all data in transit and AES-256 encryption for data at rest. Your error messages are processed securely and we never share your data with third parties."
   },
   {
     category: "Privacy & Security",
-    question: "Do you train AI models on my error data?",
-    answer: "No. We do not use your personal error data to train our AI models. Your queries are processed in real-time and your privacy is our top priority. We only use aggregated, anonymized patterns to improve our service."
+    question: "Do you store my error messages?",
+    answer: "We store your error analyses in your Library so you can access them later. You can delete any analysis at any time. We never use your data to train our AI models without explicit consent."
   },
   {
     category: "Privacy & Security",
-    question: "Can I delete my account and data?",
-    answer: "Yes. You can request complete account deletion from Profile > Settings > Delete Account. All your data including error history, personal information, and subscription data will be permanently removed within 30 days."
+    question: "Can I use ErrorWise for sensitive/proprietary code?",
+    answer: "Yes. Your code snippets and error messages are encrypted and isolated. For enterprise needs with additional security requirements, contact us about our Enterprise plan with SOC 2 compliance and on-premise options."
   },
   {
     category: "Privacy & Security",
-    question: "Who can see my error queries?",
-    answer: "Only you can see your error queries. They are private by default. Team plan users can optionally share specific queries with their team members, but this requires explicit action."
+    question: "How do I delete my account and data?",
+    answer: "Go to Settings > Account > Delete Account. This will permanently remove all your data including error analyses, account information, and usage history within 30 days."
   },
-  
+
   // Technical
   {
     category: "Technical",
-    question: "Why is the response sometimes slow?",
-    answer: "Complex errors may take 5-15 seconds to analyze thoroughly. Our AI is researching multiple sources and formulating the best solution. Simple errors are usually analyzed in 2-5 seconds. Using the 'Fast' model will give quicker responses."
+    question: "Which programming languages are supported?",
+    answer: "ErrorWise supports 50+ programming languages including JavaScript, TypeScript, Python, Java, C#, C++, Go, Rust, Ruby, PHP, Swift, Kotlin, and many more. We also support framework-specific errors for React, Vue, Angular, Django, Rails, etc."
   },
   {
     category: "Technical",
-    question: "What if the AI solution doesn't work?",
-    answer: "You can ask follow-up questions like 'This didn't work, what else can I try?' to get alternative solutions. You can also use the feedback buttons (thumbs up/down) to let us know. This helps us improve and may provide better alternatives."
+    question: "How accurate are the solutions?",
+    answer: "Our AI maintains a 99.2% accuracy rate based on user feedback. We continuously improve our models and update our knowledge base with the latest solutions and best practices."
   },
   {
     category: "Technical",
-    question: "Does ErrorWise work offline?",
-    answer: "No, ErrorWise requires an internet connection to process errors through our AI models. However, your Library history is cached locally for quick reference when offline."
+    question: "Can ErrorWise help with runtime errors?",
+    answer: "Yes! ErrorWise excels at runtime errors, stack traces, and exception handling. Just paste the complete error message with the stack trace for the best results."
   },
   {
     category: "Technical",
-    question: "Which browsers are supported?",
-    answer: "ErrorWise works on all modern browsers including Chrome, Firefox, Safari, Edge, and Brave. We recommend using the latest version for the best experience. Mobile browsers are also fully supported."
+    question: "Is there an API available?",
+    answer: "Yes, we offer a REST API for Team and Enterprise plans. This allows you to integrate ErrorWise into your CI/CD pipelines, IDEs, or custom tools. Check our API documentation for details."
   },
+
+  // Billing & Support
   {
-    category: "Technical",
-    question: "Is there an API for developers?",
-    answer: "Yes! Team plan subscribers get access to our API for integrating ErrorWise into their development workflow, CI/CD pipelines, or custom tools. Check out our API documentation in your Team dashboard."
-  },
-  {
-    category: "Technical",
-    question: "Can I use ErrorWise with my IDE?",
-    answer: "We're working on IDE extensions for VS Code, IntelliJ, and other popular editors. Join our newsletter to be notified when they launch!"
-  },
-  
-  // Billing
-  {
-    category: "Billing",
+    category: "Billing & Support",
     question: "What payment methods do you accept?",
-    answer: "We accept all major credit/debit cards (Visa, Mastercard, American Express) through our secure payment provider. We also support UPI, PayPal, and other local payment methods in select regions."
+    answer: "We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and bank transfers for Enterprise plans. All payments are processed securely through our payment provider."
   },
   {
-    category: "Billing",
-    question: "When will I be charged?",
-    answer: "You'll be charged immediately when you subscribe, then on the same date each month. For example, if you subscribe on the 15th, you'll be billed on the 15th of each month."
+    category: "Billing & Support",
+    question: "Do you offer refunds?",
+    answer: "Yes, we offer a 14-day money-back guarantee on all paid plans. If you're not satisfied, contact support within 14 days of your purchase for a full refund."
   },
   {
-    category: "Billing",
-    question: "Can I change my plan?",
-    answer: "Yes! You can upgrade from Free to Pro, or from Pro to Team anytime. Upgrades take effect immediately. Downgrades take effect at the end of your current billing period."
+    category: "Billing & Support",
+    question: "How do I contact support?",
+    answer: "You can reach us at support@errorwise.com or through the in-app chat. Pro users get priority support with typical response times under 4 hours. Free users can expect responses within 24-48 hours."
   },
   {
-    category: "Billing",
-    question: "Do you offer annual billing?",
-    answer: "Yes! Annual billing gives you 2 months free (pay for 10, get 12). You can switch to annual billing from your Subscription page."
+    category: "Billing & Support",
+    question: "Do you offer educational discounts?",
+    answer: "Yes! Students and educators get 50% off Pro plans. Contact us with your .edu email address to get verified and receive your discount code."
   }
 ];
 
+const categories = ['All', 'Getting Started', 'Pricing & Plans', 'Features', 'Privacy & Security', 'Technical', 'Billing & Support'];
+
 const categoryIcons: Record<string, React.ReactNode> = {
-  "Getting Started": <Zap className="w-5 h-5" />,
-  "Pricing & Plans": <CreditCard className="w-5 h-5" />,
-  "Features": <Settings className="w-5 h-5" />,
-  "Privacy & Security": <Shield className="w-5 h-5" />,
-  "Technical": <HelpCircle className="w-5 h-5" />,
-  "Billing": <CreditCard className="w-5 h-5" />
+  'Getting Started': <Zap className="w-4 h-4" />,
+  'Pricing & Plans': <CreditCard className="w-4 h-4" />,
+  'Features': <Settings className="w-4 h-4" />,
+  'Privacy & Security': <Shield className="w-4 h-4" />,
+  'Technical': <HelpCircle className="w-4 h-4" />,
+  'Billing & Support': <MessageCircle className="w-4 h-4" />
 };
 
 const FAQPage: React.FC = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  const categories = ['All', ...Array.from(new Set(faqs.map(faq => faq.category)))];
-
-  const filteredFAQs = faqs.filter(faq => {
-    const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredFaqs = faqs.filter(faq => {
+    const matchesSearch = searchQuery === '' || 
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || faq.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  // Group FAQs by category for display
-  const groupedFAQs = selectedCategory === 'All' 
-    ? categories.slice(1).map(cat => ({
-        category: cat,
-        items: filteredFAQs.filter(faq => faq.category === cat)
-      })).filter(group => group.items.length > 0)
-    : [{ category: selectedCategory, items: filteredFAQs }];
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-900 to-gray-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-xl border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to Home</span>
-          </Link>
-          <Link to="/" className="text-2xl font-bold">
-            <span className="text-white">Error</span>
-            <span className="text-cyan-400">Wise</span>
-          </Link>
-          <Link to="/login" className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors">
-            Get Started
-          </Link>
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-gray-900/80 border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link to="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Home</span>
+            </Link>
+            <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              ErrorWise
+            </Link>
+          </div>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Frequently Asked <span className="text-cyan-400">Questions</span>
+      {/* Hero Section */}
+      <section className="relative px-4 py-16 sm:py-20 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
+            Frequently Asked
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent"> Questions</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Everything you need to know about ErrorWise. Can't find what you're looking for? Contact our support team.
+          <p className="text-xl text-gray-300 mb-8">
+            Everything you need to know about ErrorWise. Can't find the answer you're looking for? 
+            <a href="mailto:support@errorwise.com" className="text-cyan-400 hover:text-cyan-300 ml-1">Contact our support team</a>.
           </p>
-        </div>
 
-        {/* Search */}
-        <div className="relative mb-8">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search FAQs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 bg-gray-800/50 border border-gray-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-white placeholder-gray-500 transition-all"
-          />
+          {/* Search Bar */}
+          <div className="relative max-w-xl mx-auto">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search questions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+            />
+          </div>
         </div>
+      </section>
 
-        {/* Category Filter */}
-        <div className="flex flex-wrap gap-2 mb-10">
+      {/* Category Filter */}
+      <section className="px-4 pb-8 lg:px-8">
+        <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
           {categories.map(category => (
             <button
               key={category}
@@ -268,85 +223,80 @@ const FAQPage: React.FC = () => {
             </button>
           ))}
         </div>
+      </section>
 
-        {/* FAQ List */}
-        <div className="space-y-8">
-          {groupedFAQs.map((group, groupIndex) => (
-            <div key={groupIndex}>
-              {selectedCategory === 'All' && (
-                <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                  {categoryIcons[group.category]}
-                  {group.category}
-                </h2>
-              )}
-              <div className="space-y-3">
-                {group.items.map((faq, index) => {
-                  const globalIndex = faqs.findIndex(f => f.question === faq.question);
-                  return (
-                    <div
-                      key={index}
-                      className="bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden hover:border-gray-600 transition-all"
-                    >
-                      <button
-                        onClick={() => setOpenIndex(openIndex === globalIndex ? null : globalIndex)}
-                        className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-800/50 transition-colors"
-                      >
-                        <span className="font-medium text-white pr-4">{faq.question}</span>
-                        {openIndex === globalIndex ? (
-                          <ChevronUp className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                        )}
-                      </button>
-                      {openIndex === globalIndex && (
-                        <div className="px-6 pb-5 text-gray-300 leading-relaxed border-t border-gray-700/50 pt-4">
-                          {faq.answer}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+      {/* FAQ List */}
+      <section className="px-4 pb-20 lg:px-8">
+        <div className="max-w-3xl mx-auto space-y-4">
+          {filteredFaqs.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-400 text-lg">No questions found matching your search.</p>
+              <button 
+                onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
+                className="mt-4 text-cyan-400 hover:text-cyan-300 transition-colors"
+              >
+                Clear filters
+              </button>
             </div>
-          ))}
+          ) : (
+            filteredFaqs.map((faq, index) => (
+              <div 
+                key={index} 
+                className="bg-gray-800/50 border border-gray-700/50 rounded-xl overflow-hidden hover:border-gray-600/50 transition-all duration-300"
+              >
+                <button
+                  onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                  className="w-full flex items-center justify-between p-5 text-left"
+                >
+                  <div className="flex-1 pr-4">
+                    <span className="text-xs text-cyan-400 font-medium mb-1 block">{faq.category}</span>
+                    <span className="text-white font-semibold">{faq.question}</span>
+                  </div>
+                  {expandedIndex === index ? (
+                    <ChevronUp className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  )}
+                </button>
+                {expandedIndex === index && (
+                  <div className="px-5 pb-5">
+                    <p className="text-gray-300 leading-relaxed">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
+      </section>
 
-        {filteredFAQs.length === 0 && (
-          <div className="text-center py-16 text-gray-400">
-            <HelpCircle className="w-16 h-16 mx-auto mb-4 opacity-50" />
-            <p className="text-lg">No FAQs found matching your search.</p>
-            <p className="text-sm mt-2">Try different keywords or browse all categories.</p>
-          </div>
-        )}
-
-        {/* Contact CTA */}
-        <div className="mt-16 text-center bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border border-cyan-500/20 rounded-2xl p-8">
-          <MessageCircle className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-          <h3 className="text-2xl font-semibold mb-2">Still have questions?</h3>
-          <p className="text-gray-400 mb-6 max-w-md mx-auto">
-            Can't find what you're looking for? Our support team is here to help you 24/7.
+      {/* Contact CTA */}
+      <section className="px-4 pb-20 lg:px-8">
+        <div className="max-w-3xl mx-auto bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-8 text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">Still have questions?</h2>
+          <p className="text-gray-300 mb-6">
+            Can't find the answer you're looking for? Our support team is here to help.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="mailto:support@errorwise.tech"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Contact Support
-            </a>
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
-            >
-              Get Started Free
-            </Link>
-          </div>
+          <a 
+            href="mailto:support@errorwise.com" 
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-full hover:from-cyan-600 hover:to-blue-600 transition-all"
+          >
+            <MessageCircle className="w-5 h-5" />
+            Contact Support
+          </a>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-800 mt-16 py-8 text-center text-gray-500 text-sm">
-        <p>&copy; 2025 ErrorWise. All rights reserved.</p>
+      <footer className="border-t border-white/10 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-gray-400 text-sm">
+            © 2025 ErrorWise. All rights reserved.
+            <span className="mx-2">•</span>
+            <Link to="/privacy" className="hover:text-cyan-400 transition-colors">Privacy</Link>
+            <span className="mx-2">•</span>
+            <Link to="/terms" className="hover:text-cyan-400 transition-colors">Terms</Link>
+          </p>
+        </div>
       </footer>
     </div>
   );
