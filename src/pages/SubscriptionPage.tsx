@@ -820,7 +820,7 @@ const SubscriptionPage: React.FC = () => {
                         <p className="text-gray-400 text-sm">Monthly limit resets on the 1st</p>
                       </div>
                       <span className="text-white font-bold text-xl">
-                        {usageStats.usage.queriesUsed} / {usageStats.usage.queriesLimit === -1 ? '8' : usageStats.usage.queriesLimit}
+                        {usageStats.usage.queriesUsed} / {usageStats.usage.queriesLimit === -1 ? '∞' : usageStats.usage.queriesLimit}
                       </span>
                     </div>
                     
