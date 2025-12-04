@@ -89,11 +89,14 @@ interface UsageStats {
 
 interface HistoryItem {
   id: string;
-  type: 'upgrade' | 'downgrade' | 'cancelled' | 'renewed';
-  fromPlan: string;
+  type: 'upgrade' | 'downgrade' | 'cancelled' | 'renewed' | 'account_created' | 'trial_started' | 'payment_succeeded' | 'payment_failed';
+  fromPlan: string | null;
   toPlan: string;
   date: string;
   amount?: number;
+  source?: string;
+  eventName?: string;
+  description?: string;
 }
 
 type TabType = 'plans' | 'billing' | 'usage' | 'history';
@@ -1042,30 +1045,66 @@ const SubscriptionPage: React.FC = () => {
               
               {history.length > 0 ? (
                 <div className="space-y-4">
-                  {history.map((item) => (
-                    <div key={item.id} className="p-4 bg-white/5 rounded-lg">
+                  {history.map((item) => {
+                    const getEventIcon = () => {
+                      switch (item.type) {
+                        case 'account_created': return '🎉';
+                        case 'trial_started': return '🚀';
+                        case 'upgrade': return '⬆️';
+                        case 'downgrade': return '⬇️';
+                        case 'payment_succeeded': return '💳';
+                        case 'payment_failed': return '❌';
+                        case 'cancelled': return '🚫';
+                        case 'renewed': return '🔄';
+                        default: return '';
+                      }
+                    };
+                    const getEventLabel = () => {
+                      switch (item.type) {
+                        case 'account_created': return 'Account Created';
+                        case 'trial_started': return 'Trial Started';
+                        case 'upgrade': return 'Plan Upgraded';
+                        case 'downgrade': return 'Plan Downgraded';
+                        case 'payment_succeeded': return 'Payment Successful';
+                        case 'payment_failed': return 'Payment Failed';
+                        case 'cancelled': return 'Subscription Cancelled';
+                        case 'renewed': return 'Subscription Renewed';
+                        default: return item.type;
+                      }
+                    };
+                    return (
+                    <div key={item.id} className="p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                       <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-white font-semibold capitalize">{item.type}</p>
-                          <p className="text-gray-400 text-sm">
-                            {item.fromPlan} ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ {item.toPlan}
-                          </p>
-                          <p className="text-gray-500 text-xs mt-1">
-                            {new Date(item.date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
+                        <div className="flex items-start gap-3">
+                          <span className="text-2xl">{getEventIcon()}</span>
+                          <div>
+                            <p className="text-white font-semibold">{getEventLabel()}</p>
+                            {item.fromPlan && item.toPlan && (
+                              <p className="text-gray-400 text-sm">
+                                {item.fromPlan}  {item.toPlan}
+                              </p>
+                            )}
+                            {item.description && (
+                              <p className="text-gray-400 text-sm">{item.description}</p>
+                            )}
+                            <p className="text-gray-500 text-xs mt-1">
+                              {new Date(item.date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
                         </div>
-                        {item.amount !== undefined && (
-                          <p className="text-white font-bold">${item.amount}</p>
+                        {item.amount !== undefined && item.amount > 0 && (
+                          <p className="text-green-400 font-bold">${item.amount}</p>
                         )}
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="space-y-4">
