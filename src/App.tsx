@@ -21,6 +21,7 @@ const MockPaymentPage = lazy(() => import('./pages/MockPaymentPage'));
 const TeamVideoChat = lazy(() => import('./pages/team/TeamVideoChat'));
 const TeamDashboard = lazy(() => import('./pages/team/TeamDashboard'));
 const TeamAnalyses = lazy(() => import('./pages/team/TeamAnalyses'));
+const TeamMeetingHub = lazy(() => import('./pages/team/TeamMeetingHub'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const FAQPage = lazy(() => import('./pages/FAQPage'));
@@ -132,6 +133,11 @@ function App() {
               </ProtectedRoute>
             } />
 
+            <Route path="/team/:teamId/meetings" element={
+              <ProtectedRoute>
+                <TeamMeetingHub />
+              </ProtectedRoute>
+            } />
             <Route path="/team/:teamId/video/:sessionId" element={
               <ProtectedRoute>
                 <TeamVideoChat />
@@ -165,4 +171,6 @@ function App() {
 }
 
 export default App;
+
+
 
