@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -212,7 +212,7 @@ export const TeamDashboard = () => {
               Create a team to start collaborating with video chat
             </p>
             <p className="text-sm text-gray-500">
-              Team plan required • 30-minute video sessions • Unlimited members
+              Team plan required â€¢ 30-minute video sessions â€¢ Unlimited members
             </p>
           </div>
         ) : (
@@ -244,11 +244,20 @@ export const TeamDashboard = () => {
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
-                    Start Video Chat
+                    Start Now
+                  </button>
+                  <button
+                    onClick={() => navigate(`/team/${team.id}/meetings`)}
+                    className="w-full mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Meeting Hub
                   </button>
 
                   <p className="text-xs text-gray-500 text-center mt-2">
-                    30-minute session limit
+                    Start instant meeting or schedule for later
                   </p>
                 </div>
               </div>
@@ -292,3 +301,6 @@ export const TeamDashboard = () => {
 };
 
 export default TeamDashboard;
+
+
+
