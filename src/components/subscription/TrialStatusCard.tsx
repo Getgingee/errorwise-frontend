@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Crown, Clock, AlertTriangle, ArrowRight, X, Sparkles, Calendar, CreditCard, Shield, Loader2 } from 'lucide-react';
 import { trialService, TrialStatus } from '../../services/trialService';
 import { toast } from 'react-hot-toast';
@@ -132,7 +132,7 @@ const TrialStatusCard: React.FC<TrialStatusCardProps> = ({
                 After Trial
               </span>
               <span className="text-white">
-                \/month
+                ${trialInfo.chargeAmount}/month
               </span>
             </div>
           )}
@@ -146,7 +146,7 @@ const TrialStatusCard: React.FC<TrialStatusCardProps> = ({
               <div className="text-sm">
                 <p className="text-amber-400 font-medium">Trial ending soon!</p>
                 <p className="text-gray-400">
-                  You'll be charged \/mo after your trial ends.
+                  You'll be charged ${trialInfo.chargeAmount}/mo after your trial ends.
                   {' '}
                   <button 
                     onClick={handleCancelTrial}

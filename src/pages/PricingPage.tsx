@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { subscriptionService, Plan } from '../services/subscription';
 import { trialService } from '../services/trialService';
@@ -58,7 +58,7 @@ export function PricingPage() {
   async function handleStartTrial(planId: 'pro' | 'team') {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate(\/login?redirect=/pricing&trial=\\);
+      navigate(`/login?redirect=/pricing&trial=${planId}`);
       return;
     }
 
@@ -176,7 +176,7 @@ export function PricingPage() {
                       </span>
                       <span className="flex items-center gap-1.5">
                         <Clock className="h-4 w-4" />
-                        Then \/month
+                        Then $3/month
                       </span>
                     </div>
                   </div>
@@ -204,7 +204,7 @@ export function PricingPage() {
                     disabled={startingTrial !== null}
                     className="px-8 py-2 bg-transparent border-2 border-white/50 text-white text-sm font-medium rounded-lg hover:bg-white/10 transition-all"
                   >
-                    {startingTrial === 'team' ? 'Redirecting...' : 'Or try Team - \/mo after trial'}
+                    {startingTrial === 'team' ? 'Redirecting...' : 'Or try Team - $8/mo after trial'}
                   </button>
                 </div>
               </div>
