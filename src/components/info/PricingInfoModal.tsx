@@ -88,7 +88,24 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
           {
             id: 'pro',
             name: 'Pro',
-            price: 2,
+            price: 3,
+            interval: 'month',
+            features: {
+              dailyQueries: -1,
+              errorExplanation: true,
+              fixSuggestions: true,
+              codeExamples: true,
+              errorHistory: '30 days',
+              supportLevel: 'email'
+            },
+            description: 'For serious developers',
+            popular: true,
+            trialDays: 7
+          },
+          {
+            id: 'team',
+            name: 'Team',
+            price: 8,
             interval: 'month',
             features: {
               dailyQueries: -1,
@@ -96,10 +113,10 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
               fixSuggestions: true,
               codeExamples: true,
               errorHistory: 'unlimited',
-              supportLevel: 'email'
+              supportLevel: 'priority',
+              teamFeatures: true
             },
-            description: 'For serious developers',
-            popular: true,
+            description: 'For teams & collaboration',
             trialDays: 7
           }
         ]);
