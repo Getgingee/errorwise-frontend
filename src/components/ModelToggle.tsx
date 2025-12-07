@@ -42,12 +42,21 @@ const ModelToggle: React.FC<ModelToggleProps> = ({
   const loadModels = async () => {
     try {
       const data = await getAvailableModels();
-      setModels(data.models);
-      setCurrentModel(data.currentModel);
-      setAutoModeEnabled(data.autoModeEnabled);
-      setAutoModeAvailable(data.autoModeAvailable);
+      if (data && data.models) {
+        setModels(data.models);
+        setCurrentModel(data.currentModel || 'haiku');
+        setAutoModeEnabled(data.autoModeEnabled || false);
+        setAutoModeAvailable(data.autoModeAvailable || false);
+      } else {
+        // Fallback to default model if API returns empty
+        setModels([{ id: 'haiku', name: 'Fast', description: 'Quick responses', available: true }]);
+        setCurrentModel('haiku');
+      }
     } catch (error) {
       console.error('Failed to load models:', error);
+      // Set default fallback model so UI doesn't break
+      setModels([{ id: 'haiku', name: 'Fast', description: 'Quick responses', available: true }]);
+      setCurrentModel('haiku');
     } finally {
       setLoading(false);
     }
