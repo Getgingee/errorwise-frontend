@@ -199,13 +199,14 @@ export function PricingPage() {
                       </>
                     )}
                   </button>
-                  <button
+                  {/* Team trial temporarily hidden - Coming Soon */}
+                  {/*<button
                     onClick={() => handleStartTrial('team')}
                     disabled={startingTrial !== null}
                     className="px-8 py-2 bg-transparent border-2 border-white/50 text-white text-sm font-medium rounded-lg hover:bg-white/10 transition-all"
                   >
                     {startingTrial === 'team' ? 'Redirecting...' : 'Or try Team - $8/mo after trial'}
-                  </button>
+                  </button>*/}
                 </div>
               </div>
             </div>

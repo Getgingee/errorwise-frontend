@@ -1,4 +1,4 @@
-﻿// Compare Plans Modal (E2)
+// Compare Plans Modal (E2)
 // Free vs Pro vs Team comparison modal with tracking
 
 import React, { useState, useEffect } from 'react';
@@ -212,6 +212,12 @@ const ComparePlansModal: React.FC<ComparePlansModalProps> = ({
                     {plan.isCurrent && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
                         CURRENT PLAN
+                      </div>
+                    )}
+
+                    {plan.id === 'team' && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-amber-500 text-white text-xs font-bold rounded-full">
+                         COMING SOON
                       </div>
                     )}
 

@@ -222,6 +222,15 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               </div>
             )}
 
+            {tier.id === 'team' && !isCurrentTier && (
+              <div className="absolute -top-3 right-4">
+                <span className="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  Coming Soon
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-6">
               <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {tier.name}
@@ -265,7 +274,7 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               })}
             </div>
 
-            {!isCurrentTier && tier.id !== 'free' && onUpgrade && (
+            {!isCurrentTier && tier.id !== 'free' && tier.id !== 'team' && onUpgrade && (
               <button
                 onClick={() => onUpgrade(tier.id as 'pro' | 'team')}
                 className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${
@@ -276,6 +285,13 @@ export const TierComparison: React.FC<TierComparisonProps> = ({
               >
                 Upgrade to {tier.name}
               </button>
+            )}
+
+            {!isCurrentTier && tier.id === 'team' && (
+              <div className="w-full py-3 px-6 rounded-xl font-semibold text-center bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 cursor-not-allowed flex items-center justify-center gap-2">
+                <Clock className="w-4 h-4" />
+                Coming Soon
+              </div>
             )}
 
             {isCurrentTier && (

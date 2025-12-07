@@ -195,6 +195,11 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
   // Get appropriate CTA button text based on plan
   const getCTAText = (plan: PricingPlan): string => {
     const planNameLower = plan.name.toLowerCase();
+
+    // Team plan - Coming Soon
+    if (planNameLower.includes('team')) {
+      return 'Coming Soon';
+    }
     
     // Free plan
     if (plan.price === 0) {
@@ -222,6 +227,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
 
   // Convert backend plans to display format
   const displayPlans = plans.map(plan => ({
+    id: plan.id || plan.name.toLowerCase().replace(/\s+/g, '-'),
     name: plan.name,
     price: plan.price === 0 ? '$0' : plan.price ? `$${plan.price}` : 'Custom',
     period: plan.price === 0 ? 'forever' : plan.price ? `per ${plan.interval}` : 'contact us',
@@ -287,6 +293,14 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                     </div>
                   )}
 
+                  {plan.name.toLowerCase().includes('team') && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-gradient-to-r from-amber-500 to-orange-400 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                         Coming Soon
+                      </span>
+                    </div>
+                  )}
+
                   <div className="text-center mb-6">
                     <div className="inline-flex p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mb-4 shadow-lg">
                       <plan.icon className="text-white" size={32} />
@@ -319,11 +333,14 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({ isOpen, onClose }) 
                   </ul>
 
                   <button
-                    onClick={() => handlePlanClick(plan)}
+                    onClick={() => !plan.name.toLowerCase().includes('team') && handlePlanClick(plan)}
+                    disabled={plan.name.toLowerCase().includes('team')}
                     className={`w-full py-3 rounded-full font-semibold transition-all duration-300 ${
-                      plan.popular
-                        ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:shadow-xl hover:scale-105'
-                        : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/20'
+                      plan.name.toLowerCase().includes('team')
+                        ? 'bg-amber-100/20 text-amber-200 cursor-not-allowed opacity-70'
+                        : plan.popular
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:shadow-xl hover:scale-105'
+                          : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/20'
                     }`}
                   >
                     {plan.cta}

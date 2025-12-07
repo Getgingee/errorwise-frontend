@@ -1,4 +1,4 @@
-﻿import { Plan } from '../../services/subscription';
+import { Plan } from '../../services/subscription';
 import { Check, Star, Loader2 } from 'lucide-react';
 
 interface PlanCardProps {
@@ -10,6 +10,7 @@ interface PlanCardProps {
 
 export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps) {
   const isFree = plan.id === 'free';
+  const isTeam = plan.id === 'team';
 
   return (
     <div
@@ -22,6 +23,13 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
         <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg flex items-center gap-1">
           <Star className="w-4 h-4 fill-current" />
           Most Popular
+        </div>
+      )}
+
+      {/* Coming Soon Badge for Team */}
+      {isTeam && (
+        <div className="absolute top-0 right-0 bg-gradient-to-r from-amber-500 to-orange-400 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg flex items-center gap-1">
+           Coming Soon
         </div>
       )}
 
@@ -41,10 +49,12 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
 
         {/* CTA Button */}
         <button
-          onClick={onSelect}
-          disabled={isLoading}
+          onClick={isTeam ? undefined : onSelect}
+          disabled={isLoading || isTeam}
           className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
-            isFree
+            isTeam
+              ? 'bg-amber-100 text-amber-600 cursor-not-allowed opacity-70'
+              : isFree
               ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
               : isPopular
               ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg'
@@ -56,6 +66,8 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
               <Loader2 className="w-5 h-5 animate-spin" />
               Processing...
             </>
+          ) : isTeam ? (
+            'Coming Soon'
           ) : isFree ? (
             'Get Started'
           ) : (
