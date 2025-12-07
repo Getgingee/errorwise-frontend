@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import {
@@ -17,6 +17,8 @@ import {
   Settings
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { getAvailableModels, selectModel, ModelInfo } from '../services/chatService';
+import { toast } from 'react-hot-toast';
 
 interface NavigationProps {
   onHistoryClick?: () => void;
@@ -29,7 +31,10 @@ const Navigation: React.FC<NavigationProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [selectedAI, setSelectedAI] = useState<'gemini' | 'anthropic'>('gemini');
+  const [models, setModels] = useState<ModelInfo[]>([]);
+  const [currentModel, setCurrentModel] = useState<string>('haiku');
+  const [userTier, setUserTier] = useState<string>('free');
+  const [modelsLoading, setModelsLoading] = useState(true);
   const [showAIMenu, setShowAIMenu] = useState(false);
   const [showAccessibilityMenu, setShowAccessibilityMenu] = useState(false);
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
@@ -41,6 +46,45 @@ const Navigation: React.FC<NavigationProps> = ({
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  // Load available models based on user tier
+  useEffect(() => {
+    const loadModels = async () => {
+      try {
+        const data = await getAvailableModels();
+        if (data && data.models) {
+          setModels(data.models);
+          setCurrentModel(data.currentModel || 'haiku');
+          setUserTier(data.tier || 'free');
+        }
+      } catch (error) {
+        console.error('Failed to load models:', error);
+        // Fallback
+        setModels([{ id: 'haiku', name: 'Fast', description: 'Quick responses', available: true }]);
+      } finally {
+        setModelsLoading(false);
+      }
+    };
+    if (user) loadModels();
+  }, [user]);
+
+  // Handle model selection
+  const handleModelSelect = async (modelId: string) => {
+    try {
+      const result = await selectModel(modelId);
+      setCurrentModel(result.model);
+      toast.success(Switched to  model);
+      setShowAIMenu(false);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to switch model');
+    }
+  };
+
+  // Get current model display name
+  const getCurrentModelName = () => {
+    const model = models.find(m => m.id === currentModel);
+    return model?.name || 'Fast';
   };
 
   // Apply accessibility settings
@@ -139,21 +183,23 @@ const Navigation: React.FC<NavigationProps> = ({
                   <div className="space-y-3">
                     {/* AI Model Selection */}
                     <div>
-                      <p className="text-xs text-gray-600 mb-1">AI Model</p>
-                      <div className="flex gap-2">
-                        {(['gemini', 'anthropic'] as const).map((model) => (
+                      <p className="text-xs text-gray-600 mb-1">AI Model ({userTier} tier)</p>
+                      <div className="flex gap-2 flex-wrap">
+                        {models.length > 0 ? models.map((model) => (
                           <button
-                            key={model}
-                            onClick={() => setSelectedAI(model)}
-                            className={`flex-1 px-3 py-2 text-xs rounded-lg transition-all duration-200 ${
-                              selectedAI === model
+                            key={model.id}
+                            onClick={() => handleModelSelect(model.id)}
+                            className={`flex-1 min-w-[80px] px-3 py-2 text-xs rounded-lg transition-all duration-200 ${
+                              currentModel === model.id
                                 ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
                                 : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
                             }`}
                           >
-                            {model === 'gemini' ? 'Gemini' : 'Claude'}
+                            {model.name}
                           </button>
-                        ))}
+                        )) : (
+                          <span className="text-xs text-gray-500">Loading...</span>
+                        )}
                       </div>
                     </div>
 
@@ -278,28 +324,28 @@ const Navigation: React.FC<NavigationProps> = ({
                 <span className={`text-sm font-medium transition-all duration-500 overflow-hidden whitespace-nowrap ${
                   isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
                 }`}>
-                  {selectedAI === 'gemini' ? 'Gemini' : 'Claude'}
+                  {getCurrentModelName()}
                 </span>
               </button>
 
               {showAIMenu && !isCollapsed && (
                 <div className="absolute bottom-full left-0 right-0 mb-2 bg-slate-800 border border-white/20 rounded-lg shadow-2xl overflow-hidden z-50">
-                  {(['gemini', 'anthropic'] as const).map((model) => (
+                  {models.length > 0 ? models.map((model) => (
                     <button
-                      key={model}
-                      onClick={() => {
-                        setSelectedAI(model);
-                        setShowAIMenu(false);
-                      }}
-                      className={`w-full px-4 py-2 text-left text-sm transition-all duration-200 ${
-                        selectedAI === model
+                      key={model.id}
+                      onClick={() => handleModelSelect(model.id)}
+                      className={`w-full px-4 py-2 text-left text-sm transition-all duration-200 flex items-center justify-between ${
+                        currentModel === model.id
                           ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white'
                           : 'text-gray-300 hover:bg-white/10 hover:text-white'
                       }`}
                     >
-                      {model === 'gemini' ? 'Google Gemini' : 'Anthropic (Claude)'}
+                      <span>{model.name}</span>
+                      <span className="text-xs opacity-70">{model.id === 'haiku' ? '' : model.id === 'sonnet' ? '' : model.id === 'auto' ? '' : ''}</span>
                     </button>
-                  ))}
+                  )) : (
+                    <div className="px-4 py-2 text-sm text-gray-400">Loading...</div>
+                  )}
                 </div>
               )}
             </div>
