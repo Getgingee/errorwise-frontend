@@ -1,4 +1,4 @@
-﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
@@ -504,7 +504,7 @@ const ProfilePage: React.FC = () => {
                       {[{ key: 'emailDigest', label: 'Email Digest', desc: 'Daily summary of your activity' }, { key: 'productUpdates', label: 'Product Updates', desc: 'New features and improvements' }, { key: 'weeklyReport', label: 'Weekly Report', desc: 'Your weekly problem-solving stats' }].map((item) => (
                         <div key={item.key} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
                           <div><p className="text-white font-medium">{item.label}</p><p className="text-gray-500 text-sm">{item.desc}</p></div>
-                          <button onClick={() => setNotifications(prev => ({ ...prev, [item.key]: !prev[item.key as keyof NotificationSettings] }))} className={`w-12 h-6 rounded-full transition-all ${notifications[item.key as keyof NotificationSettings] ? 'bg-cyan-500' : 'bg-white/20'}`}>
+                          <button onClick={() => setNotifications(prev => ({ ...prev, [item.key]: !prev[item.key as keyof NotificationSettings] }))} aria-label={`Toggle ${item.label}`} className={`w-12 h-6 rounded-full transition-all ${notifications[item.key as keyof NotificationSettings] ? 'bg-cyan-500' : 'bg-white/20'}`}>
                             <div className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${notifications[item.key as keyof NotificationSettings] ? 'translate-x-6' : 'translate-x-0.5'}`} />
                           </button>
                         </div>
@@ -527,14 +527,14 @@ const ProfilePage: React.FC = () => {
                       <div className="space-y-4">
                         <div><label className="block text-sm font-medium text-gray-400 mb-2">Current Password</label>
                           <div className="relative">
-                            <input type={showCurrentPassword ? 'text' : 'password'} value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="Enter current password" />
-                            <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">{showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}</button>
+                            <input type={showCurrentPassword ? 'text' : 'password'} value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" id="currentPassword" name="currentPassword" placeholder="Enter current password" />
+                            <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} aria-label="Toggle current password visibility" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">{showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}</button>
                           </div>
                         </div>
                         <div><label className="block text-sm font-medium text-gray-400 mb-2">New Password</label>
                           <div className="relative">
-                            <input type={showNewPassword ? 'text' : 'password'} value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="Enter new password" />
-                            <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">{showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}</button>
+                            <input type={showNewPassword ? 'text' : 'password'} value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400" id="newPassword" name="newPassword" placeholder="Enter new password" />
+                            <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} aria-label="Toggle new password visibility" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">{showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}</button>
                           </div>
                         </div>
                         <div><label className="block text-sm font-medium text-gray-400 mb-2">Confirm New Password</label>
