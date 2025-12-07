@@ -74,7 +74,7 @@ const Navigation: React.FC<NavigationProps> = ({
     try {
       const result = await selectModel(modelId);
       setCurrentModel(result.model);
-      toast.success(Switched to  model);
+      toast.success(`Switched to ${models.find(m => m.id === modelId)?.name || modelId} model`);
       setShowAIMenu(false);
     } catch (error: any) {
       toast.error(error.message || 'Failed to switch model');
