@@ -1,8 +1,9 @@
-﻿import React, { useEffect, Suspense, lazy } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
+import { AuthProvider } from './providers/AuthProvider';
 
 // Eagerly loaded - critical path
 import LandingPage from './pages/LandingPage';
@@ -65,6 +66,7 @@ function App() {
 
   return (
     <Router>
+      <AuthProvider>
       <div className="App">
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -166,11 +168,15 @@ function App() {
           }}
         />
       </div>
+      </AuthProvider>
     </Router>
   );
 }
 
 export default App;
+
+
+
 
 
 
