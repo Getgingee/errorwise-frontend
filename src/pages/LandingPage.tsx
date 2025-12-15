@@ -5,7 +5,8 @@ import { Menu, X, Briefcase, ShoppingCart, Gamepad2, Smartphone, CreditCard, Glo
 import LiveDemoModal from '../components/LiveDemoModal';
 import FeedbackModal from '../components/FeedbackModal';
 import { FeaturesModal, PricingInfoModal, APIDocsModal, InfoPagesModal } from '../components/info';
-import SocialProofSection from '../components/landing/SocialProofSection';\nimport { useSupportContact } from '../hooks/useSupportContact';
+import SocialProofSection from '../components/landing/SocialProofSection';
+import { useSupportContact } from '../hooks/useSupportContact';
 
 const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
