@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
 import { Menu, X, Briefcase, ShoppingCart, Gamepad2, Smartphone, CreditCard, Globe, Settings, Wifi, Mail } from 'lucide-react';
-import LiveDemoModal from '../components/LiveDemoModal';
-import FeedbackModal from '../components/FeedbackModal';
-import { FeaturesModal, PricingInfoModal, APIDocsModal, InfoPagesModal } from '../components/info';
-import SocialProofSection from '../components/landing/SocialProofSection';
 import { useSupportContact } from '../hooks/useSupportContact';
+
+// Lazy load heavy modals - only loaded when user opens them
+const LiveDemoModal = lazy(() => import('../components/LiveDemoModal'));
+const FeedbackModal = lazy(() => import('../components/FeedbackModal'));
+const FeaturesModal = lazy(() => import('../components/info/FeaturesModal'));
+const PricingInfoModal = lazy(() => import('../components/info/PricingInfoModal'));
+const APIDocsModal = lazy(() => import('../components/info/APIDocsModal'));
+const InfoPagesModal = lazy(() => import('../components/info/InfoPagesModal'));
+const SocialProofSection = lazy(() => import('../components/landing/SocialProofSection'));
 
 const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -599,18 +604,22 @@ const LandingPage: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals */}
-      <LiveDemoModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} onFeedbackClick={() => { setDemoModalOpen(false); setFeedbackModalOpen(true); }} />
-      <FeedbackModal isOpen={feedbackModalOpen} onClose={() => setFeedbackModalOpen(false)} source="demo_limit" />
-      <FeaturesModal isOpen={featuresModalOpen} onClose={() => setFeaturesModalOpen(false)} />
-      <PricingInfoModal isOpen={pricingModalOpen} onClose={() => setPricingModalOpen(false)} />
-      <APIDocsModal isOpen={apiDocsModalOpen} onClose={() => setApiDocsModalOpen(false)} />
-      <InfoPagesModal isOpen={infoModalOpen} onClose={() => setInfoModalOpen(false)} page={infoModalPage} />
+      {/* Modals - Lazy loaded */}
+      <Suspense fallback={null}>
+        {demoModalOpen && <LiveDemoModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} onFeedbackClick={() => { setDemoModalOpen(false); setFeedbackModalOpen(true); }} />}
+        {feedbackModalOpen && <FeedbackModal isOpen={feedbackModalOpen} onClose={() => setFeedbackModalOpen(false)} source="demo_limit" />}
+        {featuresModalOpen && <FeaturesModal isOpen={featuresModalOpen} onClose={() => setFeaturesModalOpen(false)} />}
+        {pricingModalOpen && <PricingInfoModal isOpen={pricingModalOpen} onClose={() => setPricingModalOpen(false)} />}
+        {apiDocsModalOpen && <APIDocsModal isOpen={apiDocsModalOpen} onClose={() => setApiDocsModalOpen(false)} />}
+        {infoModalOpen && <InfoPagesModal isOpen={infoModalOpen} onClose={() => setInfoModalOpen(false)} page={infoModalPage} />}
+      </Suspense>
     </div>
   );
 };
 
 export default LandingPage;
+
+
 
 
 
