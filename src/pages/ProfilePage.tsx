@@ -78,7 +78,7 @@ const ProfilePage: React.FC = () => {
   });
 
   const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash');
-  const [availableModels, setAvailableModels] = useState<any[]>([]);\n
+  const [availableModels, setAvailableModels] = useState<any[]>([]);
   useEffect(() => {
     fetchProfile();
     fetchUsage();
