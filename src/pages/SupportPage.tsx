@@ -1,11 +1,27 @@
 import React, { useState } from 'react';
-import { useSupportContact, type SupportContactInfo, getResponseTimeByTier, getFormattedSupportHours } from '../hooks/useSupportContact';
-import { Mail, Clock, AlertCircle, CheckCircle, Loader } from 'lucide-react';
+import { useSupportContact, type SupportContactInfo, getResponseTimeByTier } from '../hooks/useSupportContact';
+import { Mail, Clock, AlertCircle, CheckCircle, Loader, Server } from 'lucide-react';
 import { Button } from '../components/UI';
 import axios from 'axios';
 
 interface SupportPageProps {
   userTier?: string;
+}
+
+interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+}
+
+interface SystemService {
+  id: string;
+  name: string;
+  status: 'operational' | 'degraded' | 'down';
+  uptime: string;
+  description: string;
+  lastIncident: string | null;
 }
 
 const SupportPage: React.FC<SupportPageProps> = ({ userTier = 'free' }) => {
@@ -48,6 +64,32 @@ const SupportPage: React.FC<SupportPageProps> = ({ userTier = 'free' }) => {
       setSubmitError(errorMessage);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'operational':
+        return 'bg-green-500/10 border-green-500/30';
+      case 'degraded':
+        return 'bg-yellow-500/10 border-yellow-500/30';
+      case 'down':
+        return 'bg-red-500/10 border-red-500/30';
+      default:
+        return 'bg-gray-500/10 border-gray-500/30';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'operational':
+        return <div className="w-3 h-3 bg-green-400 rounded-full" />;
+      case 'degraded':
+        return <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse" />;
+      case 'down':
+        return <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse" />;
+      default:
+        return <div className="w-3 h-3 bg-gray-400 rounded-full" />;
     }
   };
 
@@ -109,9 +151,11 @@ const SupportPage: React.FC<SupportPageProps> = ({ userTier = 'free' }) => {
                   we guarantee a response to your support tickets within{' '}
                   <span className="font-semibold text-cyan-400">{responseTime}</span>.
                 </p>
-                <p className="text-sm text-gray-400 mt-2">
-                  {supportInfo.supportHours && getFormattedSupportHours(supportInfo.supportHours)}
-                </p>
+                {supportInfo.supportHours && (
+                  <p className="text-sm text-gray-400 mt-2">
+                    {supportInfo.supportHours.weekdays} {supportInfo.supportHours.timezone}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -160,7 +204,7 @@ const SupportPage: React.FC<SupportPageProps> = ({ userTier = 'free' }) => {
                   <div className="pt-4 mt-8 border-t border-white/20">
                     <h4 className="font-semibold mb-3">Help Resources</h4>
                     <ul className="space-y-2">
-                      {supportInfo.helpResources.map((resource, idx) => (
+                      {supportInfo.helpResources.map((resource: any, idx: number) => (
                         <li key={idx}>
                           <a
                             href={resource.url}
@@ -215,11 +259,12 @@ const SupportPage: React.FC<SupportPageProps> = ({ userTier = 'free' }) => {
                         }
                         className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
                       >
-                        {supportInfo.categories.map((cat) => (
-                          <option key={cat.name} value={cat.name.toLowerCase()}>
-                            {cat.name}
-                          </option>
-                        ))}
+                        {supportInfo.categories &&
+                          supportInfo.categories.map((cat: any) => (
+                            <option key={cat.name} value={cat.name.toLowerCase()}>
+                              {cat.name}
+                            </option>
+                          ))}
                       </select>
                     </div>
 
@@ -285,38 +330,26 @@ const SupportPage: React.FC<SupportPageProps> = ({ userTier = 'free' }) => {
           {activeTab === 'faq' && (
             <div className="max-w-3xl">
               <h3 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h3>
-              <div className="space-y-4">
-                <details className="group p-6 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition-all">
-                  <summary className="font-semibold text-white flex items-center justify-between">
-                    How quickly will I get a response?
-                    <span className="text-cyan-400 group-open:rotate-180 transition-transform">▼</span>
-                  </summary>
-                  <p className="mt-4 text-gray-300">
-                    As a {userTier} user, our SLA guarantees a response within {responseTime}.
-                  </p>
-                </details>
-
-                <details className="group p-6 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition-all">
-                  <summary className="font-semibold text-white flex items-center justify-between">
-                    What are your support hours?
-                    <span className="text-cyan-400 group-open:rotate-180 transition-transform">▼</span>
-                  </summary>
-                  <p className="mt-4 text-gray-300 whitespace-pre-wrap">
-                    {supportInfo.supportHours && getFormattedSupportHours(supportInfo.supportHours)}
-                  </p>
-                </details>
-
-                <details className="group p-6 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition-all">
-                  <summary className="font-semibold text-white flex items-center justify-between">
-                    How do I upgrade my plan?
-                    <span className="text-cyan-400 group-open:rotate-180 transition-transform">▼</span>
-                  </summary>
-                  <p className="mt-4 text-gray-300">
-                    You can upgrade your plan at any time from your account settings. New features will be available
-                    immediately after upgrade.
-                  </p>
-                </details>
-              </div>
+              {supportInfo.faqs && supportInfo.faqs.length > 0 ? (
+                <div className="space-y-4">
+                  {supportInfo.faqs.map((faq: FAQ) => (
+                    <details
+                      key={faq.id}
+                      className="group p-6 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition-all"
+                    >
+                      <summary className="font-semibold text-white flex items-center justify-between">
+                        {faq.question}
+                        <span className="text-cyan-400 group-open:rotate-180 transition-transform">▼</span>
+                      </summary>
+                      <p className="mt-4 text-gray-300 whitespace-pre-wrap">{faq.answer}</p>
+                    </details>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-6 bg-white/5 border border-white/10 rounded-lg text-gray-400">
+                  No FAQs available at the moment.
+                </div>
+              )}
             </div>
           )}
 
@@ -324,15 +357,46 @@ const SupportPage: React.FC<SupportPageProps> = ({ userTier = 'free' }) => {
           {activeTab === 'status' && (
             <div className="max-w-3xl">
               <h3 className="text-2xl font-semibold mb-6">System Status</h3>
-              <div className="space-y-4">
-                <div className="p-6 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-4">
-                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                  <div>
-                    <p className="font-semibold text-white">All Systems Operational</p>
-                    <p className="text-sm text-gray-300">All services are running normally</p>
+              {supportInfo.systemStatus ? (
+                <div className="space-y-4">
+                  {/* Overall Status */}
+                  <div className={`p-6 border rounded-lg flex items-start gap-4 ${getStatusColor(supportInfo.systemStatus.overallStatus)}`}>
+                    {getStatusIcon(supportInfo.systemStatus.overallStatus)}
+                    <div className="flex-1">
+                      <p className="font-semibold text-white capitalize">{supportInfo.systemStatus.statusMessage}</p>
+                      <p className="text-sm text-gray-300 mt-1">
+                        Last updated: {new Date(supportInfo.systemStatus.lastChecked).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Individual Services */}
+                  <div className="mt-8">
+                    <h4 className="font-semibold text-white mb-4">Service Status</h4>
+                    <div className="space-y-3">
+                      {supportInfo.systemStatus.services && supportInfo.systemStatus.services.map((service: SystemService) => (
+                        <div
+                          key={service.id}
+                          className={`p-4 border rounded-lg flex items-start gap-4 ${getStatusColor(service.status)}`}
+                        >
+                          {getStatusIcon(service.status)}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <p className="font-medium text-white">{service.name}</p>
+                              <span className="text-xs text-gray-400">Uptime: {service.uptime}</span>
+                            </div>
+                            <p className="text-sm text-gray-300">{service.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-6 bg-white/5 border border-white/10 rounded-lg text-gray-400">
+                  System status information unavailable.
+                </div>
+              )}
             </div>
           )}
         </div>
