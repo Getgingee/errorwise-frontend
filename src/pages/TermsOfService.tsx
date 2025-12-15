@@ -234,7 +234,7 @@ export const TermsOfService = () => {
               <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                 <strong>Email:</strong> legal@errorwise.tech<br />
                 <strong>Website:</strong> https://www.errorwise.tech<br />
-                <strong>Support:</strong> support@errorwise.tech
+                <strong>Support:</strong> hi@getgingee.com
               </p>
             </div>
           </section>
@@ -274,3 +274,5 @@ export const TermsOfService = () => {
 };
 
 export default TermsOfService;
+
+

@@ -408,7 +408,7 @@ export const PrivacyPolicy = () => {
                   <strong>Privacy Officer:</strong> privacy@errorwise.tech
                 </p>
                 <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  <strong>General Support:</strong> support@errorwise.tech
+                  <strong>General Support:</strong> hi@getgingee.com
                 </p>
                 <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                   <strong>Website:</strong> https://www.errorwise.tech
@@ -444,3 +444,5 @@ export const PrivacyPolicy = () => {
 };
 
 export default PrivacyPolicy;
+
+

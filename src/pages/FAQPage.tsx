@@ -133,7 +133,7 @@ const faqs: FAQItem[] = [
   {
     category: "Billing & Support",
     question: "How do I contact support?",
-    answer: "You can reach us at support@errorwise.com or through the in-app chat. Pro users get priority support with typical response times under 4 hours. Free users can expect responses within 24-48 hours."
+    answer: "You can reach us at hi@getgingee.com or through the in-app chat. Pro users get priority support with typical response times under 4 hours. Free users can expect responses within 24-48 hours."
   },
   {
     category: "Billing & Support",
@@ -192,7 +192,7 @@ const FAQPage: React.FC = () => {
           </h1>
           <p className="text-xl text-gray-300 mb-8">
             Everything you need to know about ErrorWise. Can't find the answer you're looking for? 
-            <a href="mailto:support@errorwise.com" className="text-cyan-400 hover:text-cyan-300 ml-1">Contact our support team</a>.
+            <a href="mailto:hi@getgingee.com" className="text-cyan-400 hover:text-cyan-300 ml-1">Contact our support team</a>.
           </p>
 
           {/* Search Bar */}
@@ -277,7 +277,7 @@ const FAQPage: React.FC = () => {
             Can't find the answer you're looking for? Our support team is here to help.
           </p>
           <a 
-            href="mailto:support@errorwise.com" 
+            href="mailto:hi@getgingee.com" 
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-full hover:from-cyan-600 hover:to-blue-600 transition-all"
           >
             <MessageCircle className="w-5 h-5" />
@@ -303,3 +303,5 @@ const FAQPage: React.FC = () => {
 };
 
 export default FAQPage;
+
+

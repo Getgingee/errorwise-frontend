@@ -533,8 +533,8 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             <div className="p-6 bg-gradient-to-br from-blue-500/20 to-cyan-400/20 backdrop-blur-md border border-blue-500/30 rounded-xl">
               <Mail className="text-blue-300 mb-3" size={32} />
               <h4 className="font-bold text-white mb-2">Email Support</h4>
-              <a href="mailto:support@errorwise.com" className="text-blue-300 text-blue-300 hover:underline">
-                support@errorwise.com
+              <a href="mailto:hi@getgingee.com" className="text-blue-300 text-blue-300 hover:underline">
+                hi@getgingee.com
               </a>
               <p className="text-sm text-gray-200 mt-2">Response within 24 hours</p>
             </div>
@@ -758,7 +758,7 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
             </p>
             <div className="flex flex-wrap gap-3">
               <button 
-                onClick={() => window.location.href = 'mailto:support@errorwise.com'}
+                onClick={() => window.location.href = 'mailto:hi@getgingee.com'}
                 className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded-lg hover:shadow-lg transition-all font-medium"
               >
                 📧 Email Support
@@ -1416,3 +1416,5 @@ const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ isOpen, onClose, page }
 };
 
 export default InfoPagesModal;
+
+

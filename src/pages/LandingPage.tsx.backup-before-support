@@ -1,11 +1,11 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
 import { Menu, X, Briefcase, ShoppingCart, Gamepad2, Smartphone, CreditCard, Globe, Settings, Wifi, Mail } from 'lucide-react';
 import LiveDemoModal from '../components/LiveDemoModal';
 import FeedbackModal from '../components/FeedbackModal';
 import { FeaturesModal, PricingInfoModal, APIDocsModal, InfoPagesModal } from '../components/info';
-import SocialProofSection from '../components/landing/SocialProofSection';\nimport { useSupportContact } from '../hooks/useSupportContact';
+import SocialProofSection from '../components/landing/SocialProofSection';
 
 const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -580,7 +580,7 @@ const LandingPage: React.FC = () => {
               <h4 className="text-white font-semibold text-sm sm:text-base">Support</h4>
               <ul className="space-y-2">
                 <li><Link to="/faq" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors">FAQ</Link></li>
-                <li><a href="mailto:hi@getgingee.com" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors">Contact Us</a></li>
+                <li><a href="mailto:support@errorwise.com" className="text-gray-400 hover:text-cyan-400 text-sm transition-colors">Contact Us</a></li>
               </ul>
             </div>
           </div>
@@ -610,7 +610,6 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
-
 
 
 

@@ -419,7 +419,7 @@ const ProfilePage: React.FC = () => {
                         </div>
                         <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-cyan-400 transition-colors" />
                       </button>
-                      <button onClick={() => window.open('mailto:support@errorwise.app', '_blank')} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 hover:border-cyan-500/30 transition-all group">
+                      <button onClick={() => window.open('mailto:hi@getgingee.com', '_blank')} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 hover:border-cyan-500/30 transition-all group">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-amber-400 flex items-center justify-center"><HelpCircle className="w-5 h-5 text-white" /></div>
                           <div className="text-left"><p className="text-white font-medium">Get Help</p><p className="text-gray-500 text-xs">Contact support</p></div>
@@ -598,7 +598,7 @@ const ProfilePage: React.FC = () => {
               <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-lg rounded-2xl border border-cyan-500/30 p-6">
                 <h3 className="text-lg font-semibold text-white mb-2">Need Help?</h3>
                 <p className="text-gray-400 text-sm mb-4">Our support team is here to assist you with any questions.</p>
-                <button onClick={() => window.open('mailto:support@errorwise.app', '_blank')} className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium transition-all"><Mail className="w-4 h-4" />Contact Support</button>
+                <button onClick={() => window.open('mailto:hi@getgingee.com', '_blank')} className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium transition-all"><Mail className="w-4 h-4" />Contact Support</button>
               </div>
 
               {tierInfo.name === 'Free' && (
@@ -617,6 +617,8 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
+
 
 
 
