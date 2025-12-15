@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { subscriptionService, Plan } from '../services/subscription';
 import { trialService } from '../services/trialService';
@@ -13,18 +13,40 @@ export function PricingPage() {
   const [upgrading, setUpgrading] = useState<string | null>(null);
   const [startingTrial, setStartingTrial] = useState<string | null>(null);
   const [trialEligible, setTrialEligible] = useState(false);
+  const [highlightedPlan, setHighlightedPlan] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const planCardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadPlans();
     checkTrialEligibility();
-    
+
     // Handle trial cancellation redirect
     if (searchParams.get('trial') === 'cancelled') {
       toast.error('Trial checkout was cancelled');
     }
+    
+    // Handle trial parameter from banner click - highlight the relevant plan
+    const trialParam = searchParams.get('trial');
+    if (trialParam && trialParam !== 'cancelled') {
+      setHighlightedPlan(trialParam);
+      // Scroll to pricing cards after a short delay to allow rendering
+      setTimeout(() => {
+        planCardsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
   }, [searchParams]);
+
+  // Clear highlight after a few seconds
+  useEffect(() => {
+    if (highlightedPlan) {
+      const timer = setTimeout(() => {
+        setHighlightedPlan(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [highlightedPlan]);
 
   async function loadPlans() {
     try {
@@ -65,7 +87,7 @@ export function PricingPage() {
     try {
       setStartingTrial(planId);
       const result = await trialService.startTrial(planId);
-      
+
       if (result.success && result.checkoutUrl) {
         toast.loading('Redirecting to secure checkout...', { duration: 2000 });
         window.location.href = result.checkoutUrl;
@@ -214,15 +236,23 @@ export function PricingPage() {
         )}
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div ref={planCardsRef} className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan) => (
-            <PlanCard
-              key={plan.id}
-              plan={plan}
-              isPopular={plan.popular}
-              isLoading={upgrading === plan.id}
-              onSelect={() => handleUpgrade(plan.id)}
-            />
+            <div 
+              key={plan.id} 
+              className={`transition-all duration-500 ${
+                highlightedPlan === plan.id 
+                  ? 'ring-4 ring-purple-500 ring-opacity-75 scale-105 rounded-xl' 
+                  : ''
+              }`}
+            >
+              <PlanCard
+                plan={plan}
+                isPopular={plan.popular}
+                isLoading={upgrading === plan.id}
+                onSelect={() => handleUpgrade(plan.id)}
+              />
+            </div>
           ))}
         </div>
 

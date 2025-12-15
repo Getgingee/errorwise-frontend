@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { Lock, Zap, Users } from 'lucide-react';
+﻿import React, { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Lock, Zap, Users, ArrowRight, Crown } from 'lucide-react';
 import { useSubscription } from '../hooks/useSubscription';
 
 interface TierGateProps {
@@ -20,13 +20,13 @@ const TIER_INFO = {
   pro: {
     name: 'Pro',
     icon: Zap,
-    color: 'blue',
+    color: 'purple',
     price: '$3/month',
   },
   team: {
     name: 'Team',
     icon: Users,
-    color: 'purple',
+    color: 'blue',
     price: '$8/month',
   },
 };
@@ -34,6 +34,7 @@ const TIER_INFO = {
 /**
  * TierGate component - Shows content only if user has required subscription tier
  * Displays upgrade prompt for users with insufficient tier
+ * Clicking the upgrade prompt navigates to pricing page
  */
 export const TierGate: React.FC<TierGateProps> = ({
   children,
@@ -42,6 +43,7 @@ export const TierGate: React.FC<TierGateProps> = ({
   showUpgrade = true,
 }) => {
   const { subscription, loading } = useSubscription();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -63,34 +65,54 @@ export const TierGate: React.FC<TierGateProps> = ({
     return <>{fallback}</>;
   }
 
+  const handleUpgradeClick = () => {
+    navigate(`/pricing?trial=${requiredTier}`);
+  };
+
   // Show upgrade prompt
   if (showUpgrade && requiredTier !== 'free') {
     const tierInfo = TIER_INFO[requiredTier as 'pro' | 'team'];
     const Icon = tierInfo.icon;
 
     return (
-      <div className={`border-2 border-dashed border-${tierInfo.color}-300 dark:border-${tierInfo.color}-700 rounded-lg p-6 bg-${tierInfo.color}-50 dark:bg-${tierInfo.color}-900/10`}>
-        <div className="flex items-start gap-4">
-          <div className={`p-3 bg-${tierInfo.color}-100 dark:bg-${tierInfo.color}-900/30 rounded-lg`}>
-            <Lock className={`w-6 h-6 text-${tierInfo.color}-600 dark:text-${tierInfo.color}-400`} />
+      <div 
+        onClick={handleUpgradeClick}
+        className="border border-purple-500/30 rounded-xl p-5 bg-gradient-to-r from-purple-500/10 to-blue-500/10 cursor-pointer hover:from-purple-500/20 hover:to-blue-500/20 hover:border-purple-500/50 transition-all group"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && handleUpgradeClick()}
+      >
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="relative p-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+            <Icon className="w-6 h-6 text-white" />
+            <div className="absolute -top-1 -right-1 p-1 bg-amber-500 rounded-full">
+              <Lock className="w-3 h-3 text-white" />
+            </div>
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <Icon className={`w-5 h-5 text-${tierInfo.color}-600 dark:text-${tierInfo.color}-400`} />
-              <h3 className={`font-semibold text-${tierInfo.color}-900 dark:text-${tierInfo.color}-100`}>
+              <Crown className="w-5 h-5 text-purple-400" />
+              <h3 className="font-semibold text-white text-lg">
                 {tierInfo.name} Feature
               </h3>
+              <span className="text-xs bg-purple-600 text-white px-2 py-0.5 rounded-full animate-pulse">
+                {tierInfo.name.toUpperCase()}
+              </span>
             </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
+            <p className="text-gray-400 mb-4">
               This feature is available for {tierInfo.name} subscribers. Upgrade to unlock advanced capabilities and get more from ErrorWise.
             </p>
-            <Link
-              to="/subscription"
-              className={`inline-flex items-center gap-2 px-4 py-2 bg-${tierInfo.color}-600 hover:bg-${tierInfo.color}-700 text-white rounded-lg transition-colors`}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleUpgradeClick();
+              }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg transition-all shadow-lg group-hover:scale-105"
             >
               <Zap className="w-4 h-4" />
               <span>Upgrade to {tierInfo.name} - {tierInfo.price}</span>
-            </Link>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>
