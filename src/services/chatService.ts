@@ -59,15 +59,18 @@ export const sendFollowUp = async (
       conversationId,
       message
     });
-    return response.data;
+    // Response from api.post is already the data (api.ts returns response.data)
+    return response as any;
   } catch (error: any) {
-    if (error.response?.status === 403) {
-      throw new Error(error.response.data?.error || 'Follow-up limit reached');
+    // Error is already transformed to ApiError by api client
+    if (error.status === 403) {
+      const details = error.details as any;
+      throw new Error(details?.error || 'Follow-up limit reached');
     }
-    if (error.response?.status === 429) {
+    if (error.status === 429) {
       throw new Error('Rate limit exceeded. Please wait a moment.');
     }
-    throw new Error(error.response?.data?.error || 'Failed to send follow-up');
+    throw new Error(error.message || 'Failed to send follow-up');
   }
 };
 
@@ -77,9 +80,9 @@ export const sendFollowUp = async (
 export const getConversation = async (conversationId: string): Promise<any> => {
   try {
     const response = await api.get(API_ENDPOINTS.chat.get(conversationId));
-    return response.data;
+    return response as any;
   } catch (error: any) {
-    throw new Error(error.response?.data?.error || 'Failed to get conversation');
+    throw new Error(error.message || 'Failed to get conversation');
   }
 };
 
@@ -89,9 +92,9 @@ export const getConversation = async (conversationId: string): Promise<any> => {
 export const getChatHistory = async (limit: number = 10): Promise<any[]> => {
   try {
     const response = await api.get(`${API_ENDPOINTS.chat.history}?limit=${limit}`);
-    return response.data.conversations || [];
+    return (response as any).conversations || [];
   } catch (error: any) {
-    throw new Error(error.response?.data?.error || 'Failed to get chat history');
+    throw new Error(error.message || 'Failed to get chat history');
   }
 };
 
@@ -118,9 +121,9 @@ export interface TierFeatures {
 export const getCurrentTier = async (): Promise<TierInfo> => {
   try {
     const response = await api.get<TierInfo>(API_ENDPOINTS.tiers.current);
-    return response.data;
+    return response as any;
   } catch (error: any) {
-    throw new Error(error.response?.data?.error || 'Failed to get tier info');
+    throw new Error(error.message || 'Failed to get tier info');
   }
 };
 
@@ -130,9 +133,9 @@ export const getCurrentTier = async (): Promise<TierInfo> => {
 export const getTierFeatures = async (): Promise<TierFeatures> => {
   try {
     const response = await api.get<TierFeatures>(API_ENDPOINTS.tiers.features);
-    return response.data;
+    return response as any;
   } catch (error: any) {
-    throw new Error(error.response?.data?.error || 'Failed to get tier features');
+    throw new Error(error.message || 'Failed to get tier features');
   }
 };
 
@@ -142,12 +145,13 @@ export const getTierFeatures = async (): Promise<TierFeatures> => {
 export const startProTrial = async (): Promise<{ success: boolean; message: string; trialEndsAt: string }> => {
   try {
     const response = await api.post(API_ENDPOINTS.tiers.startTrial);
-    return response.data;
+    return response as any;
   } catch (error: any) {
-    if (error.response?.status === 400) {
-      throw new Error(error.response.data?.error || 'Trial not available');
+    if (error.status === 400) {
+      const details = error.details as any;
+      throw new Error(details?.error || 'Trial not available');
     }
-    throw new Error(error.response?.data?.error || 'Failed to start trial');
+    throw new Error(error.message || 'Failed to start trial');
   }
 };
 
@@ -175,9 +179,9 @@ export interface AvailableModels {
 export const getAvailableModels = async (): Promise<AvailableModels> => {
   try {
     const response = await api.get<AvailableModels>(API_ENDPOINTS.models.available);
-    return response.data;
+    return response as any;
   } catch (error: any) {
-    throw new Error(error.response?.data?.error || 'Failed to get models');
+    throw new Error(error.message || 'Failed to get models');
   }
 };
 
@@ -187,12 +191,12 @@ export const getAvailableModels = async (): Promise<AvailableModels> => {
 export const selectModel = async (modelId: string): Promise<{ success: boolean; model: string }> => {
   try {
     const response = await api.post(API_ENDPOINTS.models.select, { model: modelId });
-    return response.data;
+    return response as any;
   } catch (error: any) {
-    if (error.response?.status === 403) {
+    if (error.status === 403) {
       throw new Error('This model requires a higher subscription tier');
     }
-    throw new Error(error.response?.data?.error || 'Failed to select model');
+    throw new Error(error.message || 'Failed to select model');
   }
 };
 
@@ -202,8 +206,8 @@ export const selectModel = async (modelId: string): Promise<{ success: boolean; 
 export const getCurrentModel = async (): Promise<{ model: string; isAuto: boolean }> => {
   try {
     const response = await api.get(API_ENDPOINTS.models.current);
-    return response.data;
+    return response as any;
   } catch (error: any) {
-    throw new Error(error.response?.data?.error || 'Failed to get current model');
+    throw new Error(error.message || 'Failed to get current model');
   }
 };
