@@ -1,4 +1,4 @@
-﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
@@ -9,7 +9,8 @@ import {
   ChevronRight, ExternalLink, CreditCard, RefreshCw, Eye, EyeOff,
   Cpu, Database, FileText, HelpCircle, LogOut
 } from 'lucide-react';
-import { toast } from 'react-hot-toast';\nimport { getAvailableModels } from '../services/chatService';
+import { toast } from 'react-hot-toast';
+import { getAvailableModels } from '../services/chatService';
 import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
