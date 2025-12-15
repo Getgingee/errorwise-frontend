@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
@@ -9,7 +9,7 @@ import {
   ChevronRight, ExternalLink, CreditCard, RefreshCw, Eye, EyeOff,
   Cpu, Database, FileText, HelpCircle, LogOut
 } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';\nimport { getAvailableModels } from '../services/chatService';
 import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
@@ -77,10 +77,11 @@ const ProfilePage: React.FC = () => {
   });
 
   const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash');
-
+  const [availableModels, setAvailableModels] = useState<any[]>([]);\n
   useEffect(() => {
     fetchProfile();
     fetchUsage();
+    fetchAvailableModels();
   }, []);
 
   const fetchProfile = async () => {
@@ -102,6 +103,18 @@ const ProfilePage: React.FC = () => {
       toast.error('Failed to load profile');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+    
+  const fetchAvailableModels = async () => {
+    try {
+      const response = await getAvailableModels();
+      setAvailableModels(response.models || []);
+    } catch (error) {
+      console.error('Failed to fetch available models:', error);
+      // Fallback to default haiku model
+      setAvailableModels([{ id: 'haiku', name: 'Fast', description: 'Quick responses for simple errors', available: true, recommended: true }]);
     }
   };
 
@@ -486,7 +499,7 @@ const ProfilePage: React.FC = () => {
                   <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6">
                     <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2"><Cpu className="w-5 h-5 text-cyan-400" />AI Model</h2>
                     <div className="space-y-3">
-                      {[{ id: 'haiku', name: 'Claude Haiku', desc: 'Fast & efficient', badge: 'Recommended' }, { id: 'sonnet', name: 'Claude Sonnet', desc: 'Advanced reasoning', badge: 'Pro' }, { id: 'opus', name: 'Claude Opus', desc: 'Most intelligent', badge: 'Team' }].map((model) => (
+                      {getDisplayModels().map((model) => (
                         <button key={model.id} onClick={() => setSelectedModel(model.id)} className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${selectedModel === model.id ? 'bg-cyan-500/10 border-cyan-500/50' : 'bg-white/5 border-white/10 hover:border-white/30'}`}>
                           <div className="flex items-center gap-3">
                             <div className={`w-3 h-3 rounded-full ${selectedModel === model.id ? 'bg-cyan-400' : 'bg-white/30'}`} />
@@ -617,6 +630,14 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
+
+
+
+
+
+
+
 
 
 
