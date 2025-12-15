@@ -55,13 +55,30 @@ export const sendFollowUp = async (
   message: string
 ): Promise<FollowUpResponse> => {
   try {
+    console.log('📤 Sending follow-up:', { conversationId, messageLength: message.length });
+    
     const response = await api.post<FollowUpResponse>(API_ENDPOINTS.chat.followUp, {
       conversationId,
       message
     });
+    
+    console.log('📥 Follow-up response received:', response);
+    
+    // Validate response structure
+    if (!response || typeof response !== 'object') {
+      throw new Error('Invalid response structure');
+    }
+    
     // Response from api.post is already the data (api.ts returns response.data)
     return response as any;
   } catch (error: any) {
+    console.error('❌ Follow-up error caught:', error);
+    console.error('Error structure:', { 
+      status: error.status, 
+      message: error.message,
+      details: error.details 
+    });
+    
     // Error is already transformed to ApiError by api client
     if (error.status === 403) {
       const details = error.details as any;
@@ -70,7 +87,10 @@ export const sendFollowUp = async (
     if (error.status === 429) {
       throw new Error('Rate limit exceeded. Please wait a moment.');
     }
-    throw new Error(error.message || 'Failed to send follow-up');
+    
+    // If error has no message, use a generic one
+    const errorMsg = error.message || error.msg || JSON.stringify(error) || 'Failed to send follow-up';
+    throw new Error(errorMsg);
   }
 };
 
