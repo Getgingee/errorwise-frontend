@@ -99,17 +99,14 @@ export class SubscriptionService {
   /**
    * Get all available subscription plans
    */
-  async getPlans(): Promise<ApiResponse<Plan[]>> {
+  async getPlans(): Promise<{ plans: Plan[] }> {
     try {
-      const response = await apiClient.get<Plan[]>('/subscriptions/plans');
-  return response.data as unknown as ApiResponse<Plan[]>;
+      // Backend returns { plans: [...] } directly
+      const response = await apiClient.get<{ plans: Plan[] }>('/subscriptions/plans');
+      return response as { plans: Plan[] };
     } catch (error) {
       console.error('Error fetching plans:', error);
-      return { 
-        success: false, 
-        error: 'Failed to fetch subscription plans',
-        data: []
-      };
+      return { plans: [] };
     }
   }
 
@@ -279,6 +276,9 @@ export class SubscriptionService {
 
 export const subscriptionService = new SubscriptionService();
 export default subscriptionService;
+
+
+
 
 
 

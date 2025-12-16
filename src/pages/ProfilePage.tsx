@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+﻿import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Navigation from '../components/Navigation';
@@ -274,6 +274,23 @@ const ProfilePage: React.FC = () => {
   };
 
   const tierInfo = getTierInfo();
+
+  // Convert available models to display format for preferences tab
+  const getDisplayModels = () => {
+    if (availableModels.length === 0) {
+      // Fallback default models
+      return [
+        { id: 'haiku', name: 'Fast (Haiku)', desc: 'Quick responses for simple errors', badge: 'Recommended' },
+        { id: 'sonnet', name: 'Balanced (Sonnet)', desc: 'Better analysis for complex errors', badge: null },
+      ];
+    }
+    return availableModels.map(model => ({
+      id: model.id,
+      name: model.name || model.id,
+      desc: model.description || 'AI model for error analysis',
+      badge: model.recommended ? 'Recommended' : null
+    }));
+  };
   const TierIcon = tierInfo.icon;
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
@@ -454,11 +471,11 @@ const ProfilePage: React.FC = () => {
                     </div>
                     <div className="space-y-6">
                       <div>
-                        <div className="flex justify-between mb-2"><span className="text-gray-400">Queries This Month</span><span className="text-white font-medium">{usage?.queriesUsed || stats?.thisMonthQueries || 0} / {usage?.queriesLimit || tierInfo.queries}</span></div>
+                        <div className="flex justify-between mb-2"><span className="text-gray-400">Queries This Month</span><span className="text-white font-medium">{usage?.queriesUsed || stats?.thisMonthQueries || 0} / {(usage?.queriesLimit === 999999 || tierInfo.queries === -1) ? 'Unlimited' : (usage?.queriesLimit || tierInfo.queries)}</span></div>
                         <div className="h-3 bg-white/10 rounded-full overflow-hidden">
-                          <div className={`h-full rounded-full bg-gradient-to-r ${tierInfo.color} transition-all duration-500`} style={{ width: `${Math.min(((usage?.queriesUsed || stats?.thisMonthQueries || 0) / (usage?.queriesLimit || tierInfo.queries)) * 100, 100)}%` }} />
+                          <div className={`h-full rounded-full bg-gradient-to-r ${tierInfo.color} transition-all duration-500`} style={{ width: `${(usage?.queriesLimit === 999999 || tierInfo.queries === -1) ? 5 : Math.min(((usage?.queriesUsed || stats?.thisMonthQueries || 0) / (usage?.queriesLimit || tierInfo.queries || 1)) * 100, 100)}%` }} />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">{(usage?.queriesLimit || tierInfo.queries) - (usage?.queriesUsed || stats?.thisMonthQueries || 0)} queries remaining</p>
+                        <p className="text-xs text-gray-500 mt-1">{(usage?.queriesLimit === 999999 || tierInfo.queries === -1) ? 'Unlimited queries' : `${(usage?.queriesLimit || tierInfo.queries) - (usage?.queriesUsed || stats?.thisMonthQueries || 0)} queries remaining`}</p>
                       </div>
                       <div>
                         <div className="flex justify-between mb-2"><span className="text-gray-400">Follow-ups Per Query</span><span className="text-white font-medium">{tierInfo.followUps} max</span></div>
@@ -485,7 +502,7 @@ const ProfilePage: React.FC = () => {
                     <div className="mt-4 space-y-2">
                       <p className="text-sm text-gray-400 mb-3">Your plan includes:</p>
                       <div className="grid grid-cols-2 gap-2">
-                        <div className="flex items-center gap-2 text-sm"><CheckCircle className="w-4 h-4 text-green-400" /><span className="text-gray-300">{tierInfo.queries} queries/month</span></div>
+                        <div className="flex items-center gap-2 text-sm"><CheckCircle className="w-4 h-4 text-green-400" /><span className="text-gray-300">{tierInfo.queries === -1 ? 'Unlimited' : tierInfo.queries} queries/month</span></div>
                         <div className="flex items-center gap-2 text-sm"><CheckCircle className="w-4 h-4 text-green-400" /><span className="text-gray-300">{tierInfo.followUps} follow-ups/query</span></div>
                         <div className="flex items-center gap-2 text-sm"><CheckCircle className="w-4 h-4 text-green-400" /><span className="text-gray-300">7-day history</span></div>
                         <div className="flex items-center gap-2 text-sm">{tierInfo.name !== 'Free' ? <CheckCircle className="w-4 h-4 text-green-400" /> : <X className="w-4 h-4 text-gray-600" />}<span className={tierInfo.name !== 'Free' ? 'text-gray-300' : 'text-gray-600'}>Priority support</span></div>
@@ -631,6 +648,9 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
+
+
 
 
 
