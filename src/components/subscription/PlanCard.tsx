@@ -1,4 +1,4 @@
-﻿import { Plan } from '../../services/subscription';
+import { Plan } from '../../services/subscription';
 import { Check, Star, Loader2 } from 'lucide-react';
 
 interface PlanCardProps {
@@ -117,7 +117,7 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
             )}
 
             {/* String features from the features array */}
-            {(plan.features || []).map((feature, index) => (
+            {Array.isArray(plan.features) && plan.features.map((feature, index) => (
               <FeatureItem key={index} text={feature} />
             ))}
           </ul>
