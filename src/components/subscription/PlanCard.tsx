@@ -1,4 +1,4 @@
-import { Plan } from '../../services/subscription';
+﻿import { Plan } from '../../services/subscription';
 import { Check, Star, Loader2 } from 'lucide-react';
 
 interface PlanCardProps {
@@ -84,40 +84,40 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
             {/* Queries */}
             <FeatureItem
               text={
-                plan.limits.daily_queries === -1
+                (plan.limits?.daily_queries ?? -1) === -1
                   ? 'Unlimited queries'
-                  : `${plan.limits.daily_queries} queries/day`
+                  : `${plan.limits?.daily_queries ?? 0} queries/day`
               }
             />
 
             {/* Explanation Type */}
-            <FeatureItem text={`${plan.limits.explanation_type} AI explanations`} />
+            <FeatureItem text={`${plan.limits?.explanation_type ?? 'Full'} AI explanations`} />
 
             {/* Solutions */}
-            {plan.limits.solutions_provided && (
+            {plan.limits?.solutions_provided && (
               <FeatureItem text="Fix suggestions & code examples" />
             )}
 
             {/* Team Features */}
-            {plan.limits.team_features && (
+            {plan.limits?.team_features && (
               <>
                 <FeatureItem text="Team collaboration" />
                 <FeatureItem text="Shared error history" />
-                {plan.limits.max_team_members && (
-                  <FeatureItem text={`Up to ${plan.limits.max_team_members} team members`} />
+                {plan.limits?.max_team_members && (
+                  <FeatureItem text={`Up to ${plan.limits?.max_team_members} team members`} />
                 )}
               </>
             )}
 
             {/* Video Chat */}
-            {plan.limits.video_chat && (
+            {plan.limits?.video_chat && (
               <FeatureItem 
-                text={`Video support sessions${plan.limits.video_session_duration ? ` (${plan.limits.video_session_duration} min)` : ''}`} 
+                text={`Video support sessions${plan.limits?.video_session_duration ? ` (${plan.limits?.video_session_duration} min)` : ''}`} 
               />
             )}
 
             {/* String features from the features array */}
-            {plan.features.map((feature, index) => (
+            {(plan.features || []).map((feature, index) => (
               <FeatureItem key={index} text={feature} />
             ))}
           </ul>
@@ -135,3 +135,4 @@ function FeatureItem({ text }: { text: string }) {
     </li>
   );
 }
+
